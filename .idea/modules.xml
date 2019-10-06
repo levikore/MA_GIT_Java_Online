@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AppLogicEngine/AppLogicEngine.iml" filepath="$PROJECT_DIR$/AppLogicEngine/AppLogicEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MA_GIT_ONLINE.iml" filepath="$PROJECT_DIR$/.idea/MA_GIT_ONLINE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MaGitWebApp/MaGitWebApp.iml" filepath="$PROJECT_DIR$/MaGitWebApp/MaGitWebApp.iml" />
+    </modules>
+  </component>
+</project>

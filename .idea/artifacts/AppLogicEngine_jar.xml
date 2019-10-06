@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AppLogicEngine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AppLogicEngine</output-path>
+    <root id="archive" name="AppLogicEngine.jar">
+      <element id="module-output" name="AppLogicEngine" />
+    </root>
+  </artifact>
+</component>
