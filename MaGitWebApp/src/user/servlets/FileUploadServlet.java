@@ -3,6 +3,8 @@ package user.servlets;
 //taken from: http://www.servletworld.com/servlet-tutorials/servlet3/multipartconfig-file-upload-example.html
 // and http://docs.oracle.com/javaee/6/tutorial/doc/glraq.html
 
+import user.utils.SessionUtils;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -29,10 +31,8 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         //PrintWriter out = response.getWriter();
-
         Collection<Part> parts = request.getParts();
         //out.println("Total parts : " + parts.size() + " ");
-
         StringBuilder fileContent = new StringBuilder();
 
         for (Part part : parts) {

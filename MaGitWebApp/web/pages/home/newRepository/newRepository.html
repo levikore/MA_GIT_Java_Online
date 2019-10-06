@@ -32,7 +32,8 @@
 
                 if(extension==="xml") {
                     var formData = new FormData();
-                    formData.append("fake-key-1", file);
+
+                    formData.append(filename, file);
                     $.ajax({
                         method: 'POST',
                         data: formData,
