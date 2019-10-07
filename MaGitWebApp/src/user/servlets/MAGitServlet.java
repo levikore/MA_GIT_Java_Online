@@ -13,20 +13,8 @@ import java.io.PrintWriter;
 public class MAGitServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-       response.setContentType("application/json");
-        String username = SessionUtils.getUsername(request);
-        if (username == null) {
-            response.sendRedirect(request.getContextPath() + "/index.html");
-        }
-        try (PrintWriter out = response.getWriter()) {
-            Gson gson = new Gson();
-            //UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            //Set<String> usersList = userManager.getUsers();
-            String json = gson.toJson("");
-            out.println(json);
-            out.flush();
-        }
+        response.setContentType("text/html;charset=UTF-8");
+        response.sendRedirect(request.getContextPath() + "/pages/signup/signup.html");
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

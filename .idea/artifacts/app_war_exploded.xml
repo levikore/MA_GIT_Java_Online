@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="MaGitWebApp:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/MaGitWebApp_war_exploded</output-path>
+  <artifact type="exploded-war" name="app:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/app_war_exploded</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="MaGitWebApp/web/Web" />
       <element id="directory" name="WEB-INF">
@@ -9,9 +9,9 @@
         </element>
         <element id="directory" name="lib">
           <element id="artifact" artifact-name="AppLogicEngine:jar" />
-          <element id="library" level="project" name="gson-2.1" />
           <element id="library" level="project" name="commons-io-2.6" />
           <element id="library" level="project" name="commons-codec-1.12" />
+          <element id="library" level="project" name="gson-2.1" />
         </element>
       </element>
     </root>

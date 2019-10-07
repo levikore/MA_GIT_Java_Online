@@ -40,14 +40,17 @@
                         url: this.action,
                         processData: false, // Don't process the files
                         contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                        timeout: 4000
-                    }).done(function (data, status) {
-                        $("#error_result").text("");
-                        $("#good_result").text(filename + " uploaded successfully" );
-                    }).fail(function (data, status) {
-                        console.error("Failed to submit");
-                        $("#good_result").text("");
-                        $("#error_result").text("Failed to get result from server ");
+                        timeout: 4000,
+                        error: function (e) {
+                            console.error("Failed to submit");
+                            $("#good_result").text("");
+                            $("#error_result").text("Failed to get result from server ");
+                        },
+                        success: function (r) {
+                            $("#error_result").text("");
+                            $("#good_result").text(filename + " uploaded successfully");
+                            $("#errors_in_XML").text(r);
+                        }
                     });
 
                 } else {
@@ -112,6 +115,8 @@
         <div class="text-success" id="good_result" class="p-2 bd-highlight">
         </div>
         <div class="text-danger" id="error_result" class="p-2 bd-highlight">
+        </div>
+        <div class="text-danger" id="errors_in_XML" class="p-2 bd-highlight">
         </div>
 
 
