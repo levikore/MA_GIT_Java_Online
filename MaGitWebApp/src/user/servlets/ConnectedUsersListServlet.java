@@ -2,7 +2,7 @@ package user.servlets;
 
 import user.utils.ServletUtils;
 import com.google.gson.Gson;
-import engine.users.UserManager;
+import engine.users.ConnectedUsersManager;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsersListServlet extends HttpServlet {
+public class ConnectedUsersListServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -19,8 +19,8 @@ public class UsersListServlet extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            Set<String> usersList = userManager.getUsers();
+            ConnectedUsersManager connectedUsersManager = ServletUtils.getUserManager(getServletContext());
+            Set<String> usersList = connectedUsersManager.getUsers();
             String json = gson.toJson(usersList);
             out.println(json);
             out.flush();

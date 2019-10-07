@@ -1,6 +1,6 @@
 package user.servlets;
 
-import engine.users.UserManager;
+import engine.users.ConnectedUsersManager;
 import user.utils.ServletUtils;
 import user.utils.SessionUtils;
 
@@ -18,11 +18,11 @@ public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String usernameFromSession = SessionUtils.getUsername(request);
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        ConnectedUsersManager connectedUsersManager = ServletUtils.getUserManager(getServletContext());
 
         if (usernameFromSession != null) {
             System.out.println("Clearing session for " + usernameFromSession);
-            userManager.removeUser(usernameFromSession);
+            connectedUsersManager.removeUser(usernameFromSession);
             SessionUtils.clearSession(request);
 
             /*

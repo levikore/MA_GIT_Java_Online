@@ -1,6 +1,6 @@
 package user.servlets;
 
-import engine.users.UserManager;
+import engine.users.ConnectedUsersManager;
 import user.constants.Constants;
 import user.utils.ServletUtils;
 import user.utils.SessionUtils;
@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String usernameFromSession = SessionUtils.getUsername(request);
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        ConnectedUsersManager connectedUsersManager = ServletUtils.getUserManager(getServletContext());
         if (usernameFromSession == null) {
             //user is not logged in yet
             String usernameFromParameter = request.getParameter(USERNAME);
@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
                 do here other not related actions (such as request dispatcher\redirection etc. this is shown here in that manner just to stress this issue
                  */
                 synchronized (this) {
-                    if (userManager.isUserExists(usernameFromParameter)) {
+                    if (connectedUsersManager.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
                         // username already exists, forward the request back to index.jsp
                         // with a parameter that indicates that an error should be displayed
@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
                         getServletContext().getRequestDispatcher(LOGIN_ERROR_URL).forward(request, response);
                     } else {
                         //add the new user to the users list
-                        userManager.addUser(usernameFromParameter);
+                        connectedUsersManager.addUser(usernameFromParameter);
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one

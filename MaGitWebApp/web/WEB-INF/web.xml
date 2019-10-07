@@ -13,8 +13,8 @@
         <servlet-class>user.servlets.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UsersListServlet</servlet-name>
-        <servlet-class>user.servlets.UsersListServlet</servlet-class>
+        <servlet-name>ConnectedUsersListServlet</servlet-name>
+        <servlet-class>user.servlets.ConnectedUsersListServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UserServlet</servlet-name>
@@ -31,8 +31,8 @@
         <url-pattern>/pages/signup/login</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UsersListServlet</servlet-name>
-        <url-pattern>/userslist</url-pattern>
+        <servlet-name>ConnectedUsersListServlet</servlet-name>
+        <url-pattern>/connectedUsersListServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>

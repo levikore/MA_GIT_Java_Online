@@ -1,10 +1,9 @@
 package user.utils;
 
 //import engine.chat.ChatManager;
-import engine.users.UserManager;
+import engine.users.ConnectedUsersManager;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 //import static chat.constants.Constants.INT_PARAMETER_ERROR;
 
@@ -20,14 +19,14 @@ public class ServletUtils {
 	private static final Object userManagerLock = new Object();
 	//private static final Object chatManagerLock = new Object();
 
-	public static UserManager getUserManager(ServletContext servletContext) {
+	public static ConnectedUsersManager getUserManager(ServletContext servletContext) {
 
 		synchronized (userManagerLock) {
 			if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
-				servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new UserManager());
+				servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new ConnectedUsersManager());
 			}
 		}
-		return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+		return (ConnectedUsersManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
 	}
 
 //	public static ChatManager getChatManager(ServletContext servletContext) {
