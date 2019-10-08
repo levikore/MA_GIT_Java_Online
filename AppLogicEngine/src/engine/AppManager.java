@@ -4,6 +4,8 @@ import engine.logic.FilesManagement;
 import engine.logic.RepositoryManager;
 import engine.logic.XMLManager;
 import engine.repositories.RepositoriesManager;
+import engine.repositories.RepositoryData;
+import engine.repositories.UserData;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -11,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class AppManager {
     private String m_UserName;
@@ -22,7 +23,8 @@ public class AppManager {
     public AppManager(String i_UserName) {
         m_UserName = i_UserName;
         m_UserFolderPath = Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName);
-        updateRepositoriesManagerFromFiles();
+        m_RepositoriesManager = new RepositoriesManager();
+        //recoverRepositoriesManagerFromFiles();
     }
 
     public String GetUserName() {
@@ -33,11 +35,14 @@ public class AppManager {
         try {
             createUserFolder();
             String repositoryName = getRepositoryNameFromXml(i_InputStreamOfXML);
-            Path repositoryPath = Paths.get(m_UserFolderPath+"\\"+repositoryName);
+            Path repositoryPath = Paths.get(m_UserFolderPath + "\\" + repositoryName);
             new RepositoryManager(repositoryPath, i_UserName, true, true, null);
             XMLManager.BuildRepositoryObjectsFromXML(i_InputStreamOfXML, repositoryPath);
             RepositoryManager repository = new RepositoryManager(repositoryPath, m_UserName, false, false, null);
             repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
+            RepositoryData repositoryData = new RepositoryData(repositoryName);
+            m_RepositoriesManager.addRepositoryData(m_UserName, repositoryData);
+
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -48,9 +53,9 @@ public class AppManager {
     }
 
     private String getRepositoryNameFromXml(InputStream i_InputStreamOfXML) {
-       String repositoryName=null;
+        String repositoryName = null;
         try {
-            repositoryName= XMLManager.GetRepositoryNameFromXml(i_InputStreamOfXML);
+            repositoryName = XMLManager.GetRepositoryNameFromXml(i_InputStreamOfXML);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -62,7 +67,7 @@ public class AppManager {
     }
 
     //
-    private void updateRepositoriesManagerFromFiles() {
+    private void recoverRepositoriesManagerFromFiles() {
 
     }
 
