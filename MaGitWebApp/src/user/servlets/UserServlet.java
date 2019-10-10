@@ -1,6 +1,9 @@
 package user.servlets;
 
 import com.google.gson.Gson;
+import engine.repositories.UserData;
+import engine.repositories.UserNameObj;
+import user.utils.ServletUtils;
 import user.utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -18,7 +21,15 @@ public class UserServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             String userName = SessionUtils.getUsername(request);
-            String json = gson.toJson(userName);
+            UserData userData = ServletUtils.getAppManager(getServletContext(), userName).GetUserData();
+            String json = "null";
+            if (userData == null) {
+                UserNameObj userNameObj = new UserNameObj(userName);
+                json = gson.toJson(userNameObj);
+            } else {
+                json = gson.toJson(userData);
+            }
+            //String json = gson.toJson(userName);
             out.println(json);
             out.flush();
         }

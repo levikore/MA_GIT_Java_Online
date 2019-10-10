@@ -31,6 +31,10 @@ public class AppManager {
         return m_UserName;
     }
 
+    public UserData GetUserData(){
+        return m_RepositoriesManager.GetUserData(m_UserName);
+    }
+
     public void CreateRepositoryFromXml(InputStream i_InputStreamOfXML, String i_UserName) {
         try {
             createUserFolder();
@@ -40,7 +44,8 @@ public class AppManager {
             XMLManager.BuildRepositoryObjectsFromXML(i_InputStreamOfXML, repositoryPath);
             RepositoryManager repository = new RepositoryManager(repositoryPath, m_UserName, false, false, null);
             repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
-            RepositoryData repositoryData = new RepositoryData(repositoryName);
+            RepositoryData repositoryData = new RepositoryData(repository);
+
             m_RepositoriesManager.addRepositoryData(m_UserName, repositoryData);
 
         } catch (SAXException e) {
@@ -84,6 +89,7 @@ public class AppManager {
             FilesManagement.CreateFolder(m_UserFolderPath.getParent(), m_UserName);
         }
     }
+
 
 
 }
