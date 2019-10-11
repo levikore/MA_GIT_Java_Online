@@ -1,0 +1,15 @@
+
+#container-users-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 30vw;
+    padding-top: 5vw;
+    border-width: .2rem;
+    box-sizing: border-box;
+}

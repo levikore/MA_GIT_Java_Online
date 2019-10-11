@@ -1,21 +1,17 @@
 package engine.repositories;
 
-import engine.logic.Branch;
-import engine.logic.Commit;
-
 import java.util.*;
 
 public class RepositoriesManager {
-
-    private final Map<String, UserData> usersDataHashMap;
+    private final Map<String, UserData> m_UsersDataHashMap;
 
     public RepositoriesManager() {
-        usersDataHashMap = new HashMap<>();
+        m_UsersDataHashMap = new HashMap<>();
     }
 
     public synchronized void addUserData(String i_UserName, UserData i_UserData) {
         if (!isUserExists(i_UserName) && i_UserData.getRepositoriesDataList() != null) {
-            usersDataHashMap.put(i_UserName, i_UserData);
+            m_UsersDataHashMap.put(i_UserName, i_UserData);
         }
     }
 
@@ -26,26 +22,33 @@ public class RepositoriesManager {
             UserData userData = new UserData(repositoriesList, i_Username);
             addUserData(i_Username, userData);
         } else {
-            usersDataHashMap.get(i_Username).AddRepositoryData(i_RepositoryData);
+            m_UsersDataHashMap.get(i_Username).AddRepositoryData(i_RepositoryData);
         }
     }
 
     public synchronized Set<String> getUsers() {
-        return Collections.unmodifiableSet(usersDataHashMap.keySet());
+        return Collections.unmodifiableSet(m_UsersDataHashMap.keySet());
     }
 
     public boolean isUserExists(String i_UserName) {
-        return usersDataHashMap.keySet().contains(i_UserName);
+        return m_UsersDataHashMap.keySet().contains(i_UserName);
     }
 
     public UserData GetUserData(String i_UserName) {
         UserData userData = null;
         if (isUserExists(i_UserName)) {
-            userData = usersDataHashMap.get(i_UserName);
+            userData = m_UsersDataHashMap.get(i_UserName);
         }
         return userData;
     }
 
+    public Map<String, UserData> getUsersDataHashMap() {
+        return m_UsersDataHashMap;
+    }
+
+    public int GetVersion() {
+        return m_UsersDataHashMap.size();
+    }
 
 
 }

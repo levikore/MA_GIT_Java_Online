@@ -21,7 +21,7 @@ public class UserServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             String userName = SessionUtils.getUsername(request);
-            UserData userData = ServletUtils.getAppManager(getServletContext(), userName).GetUserData();
+            UserData userData = ServletUtils.getAppManager(getServletContext(), userName).GetUserData(userName);
             String json = "null";
             if (userData == null) {
                 UserNameObj userNameObj = new UserNameObj(userName);

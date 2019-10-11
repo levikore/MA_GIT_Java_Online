@@ -1,7 +1,9 @@
 package user.servlets;
 
 import com.google.gson.Gson;
-import engine.AppManager;
+import engine.repositories.UserData;
+import engine.repositories.UserNameObj;
+import user.utils.ServletUtils;
 import user.utils.SessionUtils;
 
 import javax.servlet.ServletException;
@@ -11,19 +13,43 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
-public class HomeServlet extends HttpServlet {
-
+public class AllUsersServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         response.setContentType("application/json");
-        //ChatManager chatManager = ServletUtils.getChatManager(getServletContext());
-        String username = SessionUtils.getUsername(request);
-        if (username == null) {
-            response.sendRedirect(request.getContextPath() + "/pages/signup/login.html");
+        try (PrintWriter out = response.getWriter()) {
+            Gson gson = new Gson();
+
+            Map<String, UserData> allusers = ServletUtils.getAppManager(getServletContext(), SessionUtils.getUsername(request)).GetAllUserMap();
+            String json = gson.toJson(allusers);
+//            if (userData == null) {
+//                UserNameObj userNameObj = new UserNameObj(userName);
+//                json = gson.toJson(userNameObj);
+//            } else {
+//                json = gson.toJson(userData);
+//            }
+            //String json = gson.toJson(userName);
+            out.println(json);
+            out.flush();
         }
     }
+
+    private void logServerMessage(String message){
+        System.out.println(message);
+    }
+
+//    private static class usersListAndVersion {
+//        final private List<SingleChatEntry> entries;
+//        final private int version;
+//
+//        public ChatAndVersion(List<SingleChatEntry> entries, int version) {
+//            this.entries = entries;
+//            this.version = version;
+//        }
+//    }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 

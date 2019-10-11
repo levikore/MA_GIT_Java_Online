@@ -13,40 +13,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public class AppManager {
-    private String m_UserName;
-    private RepositoryManager m_CurrentRepository;
     private RepositoriesManager m_RepositoriesManager;
-    private Path m_UserFolderPath;
 
     public AppManager(String i_UserName) {
-        m_UserName = i_UserName;
-        m_UserFolderPath = Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName);
         m_RepositoriesManager = new RepositoriesManager();
         //recoverRepositoriesManagerFromFiles();
     }
 
-    public String GetUserName() {
-        return m_UserName;
+    public UserData GetUserData(String i_UserName) {
+        return m_RepositoriesManager.GetUserData(i_UserName);
     }
 
-    public UserData GetUserData(){
-        return m_RepositoriesManager.GetUserData(m_UserName);
+    public Map<String, UserData> GetAllUserMap() {
+        return m_RepositoriesManager.getUsersDataHashMap();
     }
 
     public void CreateRepositoryFromXml(InputStream i_InputStreamOfXML, String i_UserName) {
         try {
-            createUserFolder();
+            createUserFolder(i_UserName);
             String repositoryName = getRepositoryNameFromXml(i_InputStreamOfXML);
-            Path repositoryPath = Paths.get(m_UserFolderPath + "\\" + repositoryName);
+            Path repositoryPath = Paths.get(getUserRepositoriesFolderPath(i_UserName) + "\\" + repositoryName);
             new RepositoryManager(repositoryPath, i_UserName, true, true, null);
             XMLManager.BuildRepositoryObjectsFromXML(i_InputStreamOfXML, repositoryPath);
-            RepositoryManager repository = new RepositoryManager(repositoryPath, m_UserName, false, false, null);
+            RepositoryManager repository = new RepositoryManager(repositoryPath, i_UserName, false, false, null);
             repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
             RepositoryData repositoryData = new RepositoryData(repository);
 
-            m_RepositoriesManager.addRepositoryData(m_UserName, repositoryData);
+            m_RepositoriesManager.addRepositoryData(i_UserName, repositoryData);
 
         } catch (SAXException e) {
             e.printStackTrace();
@@ -83,13 +79,17 @@ public class AppManager {
         }
     }
 
-    private void createUserFolder() {
+    private void createUserFolder(String i_UserName) {
         createRepositoriesFolder();
-        if (!(m_UserFolderPath.toFile().exists())) {
-            FilesManagement.CreateFolder(m_UserFolderPath.getParent(), m_UserName);
+        Path userFolderPath = getUserRepositoriesFolderPath(i_UserName);
+        if (!(userFolderPath.toFile().exists())) {
+            FilesManagement.CreateFolder(userFolderPath.getParent(), i_UserName);
         }
     }
 
+    private Path getUserRepositoriesFolderPath(String i_UserName) {
+        return Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + i_UserName);
+    }
 
 
 }

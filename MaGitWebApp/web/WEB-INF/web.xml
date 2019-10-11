@@ -23,6 +23,10 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>user.servlets.UserServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AllUsersServlet</servlet-name>
+        <servlet-class>user.servlets.AllUsersServlet</servlet-class>
+    </servlet>
 
 <servlet-mapping>
     <servlet-name>MAGitServlet</servlet-name>
@@ -43,5 +47,9 @@
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AllUsersServlet</servlet-name>
+        <url-pattern>/allusers</url-pattern>
     </servlet-mapping>
 </web-app>

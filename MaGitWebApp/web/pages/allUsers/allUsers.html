@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <title>Home Page</title>
     <script src="../../common/jquery-2.0.3.min.js"></script>
     <script src="../../common/context-path-helper.js"></script>
-    <script src="home.js"></script>
-
+    <script src="../home/home.js"></script>
+    <script src="allUsers.js"></script>
     <script src="../../common/bootstrap.min.js" ></script>
-
     <link rel="stylesheet" href="../../common/bootstrap.min.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="../home/home.css">
+    <link rel="stylesheet" href="allUsers.css">
 </head>
 <body>
-
-<nav class="navbar navbar-inverse">
+<div id="container-menu">
+    <div class="row">
+    <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="home.html">M.A Git Online</a>
+            <a class="navbar-brand" href="../home/home.html">M.A Git Online</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="home.html">Home</a></li>
-            <li><a href="../allUsers/allUsers.html">All Users</a></li>
+            <li class="active"><a href="../home/home.html">Home</a></li>
+            <li><a href="allUsers.html">All Users</a></li>
             <a href="newRepository/newRepository.html"><button id="button-new-repository" class="btn btn-success navbar-btn">New Repository</button></a>
         </ul>
         <ul class="nav navbar-nav">
@@ -47,9 +48,25 @@
         </ul>
     </div>
 </nav>
-
-<div id="user-repositories-list" class="list-group">
-    <h2 class="mb-1">My Repositories: </h2>
+    </div>
 </div>
+
+<div id="container-users-list">
+    <div class="row">
+        <!--<h2 id="all-users-list-title" class="mb-1">All Users: <small class="text-muted h5">(with 1 repository at least)</small> </h2>-->
+
+        <div class="col-4">
+            <div id="users-list" class="list-group" role="tablist">
+            </div>
+        </div>
+
+        <div class="col-8">
+            <div id="users-list-content" class="tab-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </body>
 </html>
