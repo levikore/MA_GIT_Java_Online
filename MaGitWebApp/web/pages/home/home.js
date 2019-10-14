@@ -18,10 +18,15 @@ function ajaxUserData() {
 }
 
 function setUserName(userName) {
-    $("#userName").append(userName).append("<br>");
+    $("#userName").append(userName);
 }
 
-function setUserRepositoriesList(repositoriesDataList, id, usetName) {
+// function getUserName()
+// {
+//     return $("#userName").text().trim();
+// }
+
+function setUserRepositoriesList(repositoriesDataList, id, userName) {
     for (let i = 0; i < repositoriesDataList.length; i++) {
         let repositoryName = repositoriesDataList[i].m_RepositoryName;
         let activeBranchName = repositoriesDataList[i].m_ActiveBranchName;
@@ -30,7 +35,7 @@ function setUserRepositoriesList(repositoriesDataList, id, usetName) {
         let lastCommitDate = repositoriesDataList[i].m_LastCommitDate;
 
         id.append(
-                $('<a href="#" class="list-group-item list-group-item-action align-items-start"> </a>').attr('id', usetName+"repository-element" + i)
+                $('<a href="#" class="list-group-item list-group-item-action align-items-start"> </a>').attr('id', userName+"repository-element" + i)
             );
 
         $('<div class="d-flex w-100 justify-content-between">' +
@@ -44,7 +49,7 @@ function setUserRepositoriesList(repositoriesDataList, id, usetName) {
             '<p class="mb-1">Last Commit Comment: '+lastCommitComment+'</p>'+
             '<p class="mb-1">Last Commit Date: '+lastCommitDate+'</p>'+
         '</div>')
-            .appendTo($("#" + usetName+"repository-element" + i));
+            .appendTo($("#" + userName+"repository-element" + i));
     }
 }
 
