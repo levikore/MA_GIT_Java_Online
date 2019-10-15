@@ -8,8 +8,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <%@page import="chat.utils.*" %>
-    <%@ page import="chat.constants.Constants" %>
+    <%@page import="user.utils.*" %>
+    <%@ page import="user.constants.Constants" %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Online Chat</title>

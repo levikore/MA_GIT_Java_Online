@@ -100,7 +100,7 @@ function appendUsersList(userIndex, userKey) {
     $("#users-list")
         .append(
             $('<a class="list-group-item list-group-item-action" data-toggle="list" role="tab" >'
-                + '<h3 class="mb-1">' + userKey + '</h3>' + '</a>')
+                + '<h3 class="mb-8">' + userKey + '</h3>' + '</a>')
                 .attr({
                     'id': "user-element" + userIndex,
                     'href': "#user-element" + userIndex + "-user-content" + userIndex,

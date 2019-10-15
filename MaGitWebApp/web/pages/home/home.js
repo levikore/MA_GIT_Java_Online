@@ -21,11 +21,6 @@ function setUserName(userName) {
     $("#userName").append(userName);
 }
 
-// function getUserName()
-// {
-//     return $("#userName").text().trim();
-// }
-
 function setUserRepositoriesList(repositoriesDataList, id, userName) {
     for (let i = 0; i < repositoriesDataList.length; i++) {
         let repositoryName = repositoriesDataList[i].m_RepositoryName;
@@ -35,10 +30,10 @@ function setUserRepositoriesList(repositoriesDataList, id, userName) {
         let lastCommitDate = repositoriesDataList[i].m_LastCommitDate;
 
         id.append(
-                $('<a href="#" class="list-group-item list-group-item-action align-items-start"> </a>').attr('id', userName+"repository-element" + i)
+                $('<a href="../repository/repository.html" class="list-group-item list-group-item-action align-items-start"> </a>').attr('id', userName+"repository-element" + i)
             );
 
-        $('<div class="d-flex w-100 justify-content-between">' +
+        $('<div class="w-100 justify-content-between">' +
             '<h3 class="mb-1">'
             +
             repositoryName

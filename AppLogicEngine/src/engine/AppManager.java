@@ -42,7 +42,7 @@ public class AppManager {
             repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
             RepositoryData repositoryData = new RepositoryData(repository);
 
-            m_RepositoriesManager.addRepositoryData(i_UserName, repositoryData);
+            m_RepositoriesManager.addRepositoryData(i_UserName, repositoryData, repository);
 
         } catch (SAXException e) {
             e.printStackTrace();

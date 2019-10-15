@@ -1,28 +1,41 @@
 package engine.repositories;
 
+import engine.logic.RepositoryManager;
+
 import java.util.*;
 
 public class RepositoriesManager {
     private final Map<String, UserData> m_UsersDataHashMap;
+    private final Map<String, List<RepositoryManager>> m_RepositoriesListHashMap;
 
     public RepositoriesManager() {
         m_UsersDataHashMap = new HashMap<>();
+        m_RepositoriesListHashMap = new HashMap<>();
     }
 
-    public synchronized void addUserData(String i_UserName, UserData i_UserData) {
+    private synchronized void addUserData(String i_UserName, UserData i_UserData) {
         if (!isUserExists(i_UserName) && i_UserData.getRepositoriesDataList() != null) {
             m_UsersDataHashMap.put(i_UserName, i_UserData);
         }
     }
 
-    public synchronized void addRepositoryData(String i_Username, RepositoryData i_RepositoryData) {
+    public synchronized void addRepositoryData(String i_Username, RepositoryData i_RepositoryData, RepositoryManager i_RepositoryManager) {
+
+
         if (!isUserExists(i_Username)) {
-            List<RepositoryData> repositoriesList = new LinkedList<RepositoryData>();
-            repositoriesList.add(i_RepositoryData);
-            UserData userData = new UserData(repositoriesList, i_Username);
+            List<RepositoryManager> repositoriesManagerList=new LinkedList<>();
+            repositoriesManagerList.add(i_RepositoryManager);
+
+            List<RepositoryData> repositoriesDataList = new LinkedList<>();
+            repositoriesDataList.add(i_RepositoryData);
+            UserData userData = new UserData(repositoriesDataList, i_Username);
             addUserData(i_Username, userData);
+            m_RepositoriesListHashMap.put(i_Username,repositoriesManagerList);
+
+
         } else {
             m_UsersDataHashMap.get(i_Username).AddRepositoryData(i_RepositoryData);
+            m_RepositoriesListHashMap.get(i_Username).add(i_RepositoryManager);
         }
     }
 
