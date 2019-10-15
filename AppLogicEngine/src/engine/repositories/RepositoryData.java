@@ -14,7 +14,7 @@ public class RepositoryData {
     private String m_LastCommitComment;
     private String m_LastCommitDate;
     List<String> m_BranchesList;
-    List<String> m_HeadBranchCommitsList;
+    List<CommitData> m_HeadBranchCommitsList;
     // private RepositoryManager m_RepositoryManager;
 
 
@@ -25,12 +25,16 @@ public class RepositoryData {
         m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
         m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
         m_BranchesList = i_RepositoryManager.GetAllBranchesStringList();
-        commitsListToString(i_RepositoryManager.GetCommitColumnByBranch(i_RepositoryManager.GetHeadBranch().GetHeadBranch()));
+        commitsListToString(i_RepositoryManager.GetCommitColumnByBranch(i_RepositoryManager.GetHeadBranch().GetHeadBranch()), i_RepositoryManager);
     }
 
-    private void commitsListToString(List<Commit> i_CommitsList) {
+    private void commitsListToString(List<Commit> i_CommitsList, RepositoryManager i_RepositoryManager) {
         m_HeadBranchCommitsList = new LinkedList<>();
-        i_CommitsList.forEach(commit -> m_HeadBranchCommitsList.add(commit.toString()));
+        for(Commit commit: i_CommitsList)
+        {
+            CommitData commitData=new CommitData(i_RepositoryManager, commit);
+            m_HeadBranchCommitsList.add(commitData);
+        }
     }
 
     public String getRepositoryName() {
@@ -57,4 +61,16 @@ public class RepositoryData {
         m_NumOfBranches = i_NumOfBranches;
     }
 
+    private class CommitData {
+        String m_CommitDescription;
+        List<String> m_PointedByList;
+        List<String> m_FilesList;
+
+        private CommitData(RepositoryManager i_RepositoryManager, Commit i_Commit) {
+            m_CommitDescription = i_Commit.toString();
+            m_PointedByList = i_RepositoryManager.GetPointingBranchesNamestoCommit(i_Commit);
+            m_FilesList = new LinkedList<>();
+            i_Commit.GetCommitRootFolder().GetFilesDataList().forEach(blobData -> m_FilesList.add(blobData.GetPath()));
+        }
+    }
 }

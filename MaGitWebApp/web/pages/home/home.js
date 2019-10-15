@@ -10,7 +10,7 @@ function ajaxUserData() {
             let userName = i_UserData.m_UserName;
             setUserName(userName);
             if (i_UserData.m_RepositoriesDataList !== undefined) {
-                const id=$("#user-repositories-list");
+                const id = $("#user-repositories-list");
                 setUserRepositoriesList(i_UserData.m_RepositoriesDataList, id, userName);
             }
         }
@@ -29,9 +29,16 @@ function setUserRepositoriesList(repositoriesDataList, id, userName) {
         let lastCommitComment = repositoriesDataList[i].m_LastCommitComment;
         let lastCommitDate = repositoriesDataList[i].m_LastCommitDate;
 
+        let params = {'userName': userName, 'repositoryName': repositoryName};
+        let new_url = '../repository/repository.html?' + jQuery.param(params);
+
         id.append(
-                $('<a href="../repository/repository.html" class="list-group-item list-group-item-action align-items-start"> </a>').attr('id', userName+"repository-element" + i)
-            );
+            $('<a href="../repository/repository.html" class="list-group-item list-group-item-action align-items-start"> </a>')
+                .attr({
+                    'id': userName + "repository-element" + i,
+                    'href': new_url
+                })
+        );
 
         $('<div class="w-100 justify-content-between">' +
             '<h3 class="mb-1">'
@@ -39,12 +46,12 @@ function setUserRepositoriesList(repositoriesDataList, id, userName) {
             repositoryName
             +
             '</h3>' +
-            '<p class="mb-1">Active Branch: '+activeBranchName+'</p>'+
-            '<p class="mb-1">Number of Branches: '+numberOfBranches+'</p>'+
-            '<p class="mb-1">Last Commit Comment: '+lastCommitComment+'</p>'+
-            '<p class="mb-1">Last Commit Date: '+lastCommitDate+'</p>'+
-        '</div>')
-            .appendTo($("#" + userName+"repository-element" + i));
+            '<p class="mb-1">Active Branch: ' + activeBranchName + '</p>' +
+            '<p class="mb-1">Number of Branches: ' + numberOfBranches + '</p>' +
+            '<p class="mb-1">Last Commit Comment: ' + lastCommitComment + '</p>' +
+            '<p class="mb-1">Last Commit Date: ' + lastCommitDate + '</p>' +
+            '</div>')
+            .appendTo($("#" + userName + "repository-element" + i));
     }
 }
 

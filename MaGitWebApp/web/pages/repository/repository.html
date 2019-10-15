@@ -6,8 +6,9 @@
     <script src="../../common/jquery-2.0.3.min.js"></script>
     <script src="../../common/context-path-helper.js"></script>
     <script src="../home/home.js"></script>
+    <script src="repository.js"></script>
 
-    <script src="../../common/bootstrap.min.js" ></script>
+    <script src="../../common/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="../../common/bootstrap.min.css">
     <link rel="stylesheet" href="../../common/bootstrap-grid.min.css">
@@ -24,7 +25,9 @@
         <ul class="nav navbar-nav">
             <li class="active"><a href="../home/home.html">Home</a></li>
             <li><a href="../home/allUsers/allUsers.html">All Users</a></li>
-            <a href="../home/newRepository/newRepository.html"><button id="button-new-repository" class="btn btn-success navbar-btn">New Repository</button></a>
+            <a href="../home/newRepository/newRepository.html">
+                <button id="button-new-repository" class="btn btn-success navbar-btn">New Repository</button>
+            </a>
         </ul>
         <ul class="nav navbar-nav">
             <div id="userInformation-flexBox" class="row">
@@ -49,16 +52,26 @@
     </div>
 </nav>
 <div class="container">
+    <div class="row" id="repository-information">
+        <div id="repository-name-label" class="col-sm-4">
+        </div>
+    </div>
     <div class="row">
-        <div class="col-sm">
-            One of three columns
+        <div class="p-3 col-sm-4">
+            <h4> Branches list</h4>
+            <div id="branches-list">
+            </div>
         </div>
-        <div class="col-sm">
-            One of three columns
+        <div class="p-3 col-sm-4">
+            <h4> Commits List</h4>
+            <div id="commits-list" class="list-group" role="tablist">
+            </div>
         </div>
-        <div class="col-sm">
-            One of three columns
-        </div>
+            <div class="p-3 col-sm-4">
+                <h4> Files List</h4>
+                <div id="files-list" class="tab-content">
+                </div>
+            </div>
     </div>
 </div>
 
