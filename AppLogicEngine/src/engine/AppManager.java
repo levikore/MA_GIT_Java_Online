@@ -31,6 +31,11 @@ public class AppManager {
         return m_RepositoriesManager.getUsersDataHashMap();
     }
 
+    public RepositoryManager GetRepositoryByName(String i_UserName, String i_RepositoryName)
+    {
+        return m_RepositoriesManager.GetRepositoryByName(i_UserName, i_RepositoryName);
+    }
+
     public void CreateRepositoryFromXml(InputStream i_InputStreamOfXML, String i_UserName) {
         try {
             createUserFolder(i_UserName);

@@ -11,12 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static user.constants.Constants.USERNAME;
+import static user.constants.Constants.*;
 
 public class LoginServlet extends HttpServlet {
-    private final String HOME_ROOM_URL = "../home/home.html";
-    private final String SIGN_UP_URL = "../signup/signup.html";
-    private final String LOGIN_ERROR_URL = "/pages/loginerror/login_attempt_after_error.jsp";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

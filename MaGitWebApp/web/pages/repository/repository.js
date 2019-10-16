@@ -1,7 +1,9 @@
 const refreshRepositoryRate = 2000; //milli seconds
 const ALL_USERS_LIST_URL2 = buildUrlWithContextPath("allusers");
+const BRANCH_URL = buildUrlWithContextPath("branch");
 let lastIndexSelected = -1;
-
+let repositoryName;
+let repositoryObject;
 
 function ajaxRepository() {
     $.ajax({
@@ -14,8 +16,47 @@ function ajaxRepository() {
             const repositoryName = searchParams.get('repositoryName');
             const repository = getRepositoryByName(i_UsersList[userName].m_RepositoriesDataList, repositoryName);
             setRepositoryData(repository);
+            repositoryObject = repository;
         }
     });
+}
+
+function isBranchExist(branchName) {
+    let branch = repositoryObject.m_BranchesNamesList.find(branch => branch === branchName);
+    return branch === branchName;
+}
+
+function postBranchFunctionsData(dataToPost) {
+    $.ajax({
+        url: BRANCH_URL,
+        data:dataToPost,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function () {
+
+        }
+    })
+}
+
+function postCheckout() {
+    ajaxRepository();
+    const branchVal = $('#checkout-button').val();
+    if (isBranchExist(branchVal)) {
+        const data = {
+            "functionName": "checkout",
+            "repositoryName": repositoryName,
+            "branchName": branchVal
+        };
+        postBranchFunctionsData(data);
+        setInterval(ajaxRepository, refreshRepositoryRate);
+    } else {
+
+    }
+
+}
+
+function postBranch() {
+
 }
 
 function getRepositoryByName(repositoriesList, repositoryName) {
@@ -23,6 +64,7 @@ function getRepositoryByName(repositoriesList, repositoryName) {
 }
 
 function setRepositoryData(repository) {
+    repositoryName = repository.m_RepositoryName;
     $("#repository-name-label").empty();
     $("#repository-name-label").append('<h3 class="display-4">' + repository.m_RepositoryName + '</h3>')
     setBranchesList(repository.m_BranchesList);
@@ -31,7 +73,7 @@ function setRepositoryData(repository) {
 
 function setCommitsList(commitsList) {
     const commitsListId = $('#commits-list');
-    const filesListId=$('#files-list');
+    const filesListId = $('#files-list');
     commitsListId.empty();
     filesListId.empty();
 
@@ -60,7 +102,8 @@ function setCommitsList(commitsList) {
 
 function setFilesList(i_FilesList, i_CommitContentId) {
     for (let i = 0; i < i_FilesList.length; i++) {
-        i_CommitContentId.append('<p class="mb-1">' + i_FilesList[i] + '</p>');
+        let shortPath = i_FilesList[i].substring(i_FilesList[i].indexOf(repositoryName));
+        i_CommitContentId.append('<p class="mb-1">' + shortPath + '</p>');
     }
 }
 

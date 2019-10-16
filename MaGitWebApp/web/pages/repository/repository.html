@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="../../common/bootstrap-grid.min.css">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
     <link rel="stylesheet" href="../home/home.css">
+    <link rel="stylesheet" href="repository.css">
+
 </head>
 <body>
 
@@ -51,29 +53,57 @@
         </ul>
     </div>
 </nav>
-<div class="container">
-    <div class="row" id="repository-information">
-        <div id="repository-name-label" class="col-sm-4">
+<div class="container row">
+    <div class="col-6">
+    <div class="buttons container ">
+
+        <div class="row form-group">
+            <form class="form-inline">
+                <div class="form-group has-feedback">
+                    <label id="branch-label"class="control-label">Branch</label>
+                    <input type="text" class="form-control" id="branch-button">
+                    <button onclick="postBranch" class="btn btn-default">Submit</button>
+                </div>
+            </form>
         </div>
+
+        <div class="row">
+            <div class="form-inline" >
+                <div class="form-group has-feedback">
+                    <label class="control-label">Checkout</label>
+                    <input type="text" class="form-control" id="checkout-button">
+                    <button onclick="postCheckout()" class="btn btn-default">Submit</button>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="row">
-        <div class="p-3 col-sm-4">
-            <h4> Branches list</h4>
-            <div id="branches-list">
+    </div>
+    <div class="col-6">
+        <div class="row" id="repository-information">
+            <div id="repository-name-label" class="col-sm-4">
             </div>
         </div>
-        <div class="p-3 col-sm-4">
-            <h4> Commits List</h4>
-            <div id="commits-list" class="list-group" role="tablist">
+        <div class="row">
+            <div class="p-3 col-sm-4">
+                <h4> Branches list</h4>
+                <div id="branches-list">
+                </div>
             </div>
-        </div>
+            <div class="p-3 col-sm-4">
+                <h4> Commits List</h4>
+                <div id="commits-list" class="list-group" role="tablist">
+                </div>
+            </div>
             <div class="p-3 col-sm-4">
                 <h4> Files List</h4>
                 <div id="files-list" class="tab-content">
                 </div>
             </div>
+        </div>
     </div>
 </div>
+
 
 </body>
 </html>

@@ -1,0 +1,16 @@
+.form-group {
+    margin-bottom: 15px;
+}
+
+#branch-button {
+    padding-left: 5vh;
+    width: 18vh;
+
+}
+#branch-label{
+    padding-right: 1.5vh;
+}
+
+#checkout-button {
+    width: 18vh;
+}

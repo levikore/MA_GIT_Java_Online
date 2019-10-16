@@ -1,5 +1,6 @@
 package engine.repositories;
 
+import engine.logic.Branch;
 import engine.logic.Commit;
 import engine.logic.RepositoryManager;
 
@@ -14,25 +15,29 @@ public class RepositoryData {
     private String m_LastCommitComment;
     private String m_LastCommitDate;
     List<String> m_BranchesList;
+    List<String> m_BranchesNamesList;
     List<CommitData> m_HeadBranchCommitsList;
     // private RepositoryManager m_RepositoryManager;
 
 
     public RepositoryData(RepositoryManager i_RepositoryManager) {
-        m_RepositoryName = i_RepositoryManager.getRepositoryName();
+        m_RepositoryName = i_RepositoryManager.GetRepositoryName();
         m_ActiveBranchName = i_RepositoryManager.GetHeadBranch().GetBranch().GetBranchName();
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
         m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
         m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
         m_BranchesList = i_RepositoryManager.GetAllBranchesStringList();
         commitsListToString(i_RepositoryManager.GetCommitColumnByBranch(i_RepositoryManager.GetHeadBranch().GetHeadBranch()), i_RepositoryManager);
+        m_BranchesNamesList = new LinkedList<>();
+        for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
+            m_BranchesNamesList.add(branch.GetBranchName());
+        }
     }
 
     private void commitsListToString(List<Commit> i_CommitsList, RepositoryManager i_RepositoryManager) {
         m_HeadBranchCommitsList = new LinkedList<>();
-        for(Commit commit: i_CommitsList)
-        {
-            CommitData commitData=new CommitData(i_RepositoryManager, commit);
+        for (Commit commit : i_CommitsList) {
+            CommitData commitData = new CommitData(i_RepositoryManager, commit);
             m_HeadBranchCommitsList.add(commitData);
         }
     }
