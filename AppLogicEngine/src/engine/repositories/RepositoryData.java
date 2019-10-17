@@ -1,9 +1,8 @@
 package engine.repositories;
 
-import engine.logic.Branch;
-import engine.logic.Commit;
-import engine.logic.RepositoryManager;
+import engine.logic.*;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +16,8 @@ public class RepositoryData {
     List<String> m_BranchesList;
     List<String> m_BranchesNamesList;
     List<CommitData> m_HeadBranchCommitsList;
+    List<FileContent> m_CurrentWCFilesList;
+    List<UnCommittedFile> m_UncommittedFilesList;
     // private RepositoryManager m_RepositoryManager;
 
 
@@ -31,6 +32,31 @@ public class RepositoryData {
         m_BranchesNamesList = new LinkedList<>();
         for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
             m_BranchesNamesList.add(branch.GetBranchName());
+        }
+        setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList());
+        try {
+            setUncommittedFilesList(i_RepositoryManager.GetListOfUnCommittedFiles(i_RepositoryManager.getRootFolder(),i_RepositoryManager.GetCurrentUserName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setCurrentWCFilesList(List<BlobData> i_BlobDataList) {
+        m_CurrentWCFilesList = new LinkedList<>();
+
+        for (BlobData blobData : i_BlobDataList) {
+            FileContent fileContent = new FileContent(blobData.GetPath(), blobData.GetFileContent());
+            m_CurrentWCFilesList.add(fileContent);
+        }
+    }
+
+    private void setUncommittedFilesList(List<UnCommittedChange> i_UnCommittedChangeList) {
+        m_UncommittedFilesList = new LinkedList<>();
+
+        for (UnCommittedChange unCommittedChangeindex : i_UnCommittedChangeList) {
+            FileContent fileContent = new FileContent(unCommittedChangeindex.getFile().GetPath(), unCommittedChangeindex.getFile().GetFileContent());
+            UnCommittedFile unCommittedFile=new UnCommittedFile(fileContent,unCommittedChangeindex.getChangeType() );
+            m_UncommittedFilesList.add(unCommittedFile);
         }
     }
 
@@ -76,6 +102,26 @@ public class RepositoryData {
             m_PointedByList = i_RepositoryManager.GetPointingBranchesNamestoCommit(i_Commit);
             m_FilesList = new LinkedList<>();
             i_Commit.GetCommitRootFolder().GetFilesDataList().forEach(blobData -> m_FilesList.add(blobData.GetPath()));
+        }
+    }
+
+    private class FileContent {
+        private String m_Path;
+        private String m_Content;
+
+        private FileContent(String i_Path, String i_Content) {
+            m_Path = i_Path;
+            m_Content = i_Content;
+        }
+    }
+
+    private class UnCommittedFile {
+        FileContent m_fileContent;
+        String m_ChangeType;
+
+        private UnCommittedFile(FileContent i_FileContent, String i_ChangeType) {
+            m_fileContent = i_FileContent;
+            m_ChangeType = i_ChangeType;
         }
     }
 }

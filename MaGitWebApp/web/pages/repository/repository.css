@@ -14,3 +14,12 @@
 #checkout-button {
     width: 18vh;
 }
+
+#checkout-wrapper{
+    padding-top: 4vh;
+}
+
+#buttons{
+    padding-left: 13vh;
+    padding-top: 11vh;
+}

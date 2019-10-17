@@ -44,7 +44,7 @@ function ajaxAllUsers() {
 
 function setAllUserList(usersList) {
     //users-list
-    let currentUserName=$("#userName").text().trim();
+    let currentUserName=sessionStorage.getItem("userName");
     $("#users-list").empty();
     $("#users-list-content").empty();
 

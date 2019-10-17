@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class UserData {
     private String m_UserName;
@@ -26,12 +25,12 @@ public class UserData {
     }
 
     public void UpdateSpecificRepositoryData(RepositoryManager i_RepositoryManager) {
-        RepositoryData repositoryData=getRepositoryDataByName(i_RepositoryManager.GetRepositoryName());
+        RepositoryData repositoryData= GetRepositoryDataByName(i_RepositoryManager.GetRepositoryName());
         Integer index = m_RepositoriesDataList.indexOf(repositoryData);
         m_RepositoriesDataList.set(index, new RepositoryData(i_RepositoryManager));
     }
 
-    private RepositoryData getRepositoryDataByName(String i_RepositoryDataName) {
+    public RepositoryData GetRepositoryDataByName(String i_RepositoryDataName) {
         RepositoryData repositoryDataPointer = null;
 
         for (RepositoryData repositoryData : m_RepositoriesDataList) {

@@ -26,7 +26,7 @@
         </div>
         <ul class="nav navbar-nav">
             <li class="active"><a href="../home/home.html">Home</a></li>
-            <li><a href="../home/allUsers/allUsers.html">All Users</a></li>
+            <li><a href="../allUsers/allUsers.html">All Users</a></li>
             <a href="../home/newRepository/newRepository.html">
                 <button id="button-new-repository" class="btn btn-success navbar-btn">New Repository</button>
             </a>
@@ -53,23 +53,23 @@
         </ul>
     </div>
 </nav>
-<div class="container row">
-    <div class="col-6">
-    <div class="buttons container ">
+<div class="row">
+    <div class="col-3">
+    <div id="buttons">
 
-        <div class="row form-group">
-            <form class="form-inline">
-                <div class="form-group has-feedback">
-                    <label id="branch-label"class="control-label">Branch</label>
+        <div class="row">
+            <div class="form-inline" >
+                <div id="branch-wrapper" class="form-group has-feedback">
+                    <label id="branch-label" class="control-label">Branch</label>
                     <input type="text" class="form-control" id="branch-button">
-                    <button onclick="postBranch" class="btn btn-default">Submit</button>
+                    <button onclick="postBranch()" class="btn btn-default">Submit</button>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="row">
             <div class="form-inline" >
-                <div class="form-group has-feedback">
+                <div id="checkout-wrapper" class="form-group has-feedback">
                     <label class="control-label">Checkout</label>
                     <input type="text" class="form-control" id="checkout-button">
                     <button onclick="postCheckout()" class="btn btn-default">Submit</button>
@@ -79,7 +79,7 @@
 
     </div>
     </div>
-    <div class="col-6">
+    <div class="col-9">
         <div class="row" id="repository-information">
             <div id="repository-name-label" class="col-sm-4">
             </div>

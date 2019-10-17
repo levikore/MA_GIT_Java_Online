@@ -9,6 +9,7 @@ function ajaxUserData() {
             //var userData= JSON.parse(i_UserData);
             let userName = i_UserData.m_UserName;
             setUserName(userName);
+            sessionStorage.setItem("userName", userName);
             if (i_UserData.m_RepositoriesDataList !== undefined) {
                 const id = $("#user-repositories-list");
                 setUserRepositoriesList(i_UserData.m_RepositoriesDataList, id, userName);
