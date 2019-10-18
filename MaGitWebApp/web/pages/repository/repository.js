@@ -120,11 +120,48 @@ function getRepositoryByName(repositoriesList, repositoryName) {
 
 function setRepositoryData(repository) {
     repositoryName = repository.m_RepositoryName;
+    setButtons(repository);
     $("#repository-name-label").empty();
     $("#repository-name-label").append('<h3 class="display-4">' + repository.m_RepositoryName + '</h3>')
-    $("#repository-name-label").append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'750\')" class="display-4">Working Copy </a>')
+    $("#repository-name-label").append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">Working Copy </a>')
     setBranchesList(repository.m_BranchesList);
     setCommitsList(repository.m_HeadBranchCommitsList);
+}
+
+function setButtons(repository) {
+    const currentUserName = sessionStorage["userName"];
+    const buttonsId = $("#buttons");
+    buttonsId.empty();
+    if (repository.m_Owner === currentUserName) {
+        buttonsId.append(
+        '<div class="row">'
+            +'<div class="form-inline" >'
+            +'<div id="branch-wrapper" class="form-group has-feedback">'
+            +'<label id="branch-label" class="control-label">Branch</label>'
+            +'<input type="text" class="form-control" id="branch-button">'
+            +'<button onclick="postBranch()" class="btn btn-default">Submit</button>'
+            +'</div>'
+            +'</div>'
+            +'</div>'
+
+            +'<div class="row">'
+            +'<div class="form-inline" >'
+            +'<div id="checkout-wrapper" class="form-group has-feedback">'
+            +'<label class="control-label">Checkout</label>'
+            +'<input type="text" class="form-control" id="checkout-button">'
+            +'<button onclick="postCheckout()" class="btn btn-default">Submit</button>'
+            +'</div>'
+            +'</div>'
+            +'</div>'
+        )
+    } else {
+
+    }
+    // $("#buttons").append()
+}
+
+function isUncommitedFileInRepositoy() {
+
 }
 
 function setCommitsList(commitsList) {
@@ -250,6 +287,8 @@ function setBranchesList(branchesList) {
     }
 }
 
+let popupWindow = null;
+
 function PopupCenter(url, title, w, h) {
     const dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
     const dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
@@ -261,9 +300,16 @@ function PopupCenter(url, title, w, h) {
     const left = (width - w) / 2 / systemZoom + dualScreenLeft
     const top = (height - h) / 2 / systemZoom + dualScreenTop
     const newWindow = window.open(url, title, 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
-
+    popupWindow = newWindow;
     // Puts focus on the newWindow
-    if (window.focus) newWindow.focus();
+    if (window.focus) {
+        newWindow.focus();
+    }
+}
+
+function parent_disable() {
+    if (popupWindow && !popupWindow.closed)
+        popupWindow.focus();
 }
 
 

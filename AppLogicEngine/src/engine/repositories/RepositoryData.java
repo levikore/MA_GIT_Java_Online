@@ -8,6 +8,7 @@ import java.util.List;
 
 public class RepositoryData {
 
+    private String m_Owner;
     private String m_RepositoryName;
     private String m_ActiveBranchName;
     private int m_NumOfBranches;
@@ -22,6 +23,7 @@ public class RepositoryData {
 
 
     public RepositoryData(RepositoryManager i_RepositoryManager) {
+        m_Owner = i_RepositoryManager.GetCurrentUserName();
         m_RepositoryName = i_RepositoryManager.GetRepositoryName();
         m_ActiveBranchName = i_RepositoryManager.GetHeadBranch().GetBranch().GetBranchName();
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
@@ -35,7 +37,7 @@ public class RepositoryData {
         }
         setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList());
         try {
-            setUncommittedFilesList(i_RepositoryManager.GetListOfUnCommittedFiles(i_RepositoryManager.getRootFolder(),i_RepositoryManager.GetCurrentUserName()));
+            setUncommittedFilesList(i_RepositoryManager.GetListOfUnCommittedFiles(i_RepositoryManager.getRootFolder(), i_RepositoryManager.GetCurrentUserName()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +57,7 @@ public class RepositoryData {
 
         for (UnCommittedChange unCommittedChangeindex : i_UnCommittedChangeList) {
             FileContent fileContent = new FileContent(unCommittedChangeindex.getFile().GetPath(), unCommittedChangeindex.getFile().GetFileContent());
-            UnCommittedFile unCommittedFile=new UnCommittedFile(fileContent,unCommittedChangeindex.getChangeType() );
+            UnCommittedFile unCommittedFile = new UnCommittedFile(fileContent, unCommittedChangeindex.getChangeType());
             m_UncommittedFilesList.add(unCommittedFile);
         }
     }
