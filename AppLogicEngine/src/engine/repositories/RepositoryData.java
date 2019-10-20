@@ -10,6 +10,7 @@ public class RepositoryData {
 
     private String m_Owner;
     private String m_RepositoryName;
+    private String m_RepositoryPath;
     private String m_ActiveBranchName;
     private int m_NumOfBranches;
     private String m_LastCommitComment;
@@ -24,6 +25,7 @@ public class RepositoryData {
 
     public RepositoryData(RepositoryManager i_RepositoryManager) {
         m_Owner = i_RepositoryManager.GetCurrentUserName();
+       m_RepositoryPath=i_RepositoryManager.GetRepositoryPath().toString();
         m_RepositoryName = i_RepositoryManager.GetRepositoryName();
         m_ActiveBranchName = i_RepositoryManager.GetHeadBranch().GetBranch().GetBranchName();
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
@@ -47,7 +49,7 @@ public class RepositoryData {
         m_CurrentWCFilesList = new LinkedList<>();
 
         for (BlobData blobData : i_BlobDataList) {
-            FileContent fileContent = new FileContent(blobData.GetPath(), blobData.GetFileContent());
+            FileContent fileContent = new FileContent(blobData.GetPath(), blobData.GetFileContent(), blobData.GetIsFolder());
             m_CurrentWCFilesList.add(fileContent);
         }
     }
@@ -56,7 +58,8 @@ public class RepositoryData {
         m_UncommittedFilesList = new LinkedList<>();
 
         for (UnCommittedChange unCommittedChangeindex : i_UnCommittedChangeList) {
-            FileContent fileContent = new FileContent(unCommittedChangeindex.getFile().GetPath(), unCommittedChangeindex.getFile().GetFileContent());
+            BlobData uncommittedFile = unCommittedChangeindex.getFile();
+            FileContent fileContent = new FileContent(uncommittedFile.GetPath(), uncommittedFile.GetFileContent(), uncommittedFile.GetIsFolder());
             UnCommittedFile unCommittedFile = new UnCommittedFile(fileContent, unCommittedChangeindex.getChangeType());
             m_UncommittedFilesList.add(unCommittedFile);
         }
@@ -110,10 +113,12 @@ public class RepositoryData {
     private class FileContent {
         private String m_Path;
         private String m_Content;
+        private boolean m_IsFolder;
 
-        private FileContent(String i_Path, String i_Content) {
+        private FileContent(String i_Path, String i_Content, boolean i_IsFolder) {
             m_Path = i_Path;
             m_Content = i_Content;
+            m_IsFolder = i_IsFolder;
         }
     }
 
