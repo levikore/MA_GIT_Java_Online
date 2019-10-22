@@ -1,14 +1,16 @@
 let lastIndexSelected = -1;
+let originalRepository;
 let repository;
-const openChangesList = [];
+const openChangesMap = new Map();
 let isFilesListDisabled = false;
-let originalValOfTextArea;
+let originalValOfTextAreaGlobalVar;
 
 
 function setFilesList() {
     //users-list
     if (repository === undefined) {
         repository = JSON.parse(sessionStorage.getItem("repository"));
+        originalRepository = JSON.parse(sessionStorage.getItem("repository"));
     }
     lastIndexSelected = -1
     $("#files-list").empty();
@@ -27,7 +29,8 @@ function setFilesList() {
             }
         );
 
-        setButtonsClickFuctions(i);
+        setButtonsClickFunctions(i);
+        setButtonsOfCreateFileModal(i);
 
         // if (lastIndexSelected === i) {
         //     fileElementId.toggleClass('active');
@@ -52,14 +55,14 @@ function enableAllFilesList() {
     isFilesListDisabled = false;
 }
 
-function setButtonsClickFuctions(index) {
+function setButtonsClickFunctions(index) {
     const editButton = $("#edit-icon-file" + index);
     const removeButton = $("#remove-icon-file" + index);
     const createFile = $("#create-icon-file" + index);
     const saveButton = $("#save-icon-file");
     const doneButton = $("#check-icon-file" + index);
     const textArea = $("#file" + index + "-content-textarea");
-    const cancelSign = $("#cancel-icon-file" + index);
+    const cancelButton = $("#cancel-icon-file" + index);
 
 
     if (repository.m_CurrentWCFilesList[index].m_Path !== repository.m_RepositoryPath) {
@@ -75,12 +78,26 @@ function setButtonsClickFuctions(index) {
                 handleEditButtonClick(index);
             }
         );
+        cancelButton.on(
+            'click',
+            function () {
+                handleCancelButtonClick(index);
+            }
+        );
+        doneButton.on(
+            'click',
+            function () {
+                handleDoneButtonClick(index);
+            }
+        );
+
+
         let oldVal = "";
         textArea.on("change keyup paste", function () {
             let currentVal = $(this).val();
 
 
-            if (currentVal.trim() === originalValOfTextArea) {
+            if (currentVal.trim() === originalValOfTextAreaGlobalVar) {
                 doneButton.attr("disabled", true);
                 editButton.attr("disabled", false);
                 // removeButton.attr("disabled", false);
@@ -97,17 +114,73 @@ function setButtonsClickFuctions(index) {
             //removeButton.attr("disabled", true);
 
         });
-
-        if (repository.m_CurrentWCFilesList[index].m_IsFolder) {
-            editButton.attr("disabled", true);
-            createFile.attr("disabled", false);
-        }
-
     } else {
         removeButton.attr("disabled", true);
         editButton.attr("disabled", true);
         createFile.attr("disabled", false);
     }
+    if (repository.m_CurrentWCFilesList[index].m_IsFolder) {
+        editButton.attr("disabled", true);
+        createFile.attr("disabled", false);
+        createFile.on(
+            'click',
+            function () {
+                handleCreateNewFileClick(index);
+            }
+        );
+    }
+}
+
+function setButtonsOfCreateFileModal(index) {
+    $("#modal-file" + index + "-Name-input").on("change", function () {
+        handleChangeInFileName(index);
+    });
+
+    $("#createFileButton" + index).on("click", function () {
+        handleCreateModalButtonClick(index);
+    })
+}
+
+function handleDoneButtonClick(index) {
+    const textArea = $("#file" + index + "-content-textarea");
+    originalValOfTextAreaGlobalVar = textArea.val();
+    repository.m_CurrentWCFilesList[index].content = originalValOfTextAreaGlobalVar;
+    //openChangesMap.push(getOpenChangeObjToPost("create", path))
+    const path = repository.m_CurrentWCFilesList[index].m_Path;
+
+    if (openChangesMap.has(path)) {
+        if (openChangesMap.get(path).action === "create") {
+            openChangesMap.set(path, getOpenChangeObjToPost("create", path, originalValOfTextAreaGlobalVar));
+        } else if (openChangesMap.get(path).action === "edit") {
+            if (originalValOfTextAreaGlobalVar !== originalRepository.m_CurrentWCFilesList[index].m_Content) {
+                openChangesMap.set(path, getOpenChangeObjToPost("edit", path, originalValOfTextAreaGlobalVar));
+            } else {
+                openChangesMap.delete(path);
+            }
+        }
+    } else {
+        openChangesMap.set(path, getOpenChangeObjToPost("edit", path, originalValOfTextAreaGlobalVar));
+    }
+
+    handleCancelButtonClick(index);
+}
+
+function handleCancelButtonClick(index) {
+    const cancelSign = $("#cancel-icon-file" + index);
+    const editButton = $("#edit-icon-file" + index);
+    const removeButton = $("#remove-icon-file" + index);
+    const textArea = $("#file" + index + "-content-textarea");
+    const doneButton = $("#check-icon-file" + index);
+
+    textArea.val(originalValOfTextAreaGlobalVar);
+    originalValOfTextAreaGlobalVar = undefined;
+    enableAllFilesList();
+    editButton.removeClass("active");
+    editButton.attr("disabled", false);
+    cancelSign.attr("disabled", true);
+    removeButton.attr("disabled", false);
+    textArea.attr("readonly", true);
+    doneButton.attr("disabled", true);
 }
 
 function handleEditButtonClick(index) {
@@ -117,11 +190,10 @@ function handleEditButtonClick(index) {
     const saveButton = $("#save-icon-file");
     const doneButton = $("#check-icon-file" + index);
     const textArea = $("#file" + index + "-content-textarea");
-    const prevContent = textArea.text();
     const cancelSign = $("#cancel-icon-file" + index);
 
-    if (originalValOfTextArea === undefined) {
-        originalValOfTextArea = textArea.text().trim();
+    if (originalValOfTextAreaGlobalVar === undefined) {
+        originalValOfTextAreaGlobalVar = textArea.val().trim();
     }
 
     if (!editButton.hasClass("active")) {
@@ -134,8 +206,8 @@ function handleEditButtonClick(index) {
             disableAllFilesList();
         }
         cancelSign.attr("disabled", false)
-    } else if (textArea.text() === originalValOfTextArea) {
-        originalValOfTextArea = undefined;
+    } else if (textArea.val() === originalValOfTextAreaGlobalVar) {
+        originalValOfTextAreaGlobalVar = undefined;
         if (!textArea.attr("readonly")) {
             textArea.attr("readonly", true);
         }
@@ -158,13 +230,23 @@ function handleRemoveButtonClick(index) {
     const folder = repository.m_CurrentWCFilesList[folderIndex];
     repository.m_CurrentWCFilesList[folderIndex].m_Content = removeLineByFirstWordInLine(shortName, folder.m_Content);
     removeAllFilesWithSpecificPath(path);
-    openChangesList.push(getOpenChangeObjToPost("delete", path))
+    if (openChangesMap.has(path) && openChangesMap.get(path).action === "edit" || !openChangesMap.has(path)) {
+        openChangesMap.set(path, getOpenChangeObjToPost("delete", path));
+    } else if (openChangesMap.has(path)) {
+        openChangesMap.delete(path);
+    }
+
     setFilesList();
+}
+
+function handleCreateNewFileClick(index) {
+    $('#createFileModal-file' + index).modal('show');
+
 }
 
 function getOpenChangeObjToPost(actionType, path, content) {
     //actionType=delete or create or edit
-    //if actionType!=delete, content must contain value
+    //if actionType is create, content must contain value
     let obj;
     if (actionType === "delete") {
         obj = {"action": actionType, "path": path};
@@ -213,6 +295,95 @@ function handleFileElementClick(fileElementId, fileContentId) {
     }
 }
 
+function handleCreateModalButtonClick(index) {
+    const createFileButton = $("#createFileButton" + index);
+    const nameFile = $("#modal-file" + index + "-Name-input").val();
+    const isFolder = $("#folder-input" + index).hasClass("active");
+    const type= isFolder?"folder":"file";
+    const parentPath = repository.m_CurrentWCFilesList[index].m_Path;
+    const path = parentPath + "\\" + nameFile;
+    repository.m_CurrentWCFilesList[index].m_Content = repository.m_CurrentWCFilesList[index].m_Content.concat("\n"+nameFile +","+type+",,"+repository.m_Owner +"(unsaved file)");
+    const fileObj = {"m_Path": path, "m_Content": "", "m_IsFolder": isFolder};
+    repository.m_CurrentWCFilesList.push(fileObj);
+    openChangesMap.set(path, getOpenChangeObjToPost("create", path, ""));
+    resetModal(index);
+    setFilesList();
+    hideModal(index);
+}
+
+
+function hideModal(index) {
+    const createFileModal = $("#createFileModal-file" + index);
+    const body = $('body');
+
+    createFileModal.removeClass("in");
+    $(".modal-backdrop").remove();
+    body.removeClass('modal-open');
+    body.css('padding-right', '');
+    createFileModal.hide();
+}
+
+function handleFolderRadioButton(index) {
+    $("#file-input" + index).addClass("active");
+    $("#folder-input" + index).removeClass("active");
+
+    handleChangeInFileName(index);
+}
+
+function handleChangeInFileName(index) {
+    const fileName = $("#modal-file" + index + "-Name-input").val();
+    const button = $("#createFileButton" + index);
+    const fileNameWrapper = $("#file-name-wrapper" + index);
+    const stringFileNameError = $("#file-Name-error-string" + index);
+    let extension = "";
+    if ($("#file-input" + index).hasClass("active")) {
+        if (fileName.includes('.')) {
+            extension = fileName.substr(fileName.lastIndexOf('.') + 1);
+        }
+        if (extension !== "") {
+            button.attr("disabled", false)
+            removeFileNameErrorString(index)
+        } else {
+            button.attr("disabled", true)
+            if (stringFileNameError.length === 0) {
+                fileNameWrapper.append('<p class="control-label" id="file-Name-error-string' + index + '\">The file name must include extension</p>')
+            }
+        }
+    } else {
+        if (stringFileNameError.length !== 0) {
+            removeFileNameErrorString(index)
+        }
+        if (fileName !== "") {
+            button.attr("disabled", false)
+        } else {
+            button.attr("disabled", true)
+        }
+    }
+}
+
+function resetModal(index) {
+    removeFileNameErrorString(index);
+    $("#folder-input" + index).removeClass("active");
+    $("#file-input" + index).addClass("active");
+    $("#modal-file" + index + "-Name-input").val("");
+}
+
+function removeFileNameErrorString(index) {
+    const stringFileNameError = $("#file-Name-error-string" + index);
+
+    if (stringFileNameError.length !== 0) {
+        stringFileNameError.remove();
+    }
+}
+
+function handleFileRadioButton(index) {
+    removeFileNameErrorString(index);
+    $("#folder-input" + index).addClass("active");
+    $("#file-input" + index).removeClass("active");
+
+    handleChangeInFileName(index);
+}
+
 function appendFileToFilesList(index) {
     let shortPath = repository.m_CurrentWCFilesList[index].m_Path.substring(repository.m_CurrentWCFilesList[index].m_Path.indexOf(repository.m_RepositoryName));
 
@@ -249,9 +420,55 @@ function appendFileToFilesList(index) {
         + '<span class="glyphicon glyphicon-remove" aria-hidden="true">'
         + '</span>Remove</button>'
 
-        + '<button  disabled="true" id="create-icon-file' + index + '\" type="button" class="pull-right btn btn-default btn-lg">'
+        + '<button  disabled="true" id="create-icon-file' + index + '\" type="button" class="pull-right btn btn-default btn-lg" data-toggle="modal" data-target="#createFileModal">'
         + '<span class="glyphicon glyphicon-plus" aria-hidden="true">'
         + '</span>Add new file <small>to current folder</small></button>'
+
+
+        + '<div class="modal fade" id="createFileModal-file' + index + '\" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
+        + '<div class="modal-dialog" role="document">'
+        + '<div class="modal-content">'
+        + '<div class="modal-header">'
+        + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '<h4 class="modal-title" id="createFileModal-file' + index + '\-label">Create new file in: ' + shortPath + '\"</h4>'
+        + '</div>'
+        + '<div class="modal-body">'
+
+        + '<div class="row">'
+        + '<div class="btn-group" data-toggle="buttons">'
+        + ' <label id="folder-input' + index + '\"  class="btn btn-primary" onclick="handleFileRadioButton(\'' + index + '\')" >'
+        + '<input type="radio"> Folder'
+        + '</label>'
+        + '<label id="file-input' + index + '\" class="btn btn-primary active" onclick="handleFolderRadioButton(\'' + index + '\')">'
+        + '<input  type="radio" checked> File'
+        + '</label>'
+        + '</div>'
+        + '</div>'
+
+        + '<div class="row">'
+        + '<div class="form-inline" >'
+        + '<div id="file-name-wrapper' + index + '\" class="form-group has-feedback">'
+        + '<label id="branch-label" class="control-label">File Name</label>'
+        + '<input type="text" class="form-control" id="modal-file' + index + '\-Name-input">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '<div class="modal-footer">'
+
+        + '<button type="button" class="btn btn-default" data-dismiss="modal">'
+        + '<span class="glyphicon glyphicon-minus-sign" aria-hidden="true">'
+        + '</span>Cancel</button>'
+
+        + '<button id="createFileButton' + index + '\" disabled="true" type="button" class="btn btn-success" >'
+
+        + '<span class="glyphicon glyphicon-check" aria-hidden="true">'
+        + '</span>Create</button>'
+
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
 
         + '</div>'
         + '</div>'
