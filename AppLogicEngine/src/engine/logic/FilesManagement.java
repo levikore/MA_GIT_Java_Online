@@ -49,6 +49,19 @@ public class FilesManagement {
         }
     }
 
+    public static void CreateNewFile(String i_Path, String i_Content) {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(i_Path), "utf-8"))) {
+            writer.write(i_Content);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void RemoveFileByPath(Path i_PathToRemove) {
         i_PathToRemove.toFile().delete();
     }
@@ -734,6 +747,14 @@ public class FilesManagement {
     public static void CopyTXTFile(Path i_SourceFilePath, Path i_DestinationPath) {
         try {
             FileUtils.copyFileToDirectory(i_SourceFilePath.toFile(), i_DestinationPath.toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void DeleteFolder(String destination){
+        try {
+            FileUtils.deleteDirectory(new File(destination));
         } catch (IOException e) {
             e.printStackTrace();
         }
