@@ -11,6 +11,12 @@
     <script src="../../../common/bootstrap/js/bootstrap.min.js"></script>
     <!-------->
     <title>Working Copy</title>
+    <script>
+        window.onunload = refreshParent;
+        function refreshParent() {
+            window.opener.location.reload();
+        }
+    </script>
 </head>
 <body>
 <div class="row">

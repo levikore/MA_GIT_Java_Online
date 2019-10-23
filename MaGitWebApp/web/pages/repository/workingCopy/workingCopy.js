@@ -9,8 +9,8 @@ const WC_URL = buildUrlWithContextPath("WC");
 
 function handlePostOpenChanges() {
     // const dataToPost = openChangesMap;
-   // const dataToPost = Object.assign({}, ...[...openChangesMap.entries()].map(([k, v], index) => ({[index]: v})));
-    const dataToPost =Array.from(openChangesMap.values());
+    // const dataToPost = Object.assign({}, ...[...openChangesMap.entries()].map(([k, v], index) => ({[index]: v})));
+    const dataToPost = Array.from(openChangesMap.values());
     postOpenChanges(dataToPost);
 }
 
@@ -18,7 +18,7 @@ function postOpenChanges(dataToPost) {
     $.ajax({
         url: WC_URL,
         type: 'POST',
-        data: {"openChanges": JSON.stringify(dataToPost),"repositoryName":repository.m_RepositoryName},
+        data: {"openChanges": JSON.stringify(dataToPost), "repositoryName": repository.m_RepositoryName, "currentWCFilesList":JSON.stringify(repository.m_CurrentWCFilesList)},
         dataType: "json",
         success: function () {
 
@@ -77,6 +77,11 @@ function enableAllFilesList() {
 
 function handleSaveButtonClick() {
     handlePostOpenChanges();
+    openChangesMap.clear();
+    $("#save-icon-file").attr("disabled", true);
+
+    sessionStorage.setItem("repository", JSON.stringify(repository));
+    originalRepository = JSON.parse(sessionStorage.getItem("repository"));
 }
 
 function setButtonsClickFunctions(index) {
@@ -182,16 +187,16 @@ function handleDoneButtonClick(index) {
 
     if (openChangesMap.has(path)) {
         if (openChangesMap.get(path).action === "create") {
-            openChangesMap.set(path, getOpenChangeObjToPost("create", path,false, originalValOfTextAreaGlobalVar));
+            openChangesMap.set(path, getOpenChangeObjToPost("create", path, false, originalValOfTextAreaGlobalVar));
         } else if (openChangesMap.get(path).action === "edit") {
             if (originalValOfTextAreaGlobalVar !== originalRepository.m_CurrentWCFilesList[index].m_Content) {
-                openChangesMap.set(path, getOpenChangeObjToPost("edit", path,false, originalValOfTextAreaGlobalVar));
+                openChangesMap.set(path, getOpenChangeObjToPost("edit", path, false, originalValOfTextAreaGlobalVar));
             } else {
                 openChangesMap.delete(path);
             }
         }
     } else {
-        openChangesMap.set(path, getOpenChangeObjToPost("edit", path,false, originalValOfTextAreaGlobalVar));
+        openChangesMap.set(path, getOpenChangeObjToPost("edit", path, false, originalValOfTextAreaGlobalVar));
     }
 
     saveButton.attr("disabled", false);
@@ -259,7 +264,7 @@ function handleEditButtonClick(index) {
 function handleRemoveButtonClick(index) {
     const saveButton = $("#save-icon-file");
     const path = repository.m_CurrentWCFilesList[index].m_Path;
-    const isFolder=repository.m_CurrentWCFilesList[index].isFolder;
+    const isFolder = repository.m_CurrentWCFilesList[index].m_IsFolder;
     const shortName = getValueAfterLastSlash(path)
     const parentPath = path.split("\\" + shortName)[0];
     const folderIndex = repository.m_CurrentWCFilesList.findIndex(file => file.m_Path === parentPath);
@@ -290,16 +295,28 @@ function getOpenChangeObjToPost(actionType, path, isFolder, content) {
     //if actionType is create, content must contain value
     let obj;
     if (actionType === "delete") {
-        obj = {"action": actionType, "isFolder":isFolder, "path": path};
+        obj = {"action": actionType, "isFolder": isFolder, "path": path};
     } else {
-        obj = {"action": actionType, "isFolder":isFolder, "path": path, "content": content}
+        obj = {"action": actionType, "isFolder": isFolder, "path": path, "content": content}
     }
 
     return obj;
 }
 
 function removeAllFilesWithSpecificPath(path) {
-    repository.m_CurrentWCFilesList = repository.m_CurrentWCFilesList.filter(file => file.m_Path !== path && getParentPath(file.m_Path) !== path);
+    repository.m_CurrentWCFilesList = repository.m_CurrentWCFilesList.filter(file=>!isPathContainParentPath(file.m_Path, path));
+}
+
+function isPathContainParentPath(path, parentPath) {
+    let result = false;
+    while (path.length >= parentPath.length) {
+        if (path === parentPath) {
+            result = true;
+            break;
+        }
+        path = getParentPath(path)
+    }
+    return result;
 }
 
 function getParentPath(path) {

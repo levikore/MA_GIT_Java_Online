@@ -1,8 +1,11 @@
 package engine.repositories;
 
+import com.google.gson.JsonArray;
 import engine.logic.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,9 +26,9 @@ public class RepositoryData {
     // private RepositoryManager m_RepositoryManager;
 
 
-    public RepositoryData(RepositoryManager i_RepositoryManager) {
+    public RepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
         m_Owner = i_RepositoryManager.GetCurrentUserName();
-       m_RepositoryPath=i_RepositoryManager.GetRepositoryPath().toString();
+        m_RepositoryPath = i_RepositoryManager.GetRepositoryPath().toString();
         m_RepositoryName = i_RepositoryManager.GetRepositoryName();
         m_ActiveBranchName = i_RepositoryManager.GetHeadBranch().GetBranch().GetBranchName();
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
@@ -37,29 +40,122 @@ public class RepositoryData {
         for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
             m_BranchesNamesList.add(branch.GetBranchName());
         }
-        setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList());
         try {
-            setUncommittedFilesList(i_RepositoryManager.GetListOfUnCommittedFiles(i_RepositoryManager.getRootFolder(), i_RepositoryManager.GetCurrentUserName()));
+            List<UnCommittedChange> uncommitedChangesList = i_RepositoryManager.GetListOfUnCommittedFiles(i_RepositoryManager.getRootFolder(), i_RepositoryManager.GetCurrentUserName());
+            setUncommittedFilesList(uncommitedChangesList);
+            List<FileContent> folderList=null;
+            if(i_CurrentWCFilesList!=null) {
+             folderList = getWCFoldersListFromJson(i_CurrentWCFilesList);
+            }
+            setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList(), uncommitedChangesList, folderList);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void setCurrentWCFilesList(List<BlobData> i_BlobDataList) {
-        m_CurrentWCFilesList = new LinkedList<>();
+    private List<FileContent> getWCFoldersListFromJson(JsonArray i_CurrentWCFilesList){
+      String content;
+      String path;
+      boolean isFolder;
+        List<FileContent> folderList=new LinkedList<>();
 
+        for (int i = 0; i < i_CurrentWCFilesList.size(); i++) {
+            content = i_CurrentWCFilesList.get(i).getAsJsonObject().get("m_Content").getAsString();
+            path = i_CurrentWCFilesList.get(i).getAsJsonObject().get("m_Path").getAsString();
+           isFolder= i_CurrentWCFilesList.get(i).getAsJsonObject().get("m_IsFolder").getAsBoolean();
+           if(isFolder) {
+               folderList.add(new FileContent(path, content, true));
+           }
+        }
+        return folderList;
+    }
+
+    private UnCommittedChange isBlobDataUncommited(BlobData blobData, List<UnCommittedChange> i_UncommitedChangesList) {
+        UnCommittedChange unCommittedChangeToReturn = null;
+
+        for (UnCommittedChange unCommittedChange : i_UncommitedChangesList) {
+            if (blobData.GetPath().equals(unCommittedChange.getFile().GetPath()))
+                unCommittedChangeToReturn = unCommittedChange;
+            break;
+        }
+        return unCommittedChangeToReturn;
+    }
+
+    //types: deleted, updated, added
+    private List<UnCommittedChange> getUncomittedFilesListByType(List<UnCommittedChange> i_allUnCommittedFilesList, String i_Type) {
+        List<UnCommittedChange> unCommittedFilesList = new LinkedList<>();
+        i_allUnCommittedFilesList
+                .stream()
+                .filter(unCommittedChange -> unCommittedChange.getChangeType().equals(i_Type))
+                .forEach(unCommittedChange -> unCommittedFilesList.add(unCommittedChange));
+
+        return unCommittedFilesList;
+    }
+
+    private String getContentByPath(List<FileContent> i_FolderList, String i_Path)
+    {
+        String content=null;
+        for(FileContent fileContent:i_FolderList )
+        {
+            if(fileContent.m_Path.equals(i_Path)){
+                content=fileContent.m_Content;
+            }
+        }
+        return content;
+    }
+
+    private void setCurrentWCFilesList(List<BlobData> i_BlobDataList, List<UnCommittedChange> i_UncommitedChangesList,  List<FileContent> i_FolderList) {
+        m_CurrentWCFilesList = new LinkedList<>();
+        FileContent fileContent = null;
         for (BlobData blobData : i_BlobDataList) {
-            FileContent fileContent = new FileContent(blobData.GetPath(), blobData.GetFileContent(), blobData.GetIsFolder());
+
+            if (Paths.get(blobData.GetPath()).toFile().exists()) {
+                if (blobData.GetIsFolder()) {
+                      if(i_FolderList!=null) {
+                          fileContent = new FileContent(blobData.GetPath(), getContentByPath(i_FolderList, blobData.GetPath()), blobData.GetIsFolder());
+                      }
+                      else{
+                          fileContent = new FileContent(blobData.GetPath(), blobData.GetFileContent(), blobData.GetIsFolder());
+                      }
+                } else {
+                    fileContent = new FileContent(blobData.GetPath(), FilesManagement.ReadTextFileContent(blobData.GetPath()), blobData.GetIsFolder());
+                }
+                m_CurrentWCFilesList.add(fileContent);
+            }
+        }
+
+        List<UnCommittedChange> unCommittedNewFiles = getUncomittedFilesListByType(i_UncommitedChangesList, "added");
+        List<UnCommittedChange> unCommittedDeletedFiles = getUncomittedFilesListByType(i_UncommitedChangesList, "deleted");
+
+
+        for (UnCommittedChange unCommittedChange : unCommittedNewFiles) {
+            if (!unCommittedChange.getFile().GetIsFolder()) {
+                fileContent = new FileContent(unCommittedChange.getFile().GetPath(), FilesManagement.ReadTextFileContent(unCommittedChange.getFile().GetPath()), unCommittedChange.getFile().GetIsFolder());
+            } else {
+                fileContent = new FileContent(unCommittedChange.getFile().GetPath(), getContentByPath(i_FolderList,unCommittedChange.getFile().GetPath()), unCommittedChange.getFile().GetIsFolder());
+            }
             m_CurrentWCFilesList.add(fileContent);
+        }
+
+        for (UnCommittedChange unCommittedChange : unCommittedDeletedFiles) {
+            if (!unCommittedChange.getFile().GetIsFolder()) {
+                fileContent = new FileContent(unCommittedChange.getFile().GetPath(), FilesManagement.ReadTextFileContent(unCommittedChange.getFile().GetPath()), unCommittedChange.getFile().GetIsFolder());
+            } else {
+                for (int i = 0; i < m_CurrentWCFilesList.size(); i++) {
+                    if (m_UncommittedFilesList.get(i).m_fileContent.m_Path.equals(unCommittedChange.getFile().GetPath())) {
+                        m_UncommittedFilesList.remove(i);
+                    }
+                }
+            }
+            m_CurrentWCFilesList.remove(fileContent);
         }
     }
 
     private void setUncommittedFilesList(List<UnCommittedChange> i_UnCommittedChangeList) {
         m_UncommittedFilesList = new LinkedList<>();
-
         for (UnCommittedChange unCommittedChangeindex : i_UnCommittedChangeList) {
             BlobData uncommittedFile = unCommittedChangeindex.getFile();
-            FileContent fileContent = new FileContent(uncommittedFile.GetPath(), uncommittedFile.GetFileContent(), uncommittedFile.GetIsFolder());
+            FileContent fileContent = new FileContent(uncommittedFile.GetPath(), unCommittedChangeindex.GetContent(), uncommittedFile.GetIsFolder());
             UnCommittedFile unCommittedFile = new UnCommittedFile(fileContent, unCommittedChangeindex.getChangeType());
             m_UncommittedFilesList.add(unCommittedFile);
         }

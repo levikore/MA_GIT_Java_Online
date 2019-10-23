@@ -1,7 +1,9 @@
 package engine;
 
+import com.google.gson.JsonArray;
 import engine.logic.FilesManagement;
 import engine.logic.RepositoryManager;
+import engine.logic.UnCommittedChange;
 import engine.logic.XMLManager;
 import engine.repositories.RepositoriesManager;
 import engine.repositories.RepositoryData;
@@ -13,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class AppManager {
@@ -45,7 +49,7 @@ public class AppManager {
             XMLManager.BuildRepositoryObjectsFromXML(i_InputStreamOfXML, repositoryPath);
             RepositoryManager repository = new RepositoryManager(repositoryPath, i_UserName, false, false, null);
             repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
-            RepositoryData repositoryData = new RepositoryData(repository);
+            RepositoryData repositoryData = new RepositoryData(repository,null);
 
             m_RepositoriesManager.addRepositoryData(i_UserName, repositoryData, repository);
 
@@ -96,5 +100,38 @@ public class AppManager {
         return Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + i_UserName);
     }
 
+    public void ChangeFiles(JsonArray i_OpenChangesArray, String i_RepositoryName, String i_UserName) {
+        String action = null;
+        String path = null;
+        String content = null;
+        Boolean isFolder;
+        RepositoryManager repository = GetRepositoryByName(i_UserName, i_RepositoryName);
+        for (int i = 0; i < i_OpenChangesArray.size(); i++) {
+            action = i_OpenChangesArray.get(i).getAsJsonObject().get("action").getAsString();
+            path = i_OpenChangesArray.get(i).getAsJsonObject().get("path").getAsString();
+            Path currentPath = Paths.get(path);
+            isFolder = i_OpenChangesArray.get(i).getAsJsonObject().get("isFolder").getAsBoolean();
 
+            if (action.equals("create")) {
+                if (isFolder) {
+                    FilesManagement.CreateFolder(currentPath.getParent(), currentPath.getFileName().toString());
+                } else {
+                    content = i_OpenChangesArray.get(i).getAsJsonObject().get("content").getAsString();
+                    FilesManagement.CreateNewFile(path, content);
+                }
+            } else if (action.equals("delete")) {
+                if (isFolder) {
+                    FilesManagement.DeleteFolder(path);
+                } else {
+                    FilesManagement.RemoveFileByPath(currentPath);
+                }
+            } else if (action.equals("edit")) {
+                content = i_OpenChangesArray.get(i).getAsJsonObject().get("content").getAsString();
+                FilesManagement.RemoveFileByPath(currentPath);
+                FilesManagement.CreateNewFile(path, content);
+            } else {
+                ///error
+            }
+        }
+    }
 }

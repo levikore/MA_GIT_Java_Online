@@ -46,7 +46,7 @@ public class BranchServlet extends HttpServlet {
                 repository.HandleCheckout(branchNameString);
             }
         }
-        appManager.GetUserData(username).UpdateSpecificRepositoryData(repository);
+        appManager.GetUserData(username).UpdateSpecificRepositoryData(repository,null);
     }
 
 

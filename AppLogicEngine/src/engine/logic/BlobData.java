@@ -111,8 +111,9 @@ public class BlobData {
     {
        String content="";
 
-            content=FilesManagement.ReadZipIntoString(m_RepositoryPath.toString() + "\\.magit\\objects\\" + m_SHA1 + ".zip").stream().collect(Collectors.joining("\n"));
-
+       if(Paths.get(m_RepositoryPath.toString() + "\\.magit\\objects\\" + m_SHA1 + ".zip").toFile().exists()) {
+           content = FilesManagement.ReadZipIntoString(m_RepositoryPath.toString() + "\\.magit\\objects\\" + m_SHA1 + ".zip").stream().collect(Collectors.joining("\n"));
+       }
 
         return content;
     }

@@ -70,48 +70,22 @@ public class WCServlet extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = SessionUtils.getUsername(request);
-        AppManager appManager = ServletUtils.getAppManager(getServletContext(), username);
-
-        if (username == null) {
+        String userName = SessionUtils.getUsername(request);
+        AppManager appManager = ServletUtils.getAppManager(getServletContext(), userName);
+        if (userName == null) {
             response.sendRedirect(SIGN_UP_URL);
         }
         String json = request.getParameter("openChanges");
         String repositoryName = request.getParameter("repositoryName");
-        JsonArray jsonObject = new JsonParser().parse(json).getAsJsonArray();
-        JsonArray openChangesArray = jsonObject.getAsJsonArray();
-        String action = null;
-        String path = null;
-        String content = null;
-        boolean isFolder;
-        RepositoryManager repository = appManager.GetRepositoryByName(username, repositoryName);
-        for (int i = 0; i < openChangesArray.size(); i++) {
-            action = openChangesArray.get(i).getAsJsonObject().get("action").getAsString();
-            path = openChangesArray.get(i).getAsJsonObject().get("path").getAsString();
-            Path currentPath=Paths.get(path);
-            isFolder = openChangesArray.get(i).getAsJsonObject().get("isFolder").getAsBoolean();
-            if (action.equals("create")) {
-                content = openChangesArray.get(i).getAsJsonObject().get("content").getAsString();
-                if (isFolder){
-                    FilesManagement.CreateFolder(currentPath.getParent(),currentPath.getFileName().toString());
-                }else{
-                    FilesManagement.CreateNewFile(path,content);
-                }
-            } else if (action.equals("remove")) {
-                if (isFolder){
-                    FilesManagement.DeleteFolder(path);
-                }else{
-                    FilesManagement.RemoveFileByPath(currentPath);
-                }
-            } else if (action.equals("edit")) {
-                content = openChangesArray.get(i).getAsJsonObject().get("content").getAsString();
-                FilesManagement.RemoveFileByPath(currentPath);
-                FilesManagement.CreateNewFile(path,content);
-            } else {
-                ///error
-            }
-        }
-        List<UnCommittedChange> UnCommittedChangeList=repository.GetListOfUnCommittedFiles(repository.getRootFolder(),username);
+        String currentWCFilesListName= request.getParameter("currentWCFilesList");
+
+        JsonArray openChangesArray = new JsonParser().parse(json).getAsJsonArray();
+        JsonArray currentWCFilesList = new JsonParser().parse(currentWCFilesListName).getAsJsonArray();
+
+        appManager.ChangeFiles(openChangesArray, repositoryName, userName);
+        RepositoryManager repository = appManager.GetRepositoryByName(userName, repositoryName);
+        appManager.GetUserData(userName).UpdateSpecificRepositoryData(repository,currentWCFilesList);
+
     }
 
 //        while(request.getParameterNames().hasMoreElements())

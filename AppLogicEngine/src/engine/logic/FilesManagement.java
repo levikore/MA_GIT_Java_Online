@@ -389,6 +389,7 @@ public class FilesManagement {
             fos = new FileOutputStream(i_RepositoryPath.toString() + getZipSaveFolderName(i_TestFolderName) + "\\" + zipFileName);
             zos = new ZipOutputStream(fos);
             zos.putNextEntry(new ZipEntry(file.getName()));
+
             byte[] bytes = Files.readAllBytes(i_FilePath);
             zos.write(bytes, 0, bytes.length);
             zos.closeEntry();
@@ -400,8 +401,8 @@ public class FilesManagement {
         } finally {
             try {
                 zos.close();
-            } catch (IOException e) {
-                System.out.println("Action failed");
+            } catch (IOException ex) {
+                System.err.println("createZipFile: I/O error: " + ex);
             }
         }
     }

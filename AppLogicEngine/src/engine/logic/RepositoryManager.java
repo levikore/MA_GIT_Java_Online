@@ -20,7 +20,6 @@ public class RepositoryManager {
     private String m_CurrentUserName;
 
 
-
     private String m_RepositoryName;
     private Path m_RepositoryPath;
     private RootFolder m_RootFolder;
@@ -62,8 +61,7 @@ public class RepositoryManager {
         return retVal;
     }
 
-    public void HandleFFMerge(String i_BranchName)
-    {
+    public void HandleFFMerge(String i_BranchName) {
         Branch branch = FindBranchByName(i_BranchName);
         GetHeadBranch().GetHeadBranch().SetCurrentCommit(branch.GetCurrentCommit());
         GetHeadBranch().UpdateCurrentBranch(branch.GetCurrentCommit());
@@ -326,7 +324,7 @@ public class RepositoryManager {
         return branchToReturn;
     }
 
-    public List<UnCommittedChange> GetListOfUnCommittedFiles(RootFolder i__RootFolder, String i_CurrentUserName) throws IOException {
+    public synchronized List<UnCommittedChange> GetListOfUnCommittedFiles(RootFolder i__RootFolder, String i_CurrentUserName) throws IOException {
         RootFolder testRootFolder = createFolderWithZipsOfUnCommittedFiles(i__RootFolder, i_CurrentUserName);
         String testFolderPath = m_MagitPath + "\\" + c_TestFolderName;
         List<UnCommittedChange> unCommittedFilesList = new LinkedList<>();
@@ -514,6 +512,7 @@ public class RepositoryManager {
 
     private void handleUncommittedNewFile(BlobData i_TestBlob, List<UnCommittedChange> io_UnCommittedFilesList, String i_UncommittedType) {
         UnCommittedChange unCommittedBlob = new UnCommittedChange(i_TestBlob, i_UncommittedType);
+        unCommittedBlob.SetContent(i_TestBlob.GetFileContent());
         io_UnCommittedFilesList.add(unCommittedBlob);
         if (i_TestBlob.GetIsFolder()) {
             addUncommittedFolderToList(i_TestBlob.GetCurrentFolder(), io_UnCommittedFilesList, i_UncommittedType);
@@ -776,25 +775,25 @@ public class RepositoryManager {
         }
     }
 
-    public List<Commit> GetAccessibleCommitsFromBranch(Commit i_CurrentCommit){
+    public List<Commit> GetAccessibleCommitsFromBranch(Commit i_CurrentCommit) {
         List<Commit> commitList = new LinkedList<>();
         buildBranchCommitList(i_CurrentCommit, commitList);
         return commitList;
     }
 
-    public void SortBranchesList(){
+    public void SortBranchesList() {
         List<Branch> localBranches = new LinkedList<>();
         List<Branch> trackingBranches = new LinkedList<>();
-        List<Branch> remoteBranches= new LinkedList<>();
+        List<Branch> remoteBranches = new LinkedList<>();
         List<Branch> sortedBranches = new LinkedList<>();
-        for(Branch branch : m_AllBranchesList){
-            if(m_HeadBranch.GetHeadBranch().GetBranchSha1().equals(branch.GetBranchSha1())){
+        for (Branch branch : m_AllBranchesList) {
+            if (m_HeadBranch.GetHeadBranch().GetBranchSha1().equals(branch.GetBranchSha1())) {
                 sortedBranches.add(branch);
-            }else if(branch.GetTrackingAfter()!= null){
+            } else if (branch.GetTrackingAfter() != null) {
                 trackingBranches.add(branch);
-            }else if(branch.GetIsRemote()){
+            } else if (branch.GetIsRemote()) {
                 remoteBranches.add(branch);
-            }else{
+            } else {
                 localBranches.add(branch);
             }
         }
@@ -811,10 +810,10 @@ public class RepositoryManager {
         return index;
     }
 
-    public List<Branch> GetPointingBranchestoCommit(Commit i_Commit){
+    public List<Branch> GetPointingBranchestoCommit(Commit i_Commit) {
         List<Branch> branchList = new LinkedList<>();
-        for(Branch branch : m_AllBranchesList){
-            if(branch.GetCurrentCommit().GetCurrentCommitSHA1().equals(i_Commit.GetCurrentCommitSHA1())){
+        for (Branch branch : m_AllBranchesList) {
+            if (branch.GetCurrentCommit().GetCurrentCommitSHA1().equals(i_Commit.GetCurrentCommitSHA1())) {
                 branchList.add(branch);
             }
         }
@@ -822,7 +821,7 @@ public class RepositoryManager {
         return branchList;
     }
 
-    public List<String> GetPointingBranchesNamestoCommit(Commit i_Commit){
+    public List<String> GetPointingBranchesNamestoCommit(Commit i_Commit) {
         List<Branch> branchList = GetPointingBranchestoCommit(i_Commit);
         List<String> namesList = new LinkedList<>();
         branchList.forEach(branch -> namesList.add(branch.GetBranchName()));
@@ -833,9 +832,9 @@ public class RepositoryManager {
         Branch foundBranch = null;
         for (Branch branch : m_AllBranchesList) {
             //if (!branch.GetIsRemote()) {
-                if (isCommitInBranch(i_Commit, branch)) {
-                    foundBranch = branch;
-                    break;
+            if (isCommitInBranch(i_Commit, branch)) {
+                foundBranch = branch;
+                break;
                 //}
             }
         }
@@ -858,7 +857,7 @@ public class RepositoryManager {
         return result;
     }
 
-    public List<Commit> GetCommitColumnByBranch(Branch i_Branch){
+    public List<Commit> GetCommitColumnByBranch(Branch i_Branch) {
         List<Commit> commitColumn = new LinkedList<>();
         Commit currentCommit = i_Branch.GetCurrentCommit();
         while (currentCommit != null && !isOutOfBranch(currentCommit, i_Branch)) {
@@ -897,7 +896,7 @@ public class RepositoryManager {
         return branchList;
     }
 
-    public List<Commit> GetNewerCommitsInBranch(Commit i_OldCommit, Branch i_Branch){
+    public List<Commit> GetNewerCommitsInBranch(Commit i_OldCommit, Branch i_Branch) {
         List<Commit> commitsColumn = GetCommitColumnByBranch(i_Branch);
         commitsColumn = commitsColumn.stream()
                 .sorted(Comparator.comparing(Commit::GetCreationDateInMilliseconds).reversed())
@@ -909,12 +908,10 @@ public class RepositoryManager {
         return filteredList;
     }
 
-    public Commit GetLastCommit()
-    {
-        List<Branch> branchesList=GetAllBranchesList();
-        List<Commit> commitsList=new LinkedList<>();
-        for(Branch branch: branchesList )
-        {
+    public Commit GetLastCommit() {
+        List<Branch> branchesList = GetAllBranchesList();
+        List<Commit> commitsList = new LinkedList<>();
+        for (Branch branch : branchesList) {
             commitsList.add(branch.GetCurrentCommit());
         }
         commitsList.sort(Comparator.comparing(Commit::GetCreationDateInMilliseconds).reversed());

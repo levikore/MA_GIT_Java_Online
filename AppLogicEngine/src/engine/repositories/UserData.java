@@ -1,5 +1,6 @@
 package engine.repositories;
 
+import com.google.gson.JsonArray;
 import engine.Constants;
 import engine.logic.RepositoryManager;
 
@@ -24,10 +25,10 @@ public class UserData {
         Path m_UserFolderPath = Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName);
     }
 
-    public void UpdateSpecificRepositoryData(RepositoryManager i_RepositoryManager) {
+    public void UpdateSpecificRepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
         RepositoryData repositoryData= GetRepositoryDataByName(i_RepositoryManager.GetRepositoryName());
         Integer index = m_RepositoriesDataList.indexOf(repositoryData);
-        m_RepositoriesDataList.set(index, new RepositoryData(i_RepositoryManager));
+        m_RepositoriesDataList.set(index, new RepositoryData(i_RepositoryManager, i_CurrentWCFilesList));
     }
 
     public RepositoryData GetRepositoryDataByName(String i_RepositoryDataName) {
