@@ -1,10 +1,7 @@
 package engine;
 
 import com.google.gson.JsonArray;
-import engine.logic.FilesManagement;
-import engine.logic.RepositoryManager;
-import engine.logic.UnCommittedChange;
-import engine.logic.XMLManager;
+import engine.logic.*;
 import engine.repositories.RepositoriesManager;
 import engine.repositories.RepositoryData;
 import engine.repositories.UserData;
@@ -54,6 +51,21 @@ public class AppManager {
             }
         }
     }
+
+   public void HandleClone(String i_OriginRepositoryUserName,String i_OriginRepositoryName, String i_UserName, String i_NewRepositoryName)
+   {
+       Path originPath = getRepositoryPath(i_OriginRepositoryUserName,i_OriginRepositoryName);
+       Path localPath = getRepositoryPath(i_UserName,i_NewRepositoryName);
+
+       try {
+           RepositoryManager localRepository= CollaborationManager.CloneRepository(originPath, localPath, i_UserName);
+           RepositoryData repositoryData = new RepositoryData(localRepository,null);
+           m_RepositoriesManager.addRepositoryData(i_UserName, repositoryData, localRepository);
+
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+   }
 
     public UserData GetUserData(String i_UserName) {
         return m_RepositoriesManager.GetUserData(i_UserName);
@@ -121,6 +133,10 @@ public class AppManager {
 
     private Path getUserRepositoriesFolderPath(String i_UserName) {
         return Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + i_UserName);
+    }
+
+    private Path getRepositoryPath(String i_UserName, String i_RepositoryName) {
+        return Paths.get(getUserRepositoriesFolderPath(i_UserName)+"\\"+i_RepositoryName);
     }
 
     public void ChangeFiles(JsonArray i_OpenChangesArray, String i_RepositoryName, String i_UserName) {

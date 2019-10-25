@@ -1,6 +1,10 @@
 package user.constants;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Constants {
+        public final static Path REPOSITORIES_FOLDER_PATH= Paths.get("c:\\magit-ex3");
         public static final String USERNAME = "username";
         public static final String APPNAME="app";
         public static final String USER_NAME_ERROR = "username_error";

@@ -63,7 +63,6 @@ public class CollaborationManager {
         return errorDescription;
     }
 
-
     private static Boolean isPushRequired(Branch i_RB, Branch i_RTB) {
         return !areCommitsAdjacent(i_RTB.GetCurrentCommit(), i_RB.GetCurrentCommit());
     }
@@ -122,12 +121,14 @@ public class CollaborationManager {
                 .equals(i_RemoteCommit.GetCreatedBy());
     }
 
-    public static void CloneRepository(Path i_RemotePath, Path i_LocalPath) throws IOException {
+    public static RepositoryManager CloneRepository(Path i_RemotePath, Path i_LocalPath, String i_CurrentUserName) throws IOException {
         RepositoryManager remoteRepositoryManager = new RepositoryManager(i_RemotePath, "Administrator", false, false, null);
         new RepositoryManager(i_LocalPath, "Administrator", true, true, null);
         handleClone(remoteRepositoryManager, i_RemotePath, i_LocalPath);
-        RepositoryManager localRepository = new RepositoryManager(i_LocalPath, "Administrator", false, false, null);
+        RepositoryManager localRepository = new RepositoryManager(i_LocalPath, i_CurrentUserName, false, false, null);
         localRepository.HandleCheckout(localRepository.GetHeadBranch().GetBranch().GetBranchName());
+
+        return localRepository;
     }
 
     private static void handleClone(RepositoryManager i_RepositoryManager, Path i_FromPath, Path i_LocalPath) throws IOException {

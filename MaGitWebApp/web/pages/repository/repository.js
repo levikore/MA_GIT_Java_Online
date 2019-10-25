@@ -1,6 +1,7 @@
 const refreshRepositoryRate = 2000; //milli seconds
 const REPOSITORY_URL = buildUrlWithContextPath("repository");
 const BRANCH_URL = buildUrlWithContextPath("branch");
+const COLLABORATION_URL=buildUrlWithContextPath("collaboration")
 let lastIndexSelected = -1;
 let repositoryName;
 
@@ -69,6 +70,18 @@ function postCheckout() {
     }
     setTimeout(ajaxRepository, refreshRepositoryRate);
     // location.reload();
+}
+
+function  postForkFunctionsData(dataToPost) {
+    $.ajax({
+        url: COLLABORATION_URL,
+        data: dataToPost,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function () {
+
+        }
+    })
 }
 
 function cleanErrorSign(elementId, signElementId) {
@@ -142,7 +155,15 @@ function setRepositoryData(repository) {
         $("#unCommitted-files-list").on(
             'click',
             function () {
-                handleUnCommittedChangesClick();
+                handleUnCommittedChangesClick( );
+            }
+        );
+    }else {
+
+        $("#fork-button").on(
+            'click',
+            function () {
+                handleForkClick();
             }
         );
     }
@@ -154,95 +175,166 @@ function setRepositoryData(repository) {
 
 function handleUnCommittedChangesClick() {
     $('#unCommitted-files-list-modal').modal('show');
-
 }
 
-function hideModal() {
-    const unCommittedFilesModal = $("#unCommitted-files-list-modal");
+function hideModal(modalId) {
+   // const unCommittedFilesModal = $("#unCommitted-files-list-modal");
     const body = $('body');
 
-    unCommittedFilesModal.removeClass("in");
+    modalId.removeClass("in");
     $(".modal-backdrop").remove();
     body.removeClass('modal-open');
     body.css('padding-right', '');
-    unCommittedFilesModal.hide();
+    modalId.hide();
+}
+
+function appendButtonsOfRepositoryOwner(repository) {
+    const buttonsId = $("#buttons");
+    buttonsId.append(
+        '<div class="row" id="uncommitedFilesButtonRow">'
+
+        + '<button disabled="true" id="unCommitted-files-list" type="button" class="btn btn-default btn-lg" data-toggle="modal" >'
+        + '<span class="glyphicon glyphicon-list" aria-hidden="true">'
+        + '</span>Uncommitted Files <span class="badge badge-dark">'
+        + repository.m_UncommittedFilesList.length + '</span>' +
+        '  <span class="sr-only">number of changes</span></button>'
+        + '<div class="modal fade" id="unCommitted-files-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
+        + '<div class="modal-dialog" role="document">'
+        + '<div class="modal-content">'
+        + '<div class="modal-header">'
+        + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '<h4 class="modal-title">Uncommitted Changes List</h4>'
+        + '</div>'
+        + '<div id="unCommitted-files-list-modal-body"  class="modal-body">'
+        + '</div>'
+        + '<div class="modal-footer">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+
+        + '<div class="row">'
+
+        + '<div class="form-inline" >'
+        + '<div id="commit-wrapper" class="form-group has-feedback">'
+        + '<label id="commit-label" class="control-label">Commit</label>'
+        + '<input disabled="true" type="text" class="form-control" id="commit-input">'
+        + '<button disabled="true" onclick="postCommit()" id="commit-button" class="btn btn-default">Submit</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+
+        + '<div class="row">'
+
+        + '<div class="form-inline" >'
+        + '<div id="branch-wrapper" class="form-group has-feedback">'
+        + '<label id="branch-label" class="control-label">New Branch</label>'
+        + '<input type="text" class="form-control" id="branch-input">'
+        + '<button onclick="postBranch()" id="branch-button" class="btn btn-default" >Submit</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+
+        + '<div class="row">'
+
+        + '<div class="form-inline" >'
+        + '<div id="checkout-wrapper" class="form-group has-feedback">'
+        + '<label id="checkout-label" class="control-label">Checkout</label>'
+        + '<input type="text" class="form-control" id="checkout-input">'
+        + '<button onclick="postCheckout()" id="checkout-button" class="btn btn-default">Submit</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+    )
+    if (isUncommitedFilesInRepository(repository)) {
+        $("#unCommitted-files-list").attr("disabled", false);
+        $("#commit-button").attr("disabled", false);
+        $("#commit-input").attr("disabled", false);
+        $("#branch-button").attr("disabled", true);
+        $("#branch-input").attr("disabled", true);
+        $("#checkout-button").attr("disabled", true);
+        $("#checkout-input").attr("disabled", true);
+        setUnCommittedFilesList();
+    }
+}
+
+function handleForkClick() {
+    $('#fork-modal').modal('show');
+}
+
+
+function appendButtonsOfGuest(repository) {
+    const buttonsId = $("#buttons");
+    buttonsId.append(
+    '<div class="row">'
+
+    + '<button id="fork-button" type="button" class="btn btn-default btn-lg" data-toggle="modal" >'
+    + '<span class="glyphicon" aria-hidden="true">'
+    + '</span>Fork</button>'
+    + '<div class="modal fade" id="fork-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
+    + '<div class="modal-dialog" role="document">'
+    + '<div class="modal-content">'
+    + '<div class="modal-header">'
+    + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+    + '<h4 class="modal-title">Fork'+repository.m_RepositoryName+'</h4>'
+    + '</div>'
+    + '<div id="fork-modal-body"  class="modal-body">'
+        + '<div class="row">'
+
+        + '<div class="form-inline" >'
+        + '<div id="repository-name-fork-modal-wrapper" class="form-group has-feedback">'
+        +'<h4 class="text-info">Please select name of the new repository.</h4>'
+        + '<label id="repository-name-fork-modal-label" class="control-label">Repository name</label>'
+        + '<input type="text" class="form-control" id="repository-name-fork-modal-input">'//to add check for name
+        + '<button onclick="postFork()" id="fork-button" class="btn btn-default" >Submit</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+    + '</div>'
+    + '<div class="modal-footer">'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+
+    + '</div>');
+
 }
 
 function setButtons(repository) {
     const buttonsId = $("#buttons");
     buttonsId.empty();
-    if (isRepositoryOfCurrentUser()) {
-        buttonsId.append(
-            '<div class="row" id="uncommitedFilesButtonRow">'
-
-            + '<button disabled="true" id="unCommitted-files-list" type="button" class="btn btn-default btn-lg" data-toggle="modal" >'
-            + '<span class="glyphicon glyphicon-list" aria-hidden="true">'
-            + '</span>Uncommitted Files <span class="badge badge-dark">'
-            + repository.m_UncommittedFilesList.length + '</span>' +
-            '  <span class="sr-only">number of changes</span></button>'
-
-            + '<div class="modal fade" id="unCommitted-files-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
-            + '<div class="modal-dialog" role="document">'
-            + '<div class="modal-content">'
-            + '<div class="modal-header">'
-            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-            + '<h4 class="modal-title">Uncommitted Changes List</h4>'
-            + '</div>'
-            + '<div id="unCommitted-files-list-modal-body"  class="modal-body">'
-
-            + '</div>'
-            + '<div class="modal-footer">'
-
-            + '</div>'
-            + '</div>'
-            + '</div>'
-            + '</div>'
-            + '</div>'
-
-            + '<div class="row">'
-            + '<div class="form-inline" >'
-            + '<div id="commit-wrapper" class="form-group has-feedback">'
-            + '<label id="commit-label" class="control-label">Commit</label>'
-            + '<input disabled="true" type="text" class="form-control" id="commit-input">'
-            + '<button disabled="true" onclick="postCommit()" id="commit-button" class="btn btn-default">Submit</button>'
-            + '</div>'
-            + '</div>'
-            + '</div>'
-
-            + '<div class="row">'
-            + '<div class="form-inline" >'
-            + '<div id="branch-wrapper" class="form-group has-feedback">'
-            + '<label id="branch-label" class="control-label">New Branch</label>'
-            + '<input type="text" class="form-control" id="branch-input">'
-            + '<button onclick="postBranch()" id="branch-button" class="btn btn-default" >Submit</button>'
-            + '</div>'
-            + '</div>'
-            + '</div>'
-
-            + '<div class="row">'
-            + '<div class="form-inline" >'
-            + '<div id="checkout-wrapper" class="form-group has-feedback">'
-            + '<label id="checkout-label" class="control-label">Checkout</label>'
-            + '<input type="text" class="form-control" id="checkout-input">'
-            + '<button onclick="postCheckout()" id="checkout-button" class="btn btn-default">Submit</button>'
-            + '</div>'
-            + '</div>'
-            + '</div>'
-        )
-        if (isUncommitedFilesInRepository(repository)) {
-            $("#unCommitted-files-list").attr("disabled", false);
-            $("#commit-button").attr("disabled", false);
-            $("#commit-input").attr("disabled", false);
-            $("#branch-button").attr("disabled", true);
-            $("#branch-input").attr("disabled", true);
-            $("#checkout-button").attr("disabled", true);
-            $("#checkout-input").attr("disabled", true);
-            setUnCommittedFilesList();
-        }
+    if (isRepositoryOfCurrentUser(repository)) {
+      appendButtonsOfRepositoryOwner(repository);
     } else {
-
+        appendButtonsOfGuest(repository);
     }
     // $("#buttons").append()
+}
+
+function postFork(){
+    const newRepositoryNameId=$('#repository-name-fork-modal-input');
+    const newRepositoryName = newRepositoryNameId.val();
+    const parametersData=getParametersData();
+    //const branchErrorSign = $('#branch-error-sign');
+    // const errorString = $('#branch-error-string')
+    const data = {
+        "originRepositoryName": parametersData.repositoryName,
+        "originRepositoryUserName":parametersData.username,
+        "functionName": "fork",
+        "newRepositoryName": newRepositoryName
+    };
+    postForkFunctionsData(data);
+    newRepositoryNameId.val("");
+
+    //setInterval(ajaxRepository, refreshRepositoryRate);
+    setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
 function postCommit() {
@@ -256,7 +348,7 @@ function postCommit() {
         "commitName": commitVal
     };
     postBranchFunctionsData(data);
-    $('#branch-input').val("");
+    $('#commit-input').val("");
 
     //setInterval(ajaxRepository, refreshRepositoryRate);
     setTimeout(ajaxRepository, refreshRepositoryRate);
