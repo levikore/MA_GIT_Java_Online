@@ -2,17 +2,33 @@
     margin-bottom: 15px;
 }
 
-#branch-button {
+#branch-input {
     padding-left: 5vh;
     width: 18vh;
 
+}
+
+#commit-label {
+    padding-right: 6.2vh;
 }
 #branch-label{
     padding-right: 1.5vh;
 }
 
-#checkout-button {
+checkout-label{
+    padding-right: 5vh;
+}
+
+#commit-input {
     width: 18vh;
+}
+
+#checkout-input {
+    width: 18vh;
+}
+
+#commit-wrapper {
+    padding-bottom: 4vh;
 }
 
 #checkout-wrapper{
@@ -20,6 +36,10 @@
 }
 
 #buttons{
-    padding-left: 13vh;
-    padding-top: 11vh;
+    padding-left: 4vh;
+    padding-top: 5vh;
+}
+
+#uncommitedFilesButtonRow{
+    padding-bottom: 5vh;
 }

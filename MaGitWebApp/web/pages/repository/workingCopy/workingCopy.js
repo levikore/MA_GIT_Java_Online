@@ -225,9 +225,6 @@ function handleCancelButtonClick(index) {
 function handleEditButtonClick(index) {
     const editButton = $("#edit-icon-file" + index);
     const removeButton = $("#remove-icon-file" + index);
-    const createFile = $("#create-icon-file" + index);
-    const saveButton = $("#save-icon-file");
-    const doneButton = $("#check-icon-file" + index);
     const textArea = $("#file" + index + "-content-textarea");
     const cancelSign = $("#cancel-icon-file" + index);
 
@@ -521,7 +518,7 @@ function appendFileToFilesList(index) {
         + '<span class="glyphicon glyphicon-remove" aria-hidden="true">'
         + '</span>Remove</button>'
 
-        + '<button  disabled="true" id="create-icon-file' + index + '\" type="button" class="pull-right btn btn-default btn-lg" data-toggle="modal" data-target="#createFileModal">'
+        + '<button  disabled="true" id="create-icon-file' + index + '\" type="button" class="pull-right btn btn-default btn-lg" data-toggle="modal" >'
         + '<span class="glyphicon glyphicon-plus" aria-hidden="true">'
         + '</span>Add new file <small>to current folder</small></button>'
 

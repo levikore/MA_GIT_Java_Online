@@ -10,8 +10,8 @@ function ajaxRepository() {
         data: getParametersData(),
         dataType: 'json',
         success: function (repository) {
-            setRepositoryData(repository);
             sessionStorage.setItem("repository", JSON.stringify(repository));
+            setRepositoryData(repository);
         }
     })
 }
@@ -44,8 +44,8 @@ function postBranchFunctionsData(dataToPost) {
 }
 
 function postCheckout() {
-    ajaxRepository();
-    const branchVal = $('#checkout-button').val();
+    //ajaxRepository();
+    const branchVal = $('#checkout-input').val();
     const checkoutWrapperId = $('#checkout-wrapper');
     const checkoutErrorSign = $('#checkout-error-sign');
     const errorString = $('#checkout-error-string')
@@ -58,8 +58,8 @@ function postCheckout() {
         postBranchFunctionsData(data);
         cleanErrorSign(checkoutWrapperId, checkoutErrorSign);
         errorString.remove();
-        $('#checkout-button').val("");
-        setInterval(ajaxRepository, refreshRepositoryRate);
+        $('#checkout-input').val("");
+        //setInterval(ajaxRepository, refreshRepositoryRate);
     } else {
         checkoutWrapperId.addClass("has-error");
         appendErrorSign(checkoutWrapperId, "checkout-error-string");
@@ -67,6 +67,8 @@ function postCheckout() {
             checkoutWrapperId.append('<p class="control-label" id="checkout-error-string">This branch doesnt exist</p>');
         }
     }
+    setTimeout(ajaxRepository, refreshRepositoryRate);
+    // location.reload();
 }
 
 function cleanErrorSign(elementId, signElementId) {
@@ -89,8 +91,7 @@ function isElementExist(elementId) {
 }
 
 function postBranch() {
-    ajaxRepository();
-    const branchVal = $('#branch-button').val();
+    const branchVal = $('#branch-input').val();
     const branchWrapperId = $('#branch-wrapper');
     const branchErrorSign = $('#branch-error-sign');
     const errorString = $('#branch-error-string')
@@ -103,8 +104,9 @@ function postBranch() {
         postBranchFunctionsData(data);
         cleanErrorSign(branchWrapperId, branchErrorSign);
         errorString.remove();
-        $('#branch-button').val("");
-        setInterval(ajaxRepository, refreshRepositoryRate);
+        $('#branch-input').val("");
+
+        //setInterval(ajaxRepository, refreshRepositoryRate);
     } else {
         branchWrapperId.addClass("has-error");
         appendErrorSign(branchWrapperId, "branch-error-string");
@@ -112,10 +114,20 @@ function postBranch() {
             branchWrapperId.append('<p class="control-label" id="branch-error-string">This branch already exist</p>');
         }
     }
+    setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
 function getRepositoryByName(repositoriesList, repositoryName) {
     return repositoriesList.find(repository => repository.m_RepositoryName === repositoryName);
+}
+
+function isUncommitedFilesInRepository(repository) {
+    return repository.m_UncommittedFilesList.length > 0;
+}
+
+function isRepositoryOfCurrentUser() {
+    const repository = JSON.parse(sessionStorage["repository"]);
+    return sessionStorage["userName"] === repository.m_Owner;
 }
 
 function setRepositoryData(repository) {
@@ -123,45 +135,131 @@ function setRepositoryData(repository) {
     setButtons(repository);
     $("#repository-name-label").empty();
     $("#repository-name-label").append('<h3 class="display-4">' + repository.m_RepositoryName + '</h3>')
-    $("#repository-name-label").append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">Working Copy </a>')
+
+    if (isRepositoryOfCurrentUser()) {
+        $("#repository-name-label").append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">Working Copy </a>')
+
+        $("#unCommitted-files-list").on(
+            'click',
+            function () {
+                handleUnCommittedChangesClick();
+            }
+        );
+    }
+
     setBranchesList(repository.m_BranchesList);
     setCommitsList(repository.m_HeadBranchCommitsList);
+
+}
+
+function handleUnCommittedChangesClick() {
+    $('#unCommitted-files-list-modal').modal('show');
+
+}
+
+function hideModal() {
+    const unCommittedFilesModal = $("#unCommitted-files-list-modal");
+    const body = $('body');
+
+    unCommittedFilesModal.removeClass("in");
+    $(".modal-backdrop").remove();
+    body.removeClass('modal-open');
+    body.css('padding-right', '');
+    unCommittedFilesModal.hide();
 }
 
 function setButtons(repository) {
-    const currentUserName = sessionStorage["userName"];
     const buttonsId = $("#buttons");
     buttonsId.empty();
-    if (repository.m_Owner === currentUserName) {
+    if (isRepositoryOfCurrentUser()) {
         buttonsId.append(
-        '<div class="row">'
-            +'<div class="form-inline" >'
-            +'<div id="branch-wrapper" class="form-group has-feedback">'
-            +'<label id="branch-label" class="control-label">Branch</label>'
-            +'<input type="text" class="form-control" id="branch-button">'
-            +'<button onclick="postBranch()" class="btn btn-default">Submit</button>'
-            +'</div>'
-            +'</div>'
-            +'</div>'
+            '<div class="row" id="uncommitedFilesButtonRow">'
 
-            +'<div class="row">'
-            +'<div class="form-inline" >'
-            +'<div id="checkout-wrapper" class="form-group has-feedback">'
-            +'<label class="control-label">Checkout</label>'
-            +'<input type="text" class="form-control" id="checkout-button">'
-            +'<button onclick="postCheckout()" class="btn btn-default">Submit</button>'
-            +'</div>'
-            +'</div>'
-            +'</div>'
+            + '<button disabled="true" id="unCommitted-files-list" type="button" class="btn btn-default btn-lg" data-toggle="modal" >'
+            + '<span class="glyphicon glyphicon-list" aria-hidden="true">'
+            + '</span>Uncommitted Files <span class="badge badge-dark">'
+            + repository.m_UncommittedFilesList.length + '</span>' +
+            '  <span class="sr-only">number of changes</span></button>'
+
+            + '<div class="modal fade" id="unCommitted-files-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
+            + '<div class="modal-dialog" role="document">'
+            + '<div class="modal-content">'
+            + '<div class="modal-header">'
+            + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+            + '<h4 class="modal-title">Uncommitted Changes List</h4>'
+            + '</div>'
+            + '<div id="unCommitted-files-list-modal-body"  class="modal-body">'
+
+            + '</div>'
+            + '<div class="modal-footer">'
+
+            + '</div>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+
+            + '<div class="row">'
+            + '<div class="form-inline" >'
+            + '<div id="commit-wrapper" class="form-group has-feedback">'
+            + '<label id="commit-label" class="control-label">Commit</label>'
+            + '<input disabled="true" type="text" class="form-control" id="commit-input">'
+            + '<button disabled="true" onclick="postCommit()" id="commit-button" class="btn btn-default">Submit</button>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+
+            + '<div class="row">'
+            + '<div class="form-inline" >'
+            + '<div id="branch-wrapper" class="form-group has-feedback">'
+            + '<label id="branch-label" class="control-label">New Branch</label>'
+            + '<input type="text" class="form-control" id="branch-input">'
+            + '<button onclick="postBranch()" id="branch-button" class="btn btn-default" >Submit</button>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+
+            + '<div class="row">'
+            + '<div class="form-inline" >'
+            + '<div id="checkout-wrapper" class="form-group has-feedback">'
+            + '<label id="checkout-label" class="control-label">Checkout</label>'
+            + '<input type="text" class="form-control" id="checkout-input">'
+            + '<button onclick="postCheckout()" id="checkout-button" class="btn btn-default">Submit</button>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
         )
+        if (isUncommitedFilesInRepository(repository)) {
+            $("#unCommitted-files-list").attr("disabled", false);
+            $("#commit-button").attr("disabled", false);
+            $("#commit-input").attr("disabled", false);
+            $("#branch-button").attr("disabled", true);
+            $("#branch-input").attr("disabled", true);
+            $("#checkout-button").attr("disabled", true);
+            $("#checkout-input").attr("disabled", true);
+            setUnCommittedFilesList();
+        }
     } else {
 
     }
     // $("#buttons").append()
 }
 
-function isUncommitedFileInRepositoy() {
+function postCommit() {
+    const commitVal = $('#commit-input').val();
+    const commitWrapperId = $('#branch-wrapper');
+    //const branchErrorSign = $('#branch-error-sign');
+    // const errorString = $('#branch-error-string')
+    const data = {
+        "repositoryName": repositoryName,
+        "functionName": "commit",
+        "commitName": commitVal
+    };
+    postBranchFunctionsData(data);
+    $('#branch-input').val("");
 
+    //setInterval(ajaxRepository, refreshRepositoryRate);
+    setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
 function setCommitsList(commitsList) {
@@ -287,6 +385,44 @@ function setBranchesList(branchesList) {
     }
 }
 
+function getUncomitedFilesList() {
+    const repository = JSON.parse(sessionStorage["repository"]);
+    return repository.m_UncommittedFilesList;
+}
+
+function setUnCommittedFilesList() {
+    const unCommittedFilesListId = $('#unCommitted-files-list-modal-body');
+    const unCommittedFilesList = getUncomitedFilesList();
+
+    unCommittedFilesListId.empty()
+    for (let i = 0; i < unCommittedFilesList.length; i++) {
+        const uncommitedData = unCommittedFilesList[i];
+
+        unCommittedFilesListId.append(
+            $('<a class="list-group-item list-group-item-action align-items-start"> </a>')
+                .attr({
+                    'id': "Uncommitted-element" + i,
+                })
+        );
+
+        const uncommittedElementId = $("#Uncommitted-element" + i);
+        $('<divclass="w-100 justify-content-between"> </div>').attr('id', "Uncommitted-element-wrapper" + i)
+            .appendTo(uncommittedElementId);
+
+        $('<h4 class="mb-1">'
+            + "file name:" + uncommitedData.m_fileContent.m_Path +
+            '</h4>'
+        ).appendTo(uncommittedElementId)
+
+        $('<p class="mb-1">'
+            + "Change type:" + uncommitedData.m_ChangeType +
+            '</p>'
+        ).appendTo(uncommittedElementId)
+
+    }
+}
+
+
 let popupWindow = null;
 
 function PopupCenter(url, title, w, h) {
@@ -314,5 +450,5 @@ function parent_disable() {
 
 
 $(function () {
-    setInterval(ajaxRepository, refreshRepositoryRate);
+    setTimeout(ajaxRepository, refreshRepositoryRate);
 });

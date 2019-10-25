@@ -883,6 +883,20 @@ public class RepositoryManager {
         return result;
     }
 
+    public List<Commit> GetHeadBranchCommitHistory(Branch i_Branch) {
+        List<Commit> commitsList = new LinkedList<>();
+        Commit currentCommit =i_Branch.GetCurrentCommit();
+        setHeadBranchCommitHistoryRec(commitsList, currentCommit);
+        return commitsList;
+    }
+
+    private void setHeadBranchCommitHistoryRec(List<Commit> i_CommitsList, Commit i_CurrentCommit) {
+        i_CommitsList.add(i_CurrentCommit);
+        if (i_CurrentCommit.GetPrevCommitsList()!= null&&i_CurrentCommit.GetPrevCommitsList().get(0) != null) {
+            setHeadBranchCommitHistoryRec(i_CommitsList,i_CurrentCommit.GetPrevCommitsList().get(0));
+        }
+    }
+
     public List<Branch> GetRemoteBranchesListByCommit(String i_CommitSha1) {
         List<Branch> branchList = new LinkedList<>();
         for (Branch branch : m_AllBranchesList) {

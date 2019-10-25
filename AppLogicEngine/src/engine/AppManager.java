@@ -111,7 +111,6 @@ public class AppManager {
             path = i_OpenChangesArray.get(i).getAsJsonObject().get("path").getAsString();
             Path currentPath = Paths.get(path);
             isFolder = i_OpenChangesArray.get(i).getAsJsonObject().get("isFolder").getAsBoolean();
-
             if (action.equals("create")) {
                 if (isFolder) {
                     FilesManagement.CreateFolder(currentPath.getParent(), currentPath.getFileName().toString());
@@ -120,11 +119,13 @@ public class AppManager {
                     FilesManagement.CreateNewFile(path, content);
                 }
             } else if (action.equals("delete")) {
-                if (isFolder) {
-                    FilesManagement.DeleteFolder(path);
-                } else {
-                    FilesManagement.RemoveFileByPath(currentPath);
-                }
+               if(Paths.get(path).toFile().exists()) {
+                   if (isFolder) {
+                       FilesManagement.DeleteFolder(path);
+                   } else {
+                       FilesManagement.RemoveFileByPath(currentPath);
+                   }
+               }
             } else if (action.equals("edit")) {
                 content = i_OpenChangesArray.get(i).getAsJsonObject().get("content").getAsString();
                 FilesManagement.RemoveFileByPath(currentPath);

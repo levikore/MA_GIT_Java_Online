@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import engine.logic.*;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +34,8 @@ public class RepositoryData {
         m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
         m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
         m_BranchesList = i_RepositoryManager.GetAllBranchesStringList();
-        commitsListToString(i_RepositoryManager.GetCommitColumnByBranch(i_RepositoryManager.GetHeadBranch().GetHeadBranch()), i_RepositoryManager);
+        List<Commit> commitStringList = i_RepositoryManager.GetHeadBranchCommitHistory(i_RepositoryManager.GetHeadBranch().GetBranch());
+        setCommitsListToString(commitStringList,i_RepositoryManager);
         m_BranchesNamesList = new LinkedList<>();
         for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
             m_BranchesNamesList.add(branch.GetBranchName());
@@ -138,16 +138,19 @@ public class RepositoryData {
         }
 
         for (UnCommittedChange unCommittedChange : unCommittedDeletedFiles) {
-            if (!unCommittedChange.getFile().GetIsFolder()) {
-                fileContent = new FileContent(unCommittedChange.getFile().GetPath(), FilesManagement.ReadTextFileContent(unCommittedChange.getFile().GetPath()), unCommittedChange.getFile().GetIsFolder());
-            } else {
-                for (int i = 0; i < m_CurrentWCFilesList.size(); i++) {
-                    if (m_UncommittedFilesList.get(i).m_fileContent.m_Path.equals(unCommittedChange.getFile().GetPath())) {
-                        m_UncommittedFilesList.remove(i);
+                if (!unCommittedChange.getFile().GetIsFolder()) {
+                    if( Paths.get(unCommittedChange.getFile().GetPath()).toFile().exists()) {
+                        fileContent = new FileContent(unCommittedChange.getFile().GetPath(), FilesManagement.ReadTextFileContent(unCommittedChange.getFile().GetPath()), unCommittedChange.getFile().GetIsFolder());
+                        m_CurrentWCFilesList.remove(fileContent);
+                    }
+                } else {
+                    for (int i = 0; i < m_CurrentWCFilesList.size(); i++) {
+                        if (m_CurrentWCFilesList.get(i).m_Path.equals(unCommittedChange.getFile().GetPath())) {
+                            m_CurrentWCFilesList.remove(i);
+                        }
                     }
                 }
-            }
-            m_CurrentWCFilesList.remove(fileContent);
+
         }
     }
 
@@ -161,7 +164,7 @@ public class RepositoryData {
         }
     }
 
-    private void commitsListToString(List<Commit> i_CommitsList, RepositoryManager i_RepositoryManager) {
+    private void setCommitsListToString(List<Commit> i_CommitsList, RepositoryManager i_RepositoryManager) {
         m_HeadBranchCommitsList = new LinkedList<>();
         for (Commit commit : i_CommitsList) {
             CommitData commitData = new CommitData(i_RepositoryManager, commit);
