@@ -13,6 +13,7 @@ public class RepositoriesManager {
         m_RepositoriesListHashMap = new HashMap<>();
     }
 
+
     private synchronized void addUserData(String i_UserName, UserData i_UserData) {
         if (!isUserExists(i_UserName) && i_UserData.getRepositoriesDataList() != null) {
             m_UsersDataHashMap.put(i_UserName, i_UserData);

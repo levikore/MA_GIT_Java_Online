@@ -11,6 +11,7 @@ import engine.repositories.UserData;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -18,13 +19,40 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AppManager {
     private RepositoriesManager m_RepositoriesManager;
 
     public AppManager(String i_UserName) {
         m_RepositoriesManager = new RepositoriesManager();
-        //recoverRepositoriesManagerFromFiles();
+        recoverRepositoriesManagerFromFiles();
+    }
+
+    private void recoverRepositoriesManagerFromFiles()
+    {
+        String userName;
+        String repositoryName;
+        Path repositoryPath;
+        RepositoryManager repository=null;
+
+        for(File file: Objects.requireNonNull(Constants.REPOSITORIES_FOLDER_PATH.toFile().listFiles()))
+        {
+            userName=file.getName();
+            for(File repositoryFile:Objects.requireNonNull(getUserRepositoriesFolderPath(userName).toFile().listFiles()))
+            {
+                repositoryName=repositoryFile.getName();
+                repositoryPath = Paths.get(getUserRepositoriesFolderPath(userName) + "\\" + repositoryName);
+                try {
+                    repository = new RepositoryManager(repositoryPath, userName, false, false, null);
+                    repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
+                    RepositoryData repositoryData = new RepositoryData(repository,null);
+                    m_RepositoriesManager.addRepositoryData(userName, repositoryData, repository);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public UserData GetUserData(String i_UserName) {
@@ -74,11 +102,6 @@ public class AppManager {
             e.printStackTrace();
         }
         return repositoryName;
-    }
-
-    //
-    private void recoverRepositoriesManagerFromFiles() {
-
     }
 
     private void createRepositoriesFolder() {
