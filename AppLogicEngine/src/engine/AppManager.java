@@ -33,20 +33,24 @@ public class AppManager {
         Path repositoryPath;
         RepositoryManager repository=null;
 
-        for(File file: Objects.requireNonNull(Constants.REPOSITORIES_FOLDER_PATH.toFile().listFiles()))
-        {
-            userName=file.getName();
-            for(File repositoryFile:Objects.requireNonNull(getUserRepositoriesFolderPath(userName).toFile().listFiles()))
-            {
-                repositoryName=repositoryFile.getName();
-                repositoryPath = Paths.get(getUserRepositoriesFolderPath(userName) + "\\" + repositoryName);
-                try {
-                    repository = new RepositoryManager(repositoryPath, userName, false, false, null);
-                    repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
-                    RepositoryData repositoryData = new RepositoryData(repository,null);
-                    m_RepositoriesManager.addRepositoryData(userName, repositoryData, repository);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if(Constants.REPOSITORIES_FOLDER_PATH.toFile().exists()) {
+            for (File file : Constants.REPOSITORIES_FOLDER_PATH.toFile().listFiles()) {
+                userName = file.getName();
+                for (File repositoryFile : getUserRepositoriesFolderPath(userName).toFile().listFiles()) {
+                    repositoryName = repositoryFile.getName();
+                    repositoryPath = Paths.get(getUserRepositoriesFolderPath(userName) + "\\" + repositoryName);
+
+                    if (!repositoryName.equals("notifications")){
+                        try {
+                            repository = new RepositoryManager(repositoryPath, userName, false, false, null);
+                            repository.HandleCheckout(repository.GetHeadBranch().GetBranch().GetBranchName());
+                            RepositoryData repositoryData = new RepositoryData(repository, null);
+                            m_RepositoriesManager.addRepositoryData(userName, repositoryData, repository);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
             }
         }
@@ -56,6 +60,7 @@ public class AppManager {
    {
        Path originPath = getRepositoryPath(i_OriginRepositoryUserName,i_OriginRepositoryName);
        Path localPath = getRepositoryPath(i_UserName,i_NewRepositoryName);
+       createUserFolder(i_UserName);
 
        try {
            RepositoryManager localRepository= CollaborationManager.CloneRepository(originPath, localPath, i_UserName);
@@ -128,6 +133,9 @@ public class AppManager {
         Path userFolderPath = getUserRepositoriesFolderPath(i_UserName);
         if (!(userFolderPath.toFile().exists())) {
             FilesManagement.CreateFolder(userFolderPath.getParent(), i_UserName);
+            FilesManagement.CreateFolder(userFolderPath,"notifications");
+            FilesManagement.CreateNewFile(Paths.get(userFolderPath+"\\"+"notifications\\"+"version.txt").toString(),"-1,-1");
+            FilesManagement.CreateNewFile(Paths.get(userFolderPath+"\\"+"notifications\\"+"notifications.txt").toString(),"");
         }
     }
 

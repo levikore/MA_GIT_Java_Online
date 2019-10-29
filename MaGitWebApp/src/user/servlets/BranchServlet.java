@@ -37,6 +37,7 @@ public class BranchServlet extends HttpServlet {
         String functionNameString = request.getParameter(FUNCTION_NAME_PARAMETER);
         String repositoryNameString = request.getParameter(REPOSITORY_NAME_PARAMETER);
         String branchNameString = request.getParameter(BRANCH_NAME_PARAMETER);
+
         String commitName = "";
         if (functionNameString.equals("commit")) {
             commitName = request.getParameter("commitName");
@@ -45,8 +46,14 @@ public class BranchServlet extends HttpServlet {
         RepositoryManager repository = appManager.GetRepositoryByName(username, repositoryNameString);
 
         if (repository != null) {
-            if (functionNameString.equals("branch")) {
-                repository.HandleBranch(branchNameString, repository.GetHeadBranch().GetBranch().GetCurrentCommit(), null);
+            if (functionNameString.equals("branch")||functionNameString.equals("branch and checkout")) {
+                String trackingAfter = request.getParameter("trackingAfter");
+                repository.HandleBranch(branchNameString, repository.GetHeadBranch().GetBranch().GetCurrentCommit(), trackingAfter.equals("") ? null : trackingAfter);
+
+                if(functionNameString.equals("branch and checkout"))
+                {
+                    repository.HandleCheckout(branchNameString);
+                }
             } else if (functionNameString.equals("checkout")) {
                 repository.HandleCheckout(branchNameString);
             } else if (functionNameString.equals("commit")) {

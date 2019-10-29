@@ -1,0 +1,35 @@
+
+#helloSentence{
+    font-size: 3vh;
+    padding-left: 3vh;
+}
+
+#app-title{
+    font-size: 2vh;
+    text-align: center;
+}
+
+#notifications-area{
+    overflow-y: auto;
+    max-height: 5vh;
+    max-width: 40vw;
+    padding-left: 1vw;
+    padding-right: 10px;
+}
+
+#user-repositories-list{
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 45vw;
+    padding-top: 5vw;
+    border-width: .2rem;
+    box-sizing: border-box;
+}
+
+.list-group{
+    word-break: break-all;
+}

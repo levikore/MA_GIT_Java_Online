@@ -634,14 +634,15 @@ public class FilesManagement {
         File branchesFolder = Paths.get(i_RepositoryPath + "\\.magit\\branches").toFile();
         List<String> branchesList = new LinkedList<>();
         File remoteBranchesFolder = null;
+        if (branchesFolder != null&&branchesFolder.listFiles()!=null) {
+            for (File file : branchesFolder.listFiles()) {
+                if (!file.getName().equals("HEAD.txt") && !file.isDirectory()) {
+                    branchesList.add(FilenameUtils.removeExtension(file.getName()) + ',' + ReadTextFileContent(file.getPath()));
+                }
 
-        for (File file : Objects.requireNonNull(branchesFolder.listFiles())) {
-            if (!file.getName().equals("HEAD.txt") && !file.isDirectory()) {
-                branchesList.add(FilenameUtils.removeExtension(file.getName()) + ',' + ReadTextFileContent(file.getPath()));
-            }
-
-            if (file.isDirectory()) {
-                remoteBranchesFolder = file;
+                if (file.isDirectory()) {
+                    remoteBranchesFolder = file;
+                }
             }
         }
 
@@ -753,7 +754,7 @@ public class FilesManagement {
         }
     }
 
-    public static void DeleteFolder(String destination){
+    public static void DeleteFolder(String destination) {
         try {
             FileUtils.deleteDirectory(new File(destination));
         } catch (IOException e) {

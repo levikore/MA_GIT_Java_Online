@@ -2,31 +2,88 @@ package engine.repositories;
 
 import com.google.gson.JsonArray;
 import engine.Constants;
+import engine.logic.FilesManagement;
 import engine.logic.RepositoryManager;
+import engine.users.ConnectedUsersManager;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class UserData {
     private String m_UserName;
     private List<RepositoryData> m_RepositoriesDataList;
-    //the keys are the the time of any Notification
-    private LinkedList<Notification> m_NotificationsList;
-    private Notification m_LastNotificationRead;
-    private boolean isUserConnected;
-    private Path m_UserFolderPath;
+    private List<Notification> m_NotificationsList;
+    private int m_NotificationsVersion;
+    private int m_LastNotificationsVersionSeen;
+    private transient String m_UserFolderPath;
 
 
     public UserData(List<RepositoryData> i_RepositoriesDataList, String i_UserName) {
         m_RepositoriesDataList = i_RepositoriesDataList;
         m_UserName = i_UserName;
-        Path m_UserFolderPath = Paths.get(Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName);
+       m_UserFolderPath = Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName;
+        m_NotificationsList = new LinkedList<>();
+        recoverAllNotifications();
+    }
+
+
+    public List<Notification> GetAllNotificationsList() {
+        return m_NotificationsList;
+    }
+
+
+    public int GetNotificationsVersion() {
+        return m_NotificationsVersion;
+    }
+
+    public int GetLastNotificationsVersionSeen() {
+        return m_LastNotificationsVersionSeen;
+    }
+
+
+    public List<Notification> GetNewNotifications()
+    {
+        List<Notification> notifications=new LinkedList<>();
+
+        for(int i=m_LastNotificationsVersionSeen+1;i<m_NotificationsList.size();i++)
+        {
+            notifications.add(m_NotificationsList.get(0));
+        }
+        m_LastNotificationsVersionSeen=m_NotificationsList.size()-1;
+        FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+        FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION,m_NotificationsVersion+","+m_LastNotificationsVersionSeen);
+        return notifications;
+    }
+
+    private void recoverAllNotifications() {
+        List<String> versions = FilesManagement.ConvertCommaSeparatedStringToList(FilesManagement.ReadTextFileContent(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+        m_NotificationsVersion = Integer.parseInt(versions.get(0));
+        m_LastNotificationsVersionSeen = Integer.parseInt(versions.get(1));
+        ///recover Notification from notifications.txt file
+    }
+
+    public void AppendNewNotification(String i_Time, String i_Content)
+    {
+        Notification notification=new Notification(i_Content,i_Time);
+        m_NotificationsList.add(notification);
+        m_NotificationsVersion++;
+        FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+        FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION,m_NotificationsVersion+","+m_LastNotificationsVersionSeen);
+        try {
+            Files.write(Paths.get(m_UserFolderPath+"\\"+Constants.USER_NOTIFICATIONS_FILE), (i_Content+"\n").getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void UpdateSpecificRepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
-        RepositoryData repositoryData= GetRepositoryDataByName(i_RepositoryManager.GetRepositoryName());
+        RepositoryData repositoryData = GetRepositoryDataByName(i_RepositoryManager.GetRepositoryName());
         Integer index = m_RepositoriesDataList.indexOf(repositoryData);
         m_RepositoriesDataList.set(index, new RepositoryData(i_RepositoryManager, i_CurrentWCFilesList));
     }
@@ -40,7 +97,7 @@ public class UserData {
                 break;
             }
         }
-       return repositoryDataPointer;
+        return repositoryDataPointer;
     }
 
     public void AddRepositoryData(RepositoryData i_RepositoryData) {
@@ -51,7 +108,7 @@ public class UserData {
         return m_RepositoriesDataList;
     }
 
-    public Path getUserFolderPath() {
+    public String getUserFolderPath() {
         return m_UserFolderPath;
     }
 

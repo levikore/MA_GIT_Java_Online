@@ -48,15 +48,15 @@ public class CollaborationServlet extends HttpServlet {
         String originRepositoryName = request.getParameter("originRepositoryName");
         String originRepositoryUserName = request.getParameter("originRepositoryUserName");
         String newRepositoryName = request.getParameter("newRepositoryName");
+        String time = request.getParameter("time");
 
-
-       RepositoryManager originRepository = appManager.GetRepositoryByName(originRepositoryUserName, originRepositoryName);
-
+        RepositoryManager originRepository = appManager.GetRepositoryByName(originRepositoryUserName, originRepositoryName);
 
 
         if (originRepository != null) {
             if (functionName.equals("fork")) {
-            appManager.HandleClone(originRepositoryUserName,originRepositoryName,username,newRepositoryName);
+                appManager.HandleClone(originRepositoryUserName, originRepositoryName, username, newRepositoryName);
+                appManager.GetAllUserMap().get(originRepositoryUserName).AppendNewNotification(time, username + " forked your repository: " + originRepositoryName);
             }
         }
         //appManager.GetUserData(username).UpdateSpecificRepositoryData(repository, null);

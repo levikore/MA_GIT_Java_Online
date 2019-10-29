@@ -712,24 +712,25 @@ public class RepositoryManager {
         List<String> branchesList = FilesManagement.GetBranchesList(m_RepositoryPath.toString());
         String headBranchContent = FilesManagement.GetHeadBranchSha1(m_RepositoryPath.toString());
         String BranchDataOfHeadBranch = FilesManagement.GetFileNameInZipFromObjects(headBranchContent, m_RepositoryPath.toString());
+        if (branchesList != null) {
+            for (String listNode : branchesList) {
+                List<String> data = FilesManagement.ConvertCommaSeparatedStringToList(listNode);
+                String nameBranch = data.get(0);
+                String currentCommitSha1 = data.get(1);
 
-        for (String listNode : branchesList) {
-            List<String> data = FilesManagement.ConvertCommaSeparatedStringToList(listNode);
-            String nameBranch = data.get(0);
-            String currentCommitSha1 = data.get(1);
-
-            Branch branch;
-            Commit commit = recoverCommit(currentCommitSha1);
-            String branchSha1 = DigestUtils.sha1Hex(nameBranch);//Configure Branch Sha1
-            String headSha1 = FilenameUtils.removeExtension(FilesManagement.FindFileByNameInZipFileInPath("HEAD.txt", Paths.get(m_RepositoryPath.toString() + "\\" + c_GitFolderName + "\\" + c_ObjectsFolderName)).getName());
-            String trackingAfter = FilesManagement.GetRemoteBranchFileNameByTrackingBranchName(nameBranch, m_RepositoryPath);
-            branch = new Branch(nameBranch, commit, m_RepositoryPath, false, branchSha1, isBranchRemote(nameBranch), trackingAfter);
-            removeBranchFromBranchesListByName(nameBranch);
-            m_AllBranchesList.add(branch);
-            if (BranchDataOfHeadBranch.equals(nameBranch)) {
-                m_HeadBranch = new HeadBranch(branch, m_RepositoryPath, false, headSha1);
-                m_RootFolder = m_HeadBranch.GetHeadBranch().GetCurrentCommit().GetCommitRootFolder();
-                m_CurrentCommit = commit;
+                Branch branch;
+                Commit commit = recoverCommit(currentCommitSha1);
+                String branchSha1 = DigestUtils.sha1Hex(nameBranch);//Configure Branch Sha1
+                String headSha1 = FilenameUtils.removeExtension(FilesManagement.FindFileByNameInZipFileInPath("HEAD.txt", Paths.get(m_RepositoryPath.toString() + "\\" + c_GitFolderName + "\\" + c_ObjectsFolderName)).getName());
+                String trackingAfter = FilesManagement.GetRemoteBranchFileNameByTrackingBranchName(nameBranch, m_RepositoryPath);
+                branch = new Branch(nameBranch, commit, m_RepositoryPath, false, branchSha1, isBranchRemote(nameBranch), trackingAfter);
+                removeBranchFromBranchesListByName(nameBranch);
+                m_AllBranchesList.add(branch);
+                if (BranchDataOfHeadBranch.equals(nameBranch)) {
+                    m_HeadBranch = new HeadBranch(branch, m_RepositoryPath, false, headSha1);
+                    m_RootFolder = m_HeadBranch.GetHeadBranch().GetCurrentCommit().GetCommitRootFolder();
+                    m_CurrentCommit = commit;
+                }
             }
         }
     }

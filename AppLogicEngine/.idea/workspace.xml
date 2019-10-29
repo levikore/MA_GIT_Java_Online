@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2fcc30ca-14a9-451f-a28a-7c77eb27c7b5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/artifacts/MaGitWebApp_war_exploded.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/MaGitWebApp.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/constants/Constants.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/ConnectedUsersListServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/FileUploadServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/HomeServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/LoginServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/LogoutServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/MAGitServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/servlets/UserServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/utils/ServletUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/src/user/utils/SessionUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/common/bootstrap.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/common/context-path-helper.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/common/jquery-2.0.3.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/home/home.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/home/home.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/home/home.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/home/newRepository/newRepository.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/home/newRepository/newRepository.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/loginerror/login_attempt_after_error.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MaGitWebApp/web/pages/signup/signup.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/AppLogicEngine/AppLogicEngine.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/META-INF/MaGitWebApp.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/constants/Constants.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/servlets/FileUploadServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/servlets/HomeServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/servlets/LoginServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/servlets/LogoutServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/servlets/MAGitServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/servlets/UserServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/utils/ServletUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/classes/user/utils/SessionUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/lib/AppLogicEngine.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/lib/gson-2.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/common/bootstrap.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/common/context-path-helper.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/common/jquery-2.0.3.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/home/home.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/home/home.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/home/home.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/home/newRepository/newRepository.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/home/newRepository/newRepository.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/loginerror/login_attempt_after_error.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/artifacts/MaGitWebApp_war_exploded/pages/signup/signup.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/constants/Constants.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/servlets/FileUploadServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/servlets/HomeServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/servlets/LoginServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/servlets/LogoutServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/servlets/MAGitServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/servlets/UserServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/utils/ServletUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/MaGitWebApp/user/utils/SessionUtils.class" beforeDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="2576" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="jdk.selected.JAVA_MODULE" value="1.8" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2fcc30ca-14a9-451f-a28a-7c77eb27c7b5" name="Default Changelist" comment="" />
+      <created>1570463552919</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1570463552919</updated>
+      <workItem from="1570463554190" duration="16000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="16000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="2576" height="1056" extended-state="6" />
+    <layout>
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="UI Designer" />
+      <window_info id="Capture Tool" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Palette" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Maven" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

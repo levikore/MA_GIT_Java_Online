@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <script src="../../../common/jquery-2.0.3.min.js"></script>
+    <script src="../../../common/context-path-helper.js"></script>
+  <!--bootstrap-->
+    <link href="../../../common/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="../../../common/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet"/>
+    <script src="../../../common/bootstrap/js/bootstrap.min.js"></script>
+    <!--------->
+
+    <link rel="stylesheet" href="../home.css">
+    <link rel="stylesheet" href="newRepository.css">
+    <script type="text/javascript" language="javascript">
+        // let's start the jQuery while I wait.
+        // step 1: onload - capture the submit event on the form.
+        $(function () { // onload...do
+            $("#uploadForm").submit(function () {
+
+                var file = this[0].files[0];
+                var filename = this[0].files[0].name;
+                var extension = filename.replace(/^.*\./, '');
+
+                // Iff there is no dot anywhere in filename, we would have extension == filename,
+                // so we account for this possibility now
+                if (extension == filename) {
+                    extension = '';
+                } else {
+                    // if there is an extension, we convert to lower case
+                    // (N.B. this conversion will not effect the value of the extension
+                    // on the file upload.)
+                    extension = extension.toLowerCase();
+                }
+
+                if (extension === "xml") {
+                    var formData = new FormData();
+
+                    formData.append("xmlFile", file);
+                    $.ajax({
+                        method: 'POST',
+                        data: formData,
+                        url: this.action,
+                        processData: false, // Don't process the files
+                        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                        timeout: 4000,
+                        error: function (e) {
+                            console.error("Failed to submit");
+                            $("#good_result").text("");
+                            $("#error_result").text("Failed to get result from server ");
+                        },
+                        success: function (r) {
+                            $("#error_result").text("");
+                            $("#good_result").text(filename + " uploaded successfully");
+                            $("#errors_in_XML").text(r);
+                        }
+                    });
+
+                } else {
+                    $("#good_result").text("");
+                    $("#error_result").text("the file isn\'t xml type!");
+                }
+
+                // return value of the submit operation
+                // by default - we'll always return false so it doesn't redirect the user.
+                return false;
+            });
+        });
+    </script>
+    <script src="../home.js"></script>
+
+</head>
+<body>
+<div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="../home.html">M.A Git Online</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="../home.html">Home</a></li>
+                <li><a href="../../allUsers/allUsers.html">All Users</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <div id="userInformation-flexBox" class="row">
+                    <div class="navbar-text" id="notifications-area">
+                        <ul>massage 1ccccccccccccccccccccccccccccccccccccccccccccc</ul>
+                        <ul>message 2</ul>
+                        <ul>message 3</ul>
+                        <ul>message 4</ul>
+                        <ul>message 5</ul>
+                        <ul>message 6</ul>
+                    </div>
+                </div>
+            </ul>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><p class="navbar-text" id="userName">
+                    <span class="glyphicon glyphicon-user"></span></p></li>
+                <li><a href="../../../home/logout">
+                    <span class="glyphicon glyphicon-log-out"></span> logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="selectFileContainer" class="d-flex flex-column bd-highlight mb-3">
+        <div class="p-2 bd-highlight">
+            <h4 class="text-info">please upload xml file of repository....</h4>
+        </div>
+        <div class="p-2 bd-highlight">
+            <div id="fileBrowser">
+                <form id="uploadForm" action="/app/upload" enctype="multipart/form-data" method="POST">
+                    <input id="selectFile" type="file" value="select file" name="file"><br>
+                    <input id="uploadFile" type="Submit" value="Upload File" class="btn btn-success navbar-btn"><br>
+                </form>
+            </div>
+        </div>
+        <div class="text-success" id="good_result" class="p-2 bd-highlight">
+        </div>
+        <div class="text-danger" id="error_result" class="p-2 bd-highlight">
+        </div>
+        <div class="text-danger" id="errors_in_XML" class="p-2 bd-highlight">
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>

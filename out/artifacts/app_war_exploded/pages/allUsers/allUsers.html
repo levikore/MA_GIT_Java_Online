@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <script src="../../common/jquery-2.0.3.min.js"></script>
+    <script src="../../common/context-path-helper.js"></script>
+    <script src="../home/home.js"></script>
+    <script src="allUsers.js"></script>
+    <!--bootstrap-->
+    <link href="../../common/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../common/bootstrap/css/bootstrap-grid.min.css">
+    <script src="../../common/bootstrap/js/bootstrap.min.js"></script>
+    <!------------->
+
+    <link rel="stylesheet" href="../home/home.css">
+    <link rel="stylesheet" href="allUsers.css">
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../home/home.html">M.A Git Online</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="../home/home.html">Home</a></li>
+            <li><a href="allUsers.html">All Users</a></li>
+            <a href="../home/newRepository/newRepository.html">
+                <button id="button-new-repository" class="btn btn-success navbar-btn">New Repository</button>
+            </a>
+        </ul>
+        <ul class="nav navbar-nav">
+            <div id="userInformation-flexBox" class="row">
+                <div class="navbar-text" id="notifications-area">
+                    <ul>massage 1ccccccccccccccccccccccccccccccccccccccccccccc</ul>
+                    <ul>message 2</ul>
+                    <ul>message 3</ul>
+                    <ul>message 4</ul>
+                    <ul>message 5</ul>
+                    <ul>message 6</ul>
+                </div>
+            </div>
+        </ul>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><p class="navbar-text" id="userName">
+                <span class="glyphicon glyphicon-user"></span></p></li>
+            <li><a href="../../home/logout">
+                <span class="glyphicon glyphicon-log-out"></span> logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div id="container-users-list">
+    <div class="row">
+        <!--<h2 id="all-users-list-title" class="mb-1">All Users: <small class="text-muted h5">(with 1 repository at least)</small> </h2>-->
+        <div class="col-4">
+            <div id="users-list" class="list-group" role="tablist">
+            </div>
+        </div>
+
+        <div class="col-8">
+            <div id="users-list-content" class="tab-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
