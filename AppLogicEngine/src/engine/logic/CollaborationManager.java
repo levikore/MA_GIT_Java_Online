@@ -125,7 +125,7 @@ public class CollaborationManager {
         RepositoryManager remoteRepositoryManager = new RepositoryManager(i_RemotePath, "Administrator", false, false, null);
         new RepositoryManager(i_LocalPath, "Administrator", true, true, null);
         handleClone(remoteRepositoryManager, i_RemotePath, i_LocalPath);
-        RepositoryManager localRepository = new RepositoryManager(i_LocalPath, i_CurrentUserName, false, false, null);
+        RepositoryManager localRepository = new RepositoryManager(i_LocalPath, i_CurrentUserName, false, false, i_RemotePath);
         localRepository.HandleCheckout(localRepository.GetHeadBranch().GetBranch().GetBranchName());
 
         return localRepository;

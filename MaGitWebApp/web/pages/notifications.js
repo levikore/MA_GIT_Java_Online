@@ -7,13 +7,17 @@ function ajaxNotifications() {
     $.ajax({
         url: NOTIFICATIONS_URL,
         success: function (i_NotificationsData) {
-            if (!isExistNotificationsInSessionStorage) {
-                sessionStorage.setItem("notificationsData", JSON.stringify(i_NotificationsData));
-            }
-            //var userData= JSON.parse(i_UserData);
-            if (i_NotificationsData.m_Version !== lastVersionSeen) {
-                appendUserNotifications(i_NotificationsData.m_Notifications);
-                lastVersionSeen=i_NotificationsData.m_Version;
+            if (i_NotificationsData !== "") {
+                if (!isExistNotificationsInSessionStorage) {
+                    sessionStorage.setItem("notificationsData", JSON.stringify(i_NotificationsData));
+                    isExistNotificationsInSessionStorage = true;
+                }
+                lastVersionSeen = JSON.parse(sessionStorage.getItem("notificationsData")).m_LastVersionSeen;
+                //var userData= JSON.parse(i_UserData);
+                if (i_NotificationsData.m_Version !== lastVersionSeen) {
+                    appendUserNotifications(i_NotificationsData.m_Notifications);
+                    lastVersionSeen = i_NotificationsData.m_Version;
+                }
             }
         }
     });
@@ -32,11 +36,11 @@ function appendUserNotifications(i_Notifications) {
 }
 
 $(function () {
-    if (sessionStorage.getItem("notificationsData") !== null) {
+    if (sessionStorage.getItem("notificationsData") !== null && JSON.parse(sessionStorage.getItem("notificationsData")) !== "") {
         isExistNotificationsInSessionStorage = true;
         const currentNotificationObject = JSON.parse(sessionStorage.getItem("notificationsData"));
         appendUserNotifications(currentNotificationObject.m_Notifications);
-        lastVersionSeen=currentNotificationObject.m_LastVersionSeen;
+        lastVersionSeen = currentNotificationObject.m_LastVersionSeen;
 
     } else {
         isExistNotificationsInSessionStorage = false;

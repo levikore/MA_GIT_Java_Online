@@ -3,7 +3,6 @@ package user.servlets;
 import com.google.gson.Gson;
 import engine.repositories.Notification;
 import engine.repositories.UserData;
-import engine.repositories.UserNameObj;
 import user.utils.ServletUtils;
 import user.utils.SessionUtils;
 
@@ -20,22 +19,28 @@ import java.util.List;
 public class NotificationsServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String userName = SessionUtils.getUsername(request);
+        UserData userData = ServletUtils.getAppManager(getServletContext(), userName).GetUserData(userName);
+        if (userData != null && userData.GetNotificationsVersion() > userData.GetLastNotificationsVersionSeen()) {
+            response.setContentType("application/json");
+            try (PrintWriter out = response.getWriter()) {
+                synchronized (this) {
+                    Gson gson = new Gson();
 
-        response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            Gson gson = new Gson();
-            String userName = SessionUtils.getUsername(request);
-            UserData userData = ServletUtils.getAppManager(getServletContext(), userName).GetUserData(userName);
-            List<Notification> notifications = null;
-            if (userData != null) {
-                notifications = userData.GetNewNotifications();
-                NotificationsData notificationsData = new NotificationsData(notifications, userData.GetNotificationsVersion(), userData.GetLastNotificationsVersionSeen());
-                String json = gson.toJson(notificationsData);
-                //String json = gson.toJson(userName);
-                out.println(json);
-                out.flush();
+                    List<Notification> notifications = null;
+                    notifications = userData.GetNewNotifications();
+                    NotificationsData notificationsData = new NotificationsData(notifications, userData.GetNotificationsVersion(), userData.GetLastNotificationsVersionSeen());
+                    String json = gson.toJson(notificationsData);
+                    userData.UpdateNotificationLastSeenVersion();
+                    //String json = gson.toJson(userName);
+                    out.println(json);
+                    out.flush();
+
+                }
             }
-
+        }
+        else {
+            return;
         }
     }
 

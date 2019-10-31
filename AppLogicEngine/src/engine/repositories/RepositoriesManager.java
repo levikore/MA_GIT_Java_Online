@@ -57,14 +57,11 @@ public class RepositoriesManager {
         if (!isUserExists(i_Username)) {
             List<RepositoryManager> repositoriesManagerList = new LinkedList<>();
             repositoriesManagerList.add(i_RepositoryManager);
-
             List<RepositoryData> repositoriesDataList = new LinkedList<>();
             repositoriesDataList.add(i_RepositoryData);
             UserData userData = new UserData(repositoriesDataList, i_Username);
             addUserData(i_Username, userData);
             m_RepositoriesListHashMap.put(i_Username, repositoriesManagerList);
-
-
         } else {
             m_UsersDataHashMap.get(i_Username).AddRepositoryData(i_RepositoryData);
             m_RepositoriesListHashMap.get(i_Username).add(i_RepositoryManager);

@@ -27,7 +27,7 @@ public class UserData {
     public UserData(List<RepositoryData> i_RepositoriesDataList, String i_UserName) {
         m_RepositoriesDataList = i_RepositoriesDataList;
         m_UserName = i_UserName;
-       m_UserFolderPath = Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName;
+        m_UserFolderPath = Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName;
         m_NotificationsList = new LinkedList<>();
         recoverAllNotifications();
     }
@@ -47,36 +47,41 @@ public class UserData {
     }
 
 
-    public List<Notification> GetNewNotifications()
-    {
-        List<Notification> notifications=new LinkedList<>();
+    public List<Notification> GetNewNotifications() {
+        List<Notification> notifications = new LinkedList<>();
 
-        for(int i=m_LastNotificationsVersionSeen+1;i<m_NotificationsList.size();i++)
-        {
-            notifications.add(m_NotificationsList.get(0));
+        for (int i = m_LastNotificationsVersionSeen + 1; i < m_NotificationsList.size(); i++) {
+            notifications.add(m_NotificationsList.get(i));
         }
-        m_LastNotificationsVersionSeen=m_NotificationsList.size()-1;
-        FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
-        FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION,m_NotificationsVersion+","+m_LastNotificationsVersionSeen);
+
         return notifications;
     }
 
-    private void recoverAllNotifications() {
-        List<String> versions = FilesManagement.ConvertCommaSeparatedStringToList(FilesManagement.ReadTextFileContent(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
-        m_NotificationsVersion = Integer.parseInt(versions.get(0));
-        m_LastNotificationsVersionSeen = Integer.parseInt(versions.get(1));
-        ///recover Notification from notifications.txt file
+    public synchronized void UpdateNotificationLastSeenVersion() {
+        if (m_LastNotificationsVersionSeen < m_NotificationsList.size() - 1) {
+            m_LastNotificationsVersionSeen = m_NotificationsList.size() - 1;
+            FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+            FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION, m_NotificationsVersion + "," + m_LastNotificationsVersionSeen);
+        }
     }
 
-    public void AppendNewNotification(String i_Time, String i_Content)
-    {
-        Notification notification=new Notification(i_Content,i_Time);
+    private void recoverAllNotifications() {
+        if (Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION).toFile().exists()) {
+            List<String> versions = FilesManagement.ConvertCommaSeparatedStringToList(FilesManagement.ReadTextFileContent(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+            m_NotificationsVersion = Integer.parseInt(versions.get(0));
+            m_LastNotificationsVersionSeen = Integer.parseInt(versions.get(1));
+            ///recover Notification from notifications.txt file
+        }
+    }
+
+    public synchronized void AppendNewNotification(String i_Time, String i_Content) {
+        Notification notification = new Notification(i_Content, i_Time);
         m_NotificationsList.add(notification);
         m_NotificationsVersion++;
         FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
-        FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION,m_NotificationsVersion+","+m_LastNotificationsVersionSeen);
+        FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION, m_NotificationsVersion + "," + m_LastNotificationsVersionSeen);
         try {
-            Files.write(Paths.get(m_UserFolderPath+"\\"+Constants.USER_NOTIFICATIONS_FILE), (i_Content+"\n").getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_FILE), (i_Content + "\n").getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }

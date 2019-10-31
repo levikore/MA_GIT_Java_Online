@@ -649,6 +649,7 @@ public class FilesManagement {
         if (remoteBranchesFolder != null) {
             String remoteName = remoteBranchesFolder.getName();
             for (File file : Objects.requireNonNull(remoteBranchesFolder.listFiles())) {
+               if(!file.isDirectory())
                 branchesList.add(remoteName + "\\" + FilenameUtils.removeExtension(file.getName()) + ',' + ReadTextFileContent(file.getPath()));
             }
         }
