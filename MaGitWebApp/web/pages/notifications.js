@@ -16,6 +16,8 @@ function ajaxNotifications() {
                 //var userData= JSON.parse(i_UserData);
                 if (i_NotificationsData.m_Version !== lastVersionSeen) {
                     appendUserNotifications(i_NotificationsData.m_Notifications);
+                    i_NotificationsData.m_LastVersionSeen = i_NotificationsData.m_Version;
+                    sessionStorage.setItem("notificationsData", JSON.stringify(i_NotificationsData));
                     lastVersionSeen = i_NotificationsData.m_Version;
                 }
             }

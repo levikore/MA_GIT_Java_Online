@@ -7,6 +7,10 @@
     <script src="../../common/context-path-helper.js"></script>
     <script src="../home/home.js"></script>
     <script src="allUsers.js"></script>
+    <script src="../notifications.js"></script>
+    <script>function clearSessionStorage() {
+        sessionStorage.clear();
+    }</script>
     <!--bootstrap-->
     <link href="../../common/bootstrap/css/bootstrap.css" rel="stylesheet"/>
     <link rel="stylesheet" href="../../common/bootstrap/css/bootstrap-grid.min.css">
@@ -33,12 +37,6 @@
         <ul class="nav navbar-nav">
             <div id="userInformation-flexBox" class="row">
                 <div class="navbar-text" id="notifications-area">
-                    <ul>massage 1ccccccccccccccccccccccccccccccccccccccccccccc</ul>
-                    <ul>message 2</ul>
-                    <ul>message 3</ul>
-                    <ul>message 4</ul>
-                    <ul>message 5</ul>
-                    <ul>message 6</ul>
                 </div>
             </div>
         </ul>
@@ -46,7 +44,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li><p class="navbar-text" id="userName">
                 <span class="glyphicon glyphicon-user"></span></p></li>
-            <li><a href="../../home/logout">
+            <li><a onclick="clearSessionStorage()" href="../../home/logout">
                 <span class="glyphicon glyphicon-log-out"></span> logout</a>
             </li>
         </ul>
