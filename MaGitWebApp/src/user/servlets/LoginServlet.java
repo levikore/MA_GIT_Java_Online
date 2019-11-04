@@ -1,5 +1,6 @@
 package user.servlets;
 
+import engine.repositories.UserData;
 import engine.users.ConnectedUsersManager;
 import user.constants.Constants;
 import user.utils.ServletUtils;
@@ -29,6 +30,7 @@ public class LoginServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String usernameFromSession = SessionUtils.getUsername(request);
         ConnectedUsersManager connectedUsersManager = ServletUtils.getUserManager(getServletContext());
+
         if (usernameFromSession == null) {
             //user is not logged in yet
             String usernameFromParameter = request.getParameter(USERNAME);

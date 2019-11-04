@@ -19,8 +19,10 @@ import java.util.List;
 public class NotificationsServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String userName = SessionUtils.getUsername(request);
         UserData userData = ServletUtils.getAppManager(getServletContext(), userName).GetUserData(userName);
+
         if (userData != null && userData.GetNotificationsVersion() > userData.GetLastNotificationsVersionSeen()) {
             response.setContentType("application/json");
             try (PrintWriter out = response.getWriter()) {

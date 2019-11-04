@@ -133,9 +133,9 @@ public class AppManager {
         Path userFolderPath = getUserRepositoriesFolderPath(i_UserName);
         if (!(userFolderPath.toFile().exists())) {
             FilesManagement.CreateFolder(userFolderPath.getParent(), i_UserName);
-            FilesManagement.CreateFolder(userFolderPath,"notifications");
-            FilesManagement.CreateNewFile(Paths.get(userFolderPath+"\\"+"notifications\\"+"version.txt").toString(),"-1,-1");
-            FilesManagement.CreateNewFile(Paths.get(userFolderPath+"\\"+"notifications\\"+"notifications.txt").toString(),"");
+           // FilesManagement.CreateFolder(userFolderPath,"notifications");
+          //  FilesManagement.CreateNewFile(Paths.get(userFolderPath+"\\"+"notifications\\"+"version.txt").toString(),"-1,-1");
+          //  FilesManagement.CreateNewFile(Paths.get(userFolderPath+"\\"+"notifications\\"+"notifications.txt").toString(),"");
         }
     }
 

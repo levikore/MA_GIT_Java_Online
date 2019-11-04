@@ -19,8 +19,8 @@ public class UserData {
     private String m_UserName;
     private List<RepositoryData> m_RepositoriesDataList;
     private List<Notification> m_NotificationsList;
-    private int m_NotificationsVersion;
-    private int m_LastNotificationsVersionSeen;
+    private int m_NotificationsVersion = -1;
+    private int m_LastNotificationsVersionSeen = -1;
     private transient String m_UserFolderPath;
 
 
@@ -29,7 +29,7 @@ public class UserData {
         m_UserName = i_UserName;
         m_UserFolderPath = Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName;
         m_NotificationsList = new LinkedList<>();
-        recoverAllNotifications();
+        //recoverAllNotifications();
     }
 
 
@@ -60,17 +60,16 @@ public class UserData {
     public synchronized void UpdateNotificationLastSeenVersion() {
         if (m_LastNotificationsVersionSeen < m_NotificationsList.size() - 1) {
             m_LastNotificationsVersionSeen = m_NotificationsList.size() - 1;
-            FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
-            FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION, m_NotificationsVersion + "," + m_LastNotificationsVersionSeen);
+            //FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+            //FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION, m_NotificationsVersion + "," + m_LastNotificationsVersionSeen);
         }
     }
 
     private void recoverAllNotifications() {
         if (Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION).toFile().exists()) {
-            List<String> versions = FilesManagement.ConvertCommaSeparatedStringToList(FilesManagement.ReadTextFileContent(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
-            m_NotificationsVersion = Integer.parseInt(versions.get(0));
-            m_LastNotificationsVersionSeen = Integer.parseInt(versions.get(1));
-            ///recover Notification from notifications.txt file
+            //List<String> versions = FilesManagement.ConvertCommaSeparatedStringToList(FilesManagement.ReadTextFileContent(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+            //m_NotificationsVersion = Integer.parseInt(versions.get(0));
+            // m_LastNotificationsVersionSeen = Integer.parseInt(versions.get(1));
         }
     }
 
@@ -78,13 +77,13 @@ public class UserData {
         Notification notification = new Notification(i_Content, i_Time);
         m_NotificationsList.add(notification);
         m_NotificationsVersion++;
-        FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
-        FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION, m_NotificationsVersion + "," + m_LastNotificationsVersionSeen);
-        try {
-            Files.write(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_FILE), (i_Content + "\n").getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        FilesManagement.RemoveFileByPath(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION));
+        // FilesManagement.CreateNewFile(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_VERSION, m_NotificationsVersion + "," + m_LastNotificationsVersionSeen);
+//        try {
+//            Files.write(Paths.get(m_UserFolderPath + "\\" + Constants.USER_NOTIFICATIONS_FILE), (i_Content + "\n").getBytes(), StandardOpenOption.APPEND);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void UpdateSpecificRepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
