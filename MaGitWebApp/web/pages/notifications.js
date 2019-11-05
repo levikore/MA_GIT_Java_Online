@@ -12,12 +12,14 @@ function ajaxNotifications() {
                     sessionStorage.setItem("notificationsData", JSON.stringify(i_NotificationsData));
                     isExistNotificationsInSessionStorage = true;
                 }
-                lastVersionSeen = JSON.parse(sessionStorage.getItem("notificationsData")).m_LastVersionSeen;
+                const notificationsDataInSessionStorageObject = JSON.parse(sessionStorage.getItem("notificationsData"));
+                lastVersionSeen = notificationsDataInSessionStorageObject.m_LastVersionSeen;
                 //var userData= JSON.parse(i_UserData);
                 if (i_NotificationsData.m_Version !== lastVersionSeen) {
                     appendUserNotifications(i_NotificationsData.m_Notifications);
-                    i_NotificationsData.m_LastVersionSeen = i_NotificationsData.m_Version;
-                    sessionStorage.setItem("notificationsData", JSON.stringify(i_NotificationsData));
+                    notificationsDataInSessionStorageObject.m_LastVersionSeen = i_NotificationsData.m_Version;
+                    notificationsDataInSessionStorageObject.m_Notifications=notificationsDataInSessionStorageObject.m_Notifications.concat(i_NotificationsData.m_Notifications)
+                    sessionStorage.setItem("notificationsData", JSON.stringify(notificationsDataInSessionStorageObject));
                     lastVersionSeen = i_NotificationsData.m_Version;
                 }
             }

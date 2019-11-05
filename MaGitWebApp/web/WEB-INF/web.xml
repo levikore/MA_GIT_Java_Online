@@ -3,10 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-<servlet>
-    <servlet-name>MAGitServlet</servlet-name>
-    <servlet-class>user.servlets.MAGitServlet</servlet-class>
-</servlet>
+    <listener>
+        <listener-class>
+            user.listener.ContextDestroyedListener
+        </listener-class>
+    </listener>
+<!--<servlet>-->
+<!--    <servlet-name>MAGitServlet</servlet-name>-->
+<!--    <servlet-class>user.servlets.MAGitServlet</servlet-class>-->
+<!--</servlet>-->
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
         <servlet-class>user.servlets.HomeServlet</servlet-class>
@@ -28,10 +33,10 @@
         <servlet-class>user.servlets.AllUsersServlet</servlet-class>
     </servlet>
 
-<servlet-mapping>
-    <servlet-name>MAGitServlet</servlet-name>
-    <url-pattern>/app</url-pattern>
-</servlet-mapping>
+<!--<servlet-mapping>-->
+<!--    <servlet-name>MAGitServlet</servlet-name>-->
+<!--    <url-pattern>/app</url-pattern>-->
+<!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
