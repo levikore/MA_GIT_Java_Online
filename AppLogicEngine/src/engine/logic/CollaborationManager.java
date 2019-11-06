@@ -37,6 +37,11 @@ public class CollaborationManager {
         return errorDescription;
     }
 
+    public static void PushBranch() {
+
+
+    }
+
     public static String Pull(Path i_RemotePath, RepositoryManager i_LocalManager) throws IOException {
         Boolean isPushRequired = false;
         String errorDescription = null;

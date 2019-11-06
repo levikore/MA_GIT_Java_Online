@@ -6,6 +6,7 @@ let lastIndexSelected = -1;
 let repositoryName;
 
 function ajaxRepository() {
+    hideModal( $('#fork-modal'));
     $.ajax({
         url: REPOSITORY_URL,
         data: getParametersData(),
@@ -372,6 +373,16 @@ function appendButtonsOfRepositoryOwner(repository) {
 
         + '<div class="form-inline" >'
         + '<div id="collaboration-wrapper" class="form-group has-feedback">'
+        + '<button onclick="" id="push-branch-button" class="btn btn-default">push branch</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+
+        + '<div class="row">'
+
+        + '<div class="form-inline" >'
+        + '<div id="collaboration-wrapper" class="form-group has-feedback">'
         + '<button onclick="postPush()" id="push-button" class="btn btn-default">push</button>'
         + '<button onclick="ajaxPull()" id="pull-button" class="btn btn-default">pull</button>'
         + '</div>'
@@ -474,7 +485,7 @@ function postFork(){
     hideModal( $('#fork-modal'));
 
     //setInterval(ajaxRepository, refreshRepositoryRate);
-    setTimeout(ajaxRepository, refreshRepositoryRate);
+    //setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
 function postCommit() {
@@ -682,5 +693,5 @@ function parent_disable() {
 
 
 $(function () {
-    setInterval(ajaxRepository, refreshRepositoryRate*2);
+    setInterval(ajaxRepository, refreshRepositoryRate*4);
 });

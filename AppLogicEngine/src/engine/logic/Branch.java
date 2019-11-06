@@ -16,6 +16,10 @@ public class Branch {
     private Boolean m_IsRemote = false;
     private String m_TrackingAfter = null;
 
+
+
+    private Boolean m_IsModifiable = false;
+
     public Branch(String i_BranchName, Commit i_Commit, Path i_RepositoryPath, boolean i_IsNewBranch, String i_BranchSha1, Boolean i_IsRemote, String i_TrackingAfter)//for the first Branch in the git.
     {
         m_RepositoryPath = i_RepositoryPath;
@@ -33,6 +37,14 @@ public class Branch {
         } else {
             m_BranchSha1 = i_BranchSha1;
         }
+    }
+
+    public void SetIsModifiable(Boolean i_IsModifiable) {
+        this.m_IsModifiable = i_IsModifiable;
+    }
+
+    public boolean GetIsModifiable() {
+       return m_IsModifiable;
     }
 
     public Branch(String i_BranchName, Branch i_ParentBranch, Path i_RepositoryPath, boolean i_IsNewBranch, String i_BranchSha1, Commit i_Commit, Boolean i_IsRemote, String i_TrackingAfter) {
@@ -61,10 +73,9 @@ public class Branch {
         m_CurrentCommit = i_NewCommit;
     }
 
-    public void ChangeBranchToRemoteBranch(String remoteRepositoryName)
-    {
-        m_BranchName=remoteRepositoryName+"\\"+m_BranchName;
-        m_BranchPath = Paths.get(m_RepositoryPath + "\\.magit\\branches\\"+remoteRepositoryName+"\\" + m_BranchName + ".txt");
+    public void ChangeBranchToRemoteBranch(String remoteRepositoryName) {
+        m_BranchName = remoteRepositoryName + "\\" + m_BranchName;
+        m_BranchPath = Paths.get(m_RepositoryPath + "\\.magit\\branches\\" + remoteRepositoryName + "\\" + m_BranchName + ".txt");
         m_IsRemote = true;
         m_BranchSha1 = FilesManagement.UpdateBranchFile(this, m_CurrentCommit, m_RepositoryPath);
     }
@@ -90,19 +101,19 @@ public class Branch {
         return m_BranchPath;
     }
 
-    public void SetIsRemote(Boolean i_IsRemote){
+    public void SetIsRemote(Boolean i_IsRemote) {
         m_IsRemote = i_IsRemote;
     }
 
-    public Boolean GetIsRemote(){
+    public Boolean GetIsRemote() {
         return m_IsRemote;
     }
 
-    public void SetTrackingAfter(String i_RemoteBranchName){
+    public void SetTrackingAfter(String i_RemoteBranchName) {
         m_TrackingAfter = i_RemoteBranchName;
     }
 
-    public String GetTrackingAfter(){
+    public String GetTrackingAfter() {
         return m_TrackingAfter;
     }
 }

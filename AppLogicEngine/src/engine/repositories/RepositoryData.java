@@ -32,10 +32,9 @@ public class RepositoryData {
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
         m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
         m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
-
         m_BranchesList = new LinkedList<>();
         for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
-            m_BranchesList.add(new BranchData(branch, isActiveBranch(branch,i_RepositoryManager.GetHeadBranch())));
+            m_BranchesList.add(new BranchData(branch, isActiveBranch(branch,i_RepositoryManager.GetHeadBranch()),branch.GetIsModifiable()));
         }
 
         List<Commit> commitStringList = i_RepositoryManager.GetHeadBranchCommitHistory(i_RepositoryManager.GetHeadBranch().GetBranch());
@@ -211,14 +210,14 @@ public class RepositoryData {
        boolean m_IsActiveBranch;
        boolean m_IsModifiable;
 
-        private BranchData(Branch i_Branch, boolean i_IsActiveBranch) {
+        private BranchData(Branch i_Branch, boolean i_IsActiveBranch, boolean i_IsModifiable) {
             m_BranchName = i_Branch.GetBranchName();
             m_CommitSHA1 = i_Branch.GetCurrentCommit().GetCurrentCommitSHA1();
             m_CommitComment = i_Branch.GetCurrentCommit().GetCommitComment();
             m_IsRemote = i_Branch.GetIsRemote();
             m_TrackingAfter = i_Branch.GetTrackingAfter()!=null?i_Branch.GetTrackingAfter():"none";
             m_IsActiveBranch= i_IsActiveBranch;
-            //m_IsModifiable = i_IsModifiable;
+            m_IsModifiable = i_IsModifiable;
         }
     }
 
