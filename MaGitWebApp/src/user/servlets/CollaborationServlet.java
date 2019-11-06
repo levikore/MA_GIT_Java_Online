@@ -52,23 +52,24 @@ public class CollaborationServlet extends HttpServlet {
                 handleForkRequest(request, username, appManager);
             } else if (functionName.equals("pull")) {
                 errorsString = handlePullRequest(request, appManager);
-            }else if (functionName.equals("push")){
+            } else if (functionName.equals("push")) {
                 errorsString = handlePushRequest(request, appManager);
             }
         }
 
-        if(!errorsString.isEmpty()) {
+        if (errorsString != null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorsString);
         }
     }
     //appManager.GetUserData(username).UpdateSpecificRepositoryData(repository, null);
 
-    private String handlePushRequest(HttpServletRequest request, AppManager i_AppManager){
+    private String handlePushRequest(HttpServletRequest request, AppManager i_AppManager) {
         String localUsername = request.getParameter("localUsername");
         String localRepositoryName = request.getParameter("localRepositoryName");
         String errors = "";
 
         RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
+
         if (localRepository.GetRemoteReference() != null) {
             errors = i_AppManager.HandlePush(localUsername, localRepositoryName);
         }
@@ -76,7 +77,6 @@ public class CollaborationServlet extends HttpServlet {
         return errors;
 
     }
-
 
     private String handlePullRequest(HttpServletRequest request, AppManager i_AppManager) {
         String localUsername = request.getParameter("localUsername");

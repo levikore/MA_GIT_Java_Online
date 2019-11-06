@@ -25,7 +25,7 @@ public class CollaborationManager {
                     errorDescription = "the branch in RR isnt synchronized with current RB";
                 }
             } else {
-                errorDescription = "Current head Branch is doesnt RTB";
+                errorDescription = "Current head Branch isnt RTB";
             }
 
             remoteManager.HandleCheckout(remoteManager.GetHeadBranch().GetBranch().GetBranchName());

@@ -17,13 +17,12 @@ public class RepositoryData {
     private int m_NumOfBranches;
     private String m_LastCommitComment;
     private String m_LastCommitDate;
-    List<BranchData> m_BranchesList;
-    List<String> m_BranchesNamesList;
-    List<CommitData> m_HeadBranchCommitsList;
-    List<FileContent> m_CurrentWCFilesList;
-    List<UnCommittedFile> m_UncommittedFilesList;
+    private List<BranchData> m_BranchesList;
+    private List<String> m_BranchesNamesList;
+    private List<CommitData> m_HeadBranchCommitsList;
+    private List<FileContent> m_CurrentWCFilesList;
+    private List<UnCommittedFile> m_UncommittedFilesList;
     // private RepositoryManager m_RepositoryManager;
-
 
     public RepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
         m_Owner = i_RepositoryManager.GetCurrentUserName();
@@ -210,6 +209,7 @@ public class RepositoryData {
         boolean m_IsRemote;
         String m_CommitComment;
        boolean m_IsActiveBranch;
+       boolean m_IsModifiable;
 
         private BranchData(Branch i_Branch, boolean i_IsActiveBranch) {
             m_BranchName = i_Branch.GetBranchName();
@@ -218,6 +218,7 @@ public class RepositoryData {
             m_IsRemote = i_Branch.GetIsRemote();
             m_TrackingAfter = i_Branch.GetTrackingAfter()!=null?i_Branch.GetTrackingAfter():"none";
             m_IsActiveBranch= i_IsActiveBranch;
+            //m_IsModifiable = i_IsModifiable;
         }
     }
 

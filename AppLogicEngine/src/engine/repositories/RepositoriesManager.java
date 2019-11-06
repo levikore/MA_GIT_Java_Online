@@ -20,6 +20,7 @@ public class RepositoriesManager {
         }
     }
 
+
     public RepositoryManager GetRepositoryByName(String i_UserName, String i_RepositoryName) {
         RepositoryManager repositoryToReturn = null;
 
@@ -52,8 +53,6 @@ public class RepositoriesManager {
     }
 
     public synchronized void addRepositoryData(String i_Username, RepositoryData i_RepositoryData, RepositoryManager i_RepositoryManager) {
-
-
         if (!isUserExists(i_Username)) {
             List<RepositoryManager> repositoriesManagerList = new LinkedList<>();
             repositoriesManagerList.add(i_RepositoryManager);
@@ -67,6 +66,17 @@ public class RepositoriesManager {
             m_RepositoriesListHashMap.get(i_Username).add(i_RepositoryManager);
         }
     }
+
+    public synchronized void UpdateRepositoryData(String i_Username, RepositoryData i_RepositoryData, RepositoryManager i_RepositoryManager) {
+        if (isUserExists(i_Username)) {
+            m_UsersDataHashMap.get(i_Username).UpdateSpecificRepositoryData(i_RepositoryManager, null);
+
+            Integer index = m_RepositoriesListHashMap.get(i_Username).indexOf(i_RepositoryManager);
+            m_RepositoriesListHashMap.get(i_Username).set(index,i_RepositoryManager);
+        }
+    }
+
+
 
     public synchronized Set<String> getUsers() {
         return Collections.unmodifiableSet(m_UsersDataHashMap.keySet());

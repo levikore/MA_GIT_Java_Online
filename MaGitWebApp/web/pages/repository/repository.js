@@ -23,8 +23,8 @@ function ajaxPull() {
         data: getPullData(),
         dataType: 'json',
         success: function (repository) {
-            sessionStorage.setItem("repository", JSON.stringify(repository));
-            setRepositoryData(repository);
+           // sessionStorage.setItem("repository", JSON.stringify(repository));
+           // setRepositoryData(repository);
         }
     })
 
@@ -32,7 +32,7 @@ function ajaxPull() {
 }
 
 function postPush(){
-    var parametersData = getParametersData();
+    let parametersData = getParametersData();
     const data = {"localUsername": parametersData.username,
         "localRepositoryName": parametersData.repositoryName,
         "functionName": "push"
@@ -47,6 +47,8 @@ function postPush(){
 
         }
     })
+
+    setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
 
@@ -680,5 +682,5 @@ function parent_disable() {
 
 
 $(function () {
-    setTimeout(ajaxRepository, refreshRepositoryRate);
+    setInterval(ajaxRepository, refreshRepositoryRate*2);
 });
