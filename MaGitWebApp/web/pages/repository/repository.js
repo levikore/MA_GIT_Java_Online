@@ -17,12 +17,72 @@ function ajaxRepository() {
     })
 }
 
+function ajaxPull() {
+    $.ajax({
+        url: COLLABORATION_URL,
+        data: getPullData(),
+        dataType: 'json',
+        success: function (repository) {
+            sessionStorage.setItem("repository", JSON.stringify(repository));
+            setRepositoryData(repository);
+        }
+    })
+
+    setTimeout(ajaxRepository, refreshRepositoryRate);
+}
+
+function postPush(){
+    var parametersData = getParametersData();
+    const data = {"localUsername": parametersData.username,
+        "localRepositoryName": parametersData.repositoryName,
+        "functionName": "push"
+    }
+
+    $.ajax({
+        url: COLLABORATION_URL,
+        data: data,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function () {
+
+        }
+    })
+}
+
+
+/*function postFork(){
+    const newRepositoryNameId=$('#repository-name-fork-modal-input');
+    const newRepositoryName = newRepositoryNameId.val();
+    const parametersData=getParametersData();
+    //const branchErrorSign = $('#branch-error-sign');
+    // const errorString = $('#branch-error-string')
+    const data = {
+        "originRepositoryName": parametersData.repositoryName,
+        "originRepositoryUserName":parametersData.username,
+        "functionName": "fork",
+        "newRepositoryName": newRepositoryName,
+        "time":getCurrentTime()
+
+    };
+    postForkFunctionsData(data);
+    newRepositoryNameId.val("");
+    hideModal( $('#fork-modal'));
+
+    //setInterval(ajaxRepository, refreshRepositoryRate);
+    setTimeout(ajaxRepository, refreshRepositoryRate);
+}*/
+
 function getParametersData() {
     let searchParams = new URLSearchParams(window.location.search)
     //Does sent exist?
     const userName = searchParams.get('userName');
     const repositoryName = searchParams.get('repositoryName');
     return {"username": userName, "repositoryName": repositoryName}
+}
+
+function getPullData() {
+    const parmetersData = getParametersData();
+    return {"localUsername": parmetersData.username, "localRepositoryName": parmetersData.repositoryName, "functionName": "pull"};
 }
 
 function isBranchExist(branchName) {
@@ -126,7 +186,7 @@ function postCheckout() {
     // location.reload();
 }
 
-function  postForkFunctionsData(dataToPost) {
+function postForkFunctionsData(dataToPost) {
     $.ajax({
         url: COLLABORATION_URL,
         data: dataToPost,
@@ -301,6 +361,17 @@ function appendButtonsOfRepositoryOwner(repository) {
         + '<label id="checkout-label" class="control-label">Checkout</label>'
         + '<input type="text" class="form-control" id="checkout-input">'
         + '<button onclick="postCheckout()" id="checkout-button" class="btn btn-default">Submit</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>'
+
+        + '<div class="row">'
+
+        + '<div class="form-inline" >'
+        + '<div id="collaboration-wrapper" class="form-group has-feedback">'
+        + '<button onclick="postPush()" id="push-button" class="btn btn-default">push</button>'
+        + '<button onclick="ajaxPull()" id="pull-button" class="btn btn-default">pull</button>'
         + '</div>'
         + '</div>'
 

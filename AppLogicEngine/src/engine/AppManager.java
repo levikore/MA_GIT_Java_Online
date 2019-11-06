@@ -72,6 +72,32 @@ public class AppManager {
        }
    }
 
+   public String HandlePull(String i_LocalUserName, String i_LocalRepositoryName){
+       RepositoryManager localRepository =  m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
+       String response = "";
+       try {
+           response = CollaborationManager.Pull(localRepository.GetRemoteReference(), localRepository);
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+
+       return response;
+   }
+
+    public String HandlePush(String i_LocalUserName, String i_LocalRepositoryName){
+        RepositoryManager localRepository =  m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
+        String response = "";
+        try {
+            response = CollaborationManager.Push(localRepository.GetRemoteReference(), localRepository);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+
+
     public UserData GetUserData(String i_UserName) {
         return m_RepositoriesManager.GetUserData(i_UserName);
     }
@@ -105,6 +131,7 @@ public class AppManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private String getRepositoryNameFromXml(InputStream i_InputStreamOfXML) {

@@ -45,21 +45,64 @@ public class CollaborationServlet extends HttpServlet {
         }
 
         String functionName = request.getParameter("functionName");
+        String errorsString = "";
+
+        if (functionName != null) {
+            if (functionName.equals("fork")) {
+                handleForkRequest(request, username, appManager);
+            } else if (functionName.equals("pull")) {
+                errorsString = handlePullRequest(request, appManager);
+            }else if (functionName.equals("push")){
+                errorsString = handlePushRequest(request, appManager);
+            }
+        }
+
+        if(!errorsString.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorsString);
+        }
+    }
+    //appManager.GetUserData(username).UpdateSpecificRepositoryData(repository, null);
+
+    private String handlePushRequest(HttpServletRequest request, AppManager i_AppManager){
+        String localUsername = request.getParameter("localUsername");
+        String localRepositoryName = request.getParameter("localRepositoryName");
+        String errors = "";
+
+        RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
+        if (localRepository.GetRemoteReference() != null) {
+            errors = i_AppManager.HandlePush(localUsername, localRepositoryName);
+        }
+
+        return errors;
+
+    }
+
+
+    private String handlePullRequest(HttpServletRequest request, AppManager i_AppManager) {
+        String localUsername = request.getParameter("localUsername");
+        String localRepositoryName = request.getParameter("localRepositoryName");
+        String errors = "";
+
+        RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
+        if (localRepository.GetRemoteReference() != null) {
+            errors = i_AppManager.HandlePull(localUsername, localRepositoryName);
+        }
+
+        return errors;
+    }
+
+    private void handleForkRequest(HttpServletRequest request, String i_UserName, AppManager i_AppManager) {
         String originRepositoryName = request.getParameter("originRepositoryName");
         String originRepositoryUserName = request.getParameter("originRepositoryUserName");
         String newRepositoryName = request.getParameter("newRepositoryName");
         String time = request.getParameter("time");
 
-        RepositoryManager originRepository = appManager.GetRepositoryByName(originRepositoryUserName, originRepositoryName);
-
+        RepositoryManager originRepository = i_AppManager.GetRepositoryByName(originRepositoryUserName, originRepositoryName);
 
         if (originRepository != null) {
-            if (functionName.equals("fork")) {
-                appManager.HandleClone(originRepositoryUserName, originRepositoryName, username, newRepositoryName);
-                appManager.GetAllUserMap().get(originRepositoryUserName).AppendNewNotification(time, username + " forked your repository: " + originRepositoryName);
-            }
+            i_AppManager.HandleClone(originRepositoryUserName, originRepositoryName, i_UserName, newRepositoryName);
+            i_AppManager.GetAllUserMap().get(originRepositoryUserName).AppendNewNotification(time, i_UserName + " forked your repository: " + originRepositoryName);
         }
-        //appManager.GetUserData(username).UpdateSpecificRepositoryData(repository, null);
     }
 
 
