@@ -93,6 +93,9 @@ public class AppManager {
             RepositoryData remoteRepositoryData = new RepositoryData(updatedRemoteRepository, null);
             m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, updatedRemoteRepository);//****
 
+            RepositoryData localRepositoryData = new RepositoryData(localRepository, null);
+            m_RepositoriesManager.UpdateRepositoryData(i_LocalUserName, localRepositoryData, localRepository);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

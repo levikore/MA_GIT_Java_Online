@@ -864,7 +864,7 @@ public class RepositoryManager {
         Branch previousBranch = null;
         while (currentCommit != null ) {
             previousBranch = GetDifferentBranchByCommit(currentCommit, i_LocalBranch);
-            if(previousBranch.GetIsRemote()){
+            if(previousBranch!=null && previousBranch.GetIsRemote()){
                 break;
             }else {
                 currentCommit = currentCommit.GetPrevCommitsList() == null ? null : currentCommit.GetPrevCommitsList().get(0);

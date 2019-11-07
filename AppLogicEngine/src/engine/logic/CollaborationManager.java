@@ -50,6 +50,7 @@ public class CollaborationManager {
         String branchName = i_RemotePath.toFile().getName() + "\\" + remoteBranchInRR.GetBranchName();
         Branch localRemoteBranch = new Branch(branchName, previousRemoteBranchInLR.GetCurrentCommit(), i_LocalManager.GetRepositoryPath(), true, null, true, null);
         localBranch.SetTrackingAfter(localRemoteBranch.GetBranchName());
+        i_LocalManager = new RepositoryManager(i_LocalManager.GetRepositoryPath(), i_LocalManager.GetCurrentUserName(), false, false, i_LocalManager.GetRemoteReference());
         Push(i_RemotePath, i_LocalManager);
     }
 

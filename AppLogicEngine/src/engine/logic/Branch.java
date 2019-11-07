@@ -110,6 +110,7 @@ public class Branch {
     }
 
     public void SetTrackingAfter(String i_RemoteBranchName) {
+        FilesManagement.HandleTrackingFolder(m_BranchName, m_IsRemote, i_RemoteBranchName, m_RepositoryPath);
         m_TrackingAfter = i_RemoteBranchName;
     }
 
