@@ -70,12 +70,16 @@ public class RepositoriesManager {
     public synchronized void UpdateRepositoryData(String i_Username, RepositoryData i_RepositoryData, RepositoryManager i_RepositoryManager) {
         if (isUserExists(i_Username)) {
             m_UsersDataHashMap.get(i_Username).UpdateSpecificRepositoryData(i_RepositoryManager, null);
-
-            Integer index = m_RepositoriesListHashMap.get(i_Username).indexOf(i_RepositoryManager);
-            m_RepositoriesListHashMap.get(i_Username).set(index,i_RepositoryManager);
+            int index = 0;
+            for (RepositoryManager repositoryManager : m_RepositoriesListHashMap.get(i_Username)) {
+                if (repositoryManager.GetRepositoryName().equals(i_RepositoryManager.GetRepositoryName())) {
+                    break;
+                }
+                index++;
+            }
+            m_RepositoriesListHashMap.get(i_Username).set(index, i_RepositoryManager);
         }
     }
-
 
 
     public synchronized Set<String> getUsers() {

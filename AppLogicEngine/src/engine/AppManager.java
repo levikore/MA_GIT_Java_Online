@@ -93,12 +93,17 @@ public class AppManager {
             RepositoryData remoteRepositoryData = new RepositoryData(updatedRemoteRepository, null);
             m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, updatedRemoteRepository);//****
 
+            localRepository = new RepositoryManager(localRepository.GetRepositoryPath(), localRepository.GetCurrentUserName(), false, false,  localRepository.GetRemoteReference());
             RepositoryData localRepositoryData = new RepositoryData(localRepository, null);
             m_RepositoriesManager.UpdateRepositoryData(i_LocalUserName, localRepositoryData, localRepository);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName){
 
     }
 

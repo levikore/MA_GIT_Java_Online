@@ -72,6 +72,26 @@ function postPushLocalBranch(){
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
+function postPullRequest(){
+    let parametersData = getParametersData();
+    const data = {"localUsername": parametersData.username,
+        "localRepositoryName": parametersData.repositoryName,
+        "functionName": "pullRequest"
+    }
+
+    $.ajax({
+        url: COLLABORATION_URL,
+        data: data,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function () {
+
+        }
+    })
+
+    setTimeout(ajaxRepository, refreshRepositoryRate);
+}
+
 function getParametersData() {
     let searchParams = new URLSearchParams(window.location.search)
     //Does sent exist?
@@ -370,6 +390,7 @@ function appendButtonsOfRepositoryOwner(repository) {
 
         + '<div class="form-inline" >'
         + '<div id="collaboration-wrapper" class="form-group has-feedback">'
+        + '<button onclick="postPullRequest()" id="pull-request-button" class="btn btn-default">pull request</button>'
         + '<button onclick="postPushLocalBranch()" id="push-branch-button" class="btn btn-default">push local branch</button>'
         + '</div>'
         + '</div>'

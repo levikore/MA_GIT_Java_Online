@@ -54,18 +54,29 @@ public class CollaborationServlet extends HttpServlet {
                 errorsString = handlePullRequest(request, appManager);
             } else if (functionName.equals("push")) {
                 errorsString = handlePushRequest(request, appManager);
-            }else if (functionName.equals("pushLocalBranch")){
+            } else if (functionName.equals("pushLocalBranch")) {
                 handlePushLocalBranchRequest(request, appManager);
+            } else if (functionName.equals("pullRequest")) {
+                handlePullRequestRequest(request, appManager);
             }
         }
 
-        if (errorsString != null) {
+        if (errorsString != null && !errorsString.equals("")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorsString);
         }
     }
-    //appManager.GetUserData(username).UpdateSpecificRepositoryData(repository, null);
 
-    private void handlePushLocalBranchRequest(HttpServletRequest request, AppManager i_AppManager){
+    private void handlePullRequestRequest(HttpServletRequest request, AppManager i_AppManager) {
+        String localUsername = request.getParameter("localUsername");
+        String localRepositoryName = request.getParameter("localRepositoryName");
+        RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
+
+        if (localRepository.GetRemoteReference() != null) {
+            i_AppManager.HandlePullRequest(localUsername, localRepositoryName);
+        }
+    }
+
+    private void handlePushLocalBranchRequest(HttpServletRequest request, AppManager i_AppManager) {
         String localUsername = request.getParameter("localUsername");
         String localRepositoryName = request.getParameter("localRepositoryName");
         RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
