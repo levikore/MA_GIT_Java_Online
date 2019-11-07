@@ -37,7 +37,15 @@ public class CollaborationManager {
         return errorDescription;
     }
 
-    public static void PushBranch() {
+    public static void PushBranch(Path i_RemotePath, RepositoryManager i_LocalManager) throws IOException {
+        RepositoryManager remoteManager = new RepositoryManager(i_RemotePath, "", false, false, null);
+        Path localPath = i_LocalManager.GetRepositoryPath();
+
+        Branch localBranch = i_LocalManager.GetHeadBranch().GetBranch();
+
+        //Branch newRemoteBranch = new Branch(localBranch.GetBranchName(), )
+
+
 
 
     }
