@@ -37,18 +37,33 @@ public class CollaborationManager {
         return errorDescription;
     }
 
-    public static void PushBranch(Path i_RemotePath, RepositoryManager i_LocalManager) throws IOException {
-        RepositoryManager remoteManager = new RepositoryManager(i_RemotePath, "", false, false, null);
-        Path localPath = i_LocalManager.GetRepositoryPath();
-
+    public static void PushLocalBranch(Path i_RemotePath, RepositoryManager i_LocalManager) throws IOException {
         Branch localBranch = i_LocalManager.GetHeadBranch().GetBranch();
+        Branch previousRemoteBranchInLR = i_LocalManager.GetPreviousRemoteBranch(localBranch);
+        RepositoryManager remoteManager = new RepositoryManager(i_RemotePath, "", false, false, null);
 
-        //Branch newRemoteBranch = new Branch(localBranch.GetBranchName(), )
+        int indexOfSlash = previousRemoteBranchInLR.GetBranchName().lastIndexOf("\\");
+        String previousRemoteBranchInRRName = previousRemoteBranchInLR.GetBranchName().substring(indexOfSlash + 1);
 
-
-
-
+        Branch previousRemoteBranchInRR = remoteManager.FindBranchByName(previousRemoteBranchInRRName);
+        Branch remoteBranchInRR = new Branch(localBranch.GetBranchName(), previousRemoteBranchInRR.GetCurrentCommit(), i_RemotePath, true,  null, false, null);
+        String branchName = i_RemotePath.toFile().getName() + "\\" + remoteBranchInRR.GetBranchName();
+        Branch localRemoteBranch = new Branch(branchName, previousRemoteBranchInLR.GetCurrentCommit(), i_LocalManager.GetRepositoryPath(), true, null, true, null);
+        localBranch.SetTrackingAfter(localRemoteBranch.GetBranchName());
+        Push(i_RemotePath, i_LocalManager);
     }
+
+    /*private static void fetchRemoteBranch(Branch i_RemoteBranchInLR, RepositoryManager i_LocalRepository, RepositoryManager i_RemoteRepository) throws FileNotFoundException, UnsupportedEncodingException {
+        String remoteBranchNameInRR = Paths.get(i_RemoteBranchInLR.GetBranchName()).toFile().getName();
+        Branch remoteBranchInRR = i_RemoteRepository.FindBranchByName(remoteBranchNameInRR);
+        if (!areCommitsAdjacent(i_RemoteBranchInLR.GetCurrentCommit(), remoteBranchInRR.GetCurrentCommit())) {
+            List<Commit> newerCommits = i_RemoteRepository.GetNewerCommitsInBranch(i_RemoteBranchInLR.GetCurrentCommit(), remoteBranchInRR);
+            newerCommits.get(newerCommits.size() - 1).SetPrevCommitsList(null);
+            List<Commit> clonedCommits = cloneCommits(newerCommits, i_LocalRepository.GetRepositoryPath());
+            linkToLocalCommit(clonedCommits.get(0), i_RemoteBranchInLR.GetCurrentCommit(), i_LocalRepository.GetRepositoryPath());
+            updateRB(i_RemoteBranchInLR, clonedCommits.get(clonedCommits.size() - 1), i_LocalRepository.GetRepositoryPath());
+        }
+    }*/
 
     public static String Pull(Path i_RemotePath, RepositoryManager i_LocalManager) throws IOException {
         Boolean isPushRequired = false;

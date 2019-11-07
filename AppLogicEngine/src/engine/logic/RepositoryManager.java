@@ -858,6 +858,37 @@ public class RepositoryManager {
         return result;
     }
 
+
+    public Branch GetPreviousRemoteBranch(Branch i_LocalBranch){
+        Commit currentCommit = i_LocalBranch.GetCurrentCommit();
+        Branch previousBranch = null;
+        while (currentCommit != null ) {
+            previousBranch = GetDifferentBranchByCommit(currentCommit, i_LocalBranch);
+            if(previousBranch.GetIsRemote()){
+                break;
+            }else {
+                currentCommit = currentCommit.GetPrevCommitsList() == null ? null : currentCommit.GetPrevCommitsList().get(0);
+            }
+        }
+
+        return previousBranch;
+    }
+
+    private Branch GetDifferentBranchByCommit(Commit i_Commit, Branch i_Branch) {
+        Branch result = null;
+
+        for (Branch currentBranch : m_AllBranchesList) {
+            if (!currentBranch.GetBranchSha1().equals(i_Branch.GetBranchSha1())) {
+                if (currentBranch.GetCurrentCommit().equals(i_Commit) && !currentBranch.GetCurrentCommit().equals(i_Branch.GetCurrentCommit())) {
+                    result = currentBranch;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
     public List<Commit> GetCommitColumnByBranch(Branch i_Branch) {
         List<Commit> commitColumn = new LinkedList<>();
         Commit currentCommit = i_Branch.GetCurrentCommit();
@@ -883,6 +914,8 @@ public class RepositoryManager {
 
         return result;
     }
+
+
 
     public List<Commit> GetHeadBranchCommitHistory(Branch i_Branch) {
         List<Commit> commitsList = new LinkedList<>();

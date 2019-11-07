@@ -54,6 +54,8 @@ public class CollaborationServlet extends HttpServlet {
                 errorsString = handlePullRequest(request, appManager);
             } else if (functionName.equals("push")) {
                 errorsString = handlePushRequest(request, appManager);
+            }else if (functionName.equals("pushLocalBranch")){
+                handlePushLocalBranchRequest(request, appManager);
             }
         }
 
@@ -62,6 +64,16 @@ public class CollaborationServlet extends HttpServlet {
         }
     }
     //appManager.GetUserData(username).UpdateSpecificRepositoryData(repository, null);
+
+    private void handlePushLocalBranchRequest(HttpServletRequest request, AppManager i_AppManager){
+        String localUsername = request.getParameter("localUsername");
+        String localRepositoryName = request.getParameter("localRepositoryName");
+        RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
+
+        if (localRepository.GetRemoteReference() != null) {
+            i_AppManager.HandlePushLocalBranch(localUsername, localRepositoryName);
+        }
+    }
 
     private String handlePushRequest(HttpServletRequest request, AppManager i_AppManager) {
         String localUsername = request.getParameter("localUsername");
@@ -75,7 +87,6 @@ public class CollaborationServlet extends HttpServlet {
         }
 
         return errors;
-
     }
 
     private String handlePullRequest(HttpServletRequest request, AppManager i_AppManager) {

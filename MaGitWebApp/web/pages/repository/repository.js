@@ -52,28 +52,25 @@ function postPush(){
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
+function postPushLocalBranch(){
+    let parametersData = getParametersData();
+    const data = {"localUsername": parametersData.username,
+        "localRepositoryName": parametersData.repositoryName,
+        "functionName": "pushLocalBranch"
+    }
 
-/*function postFork(){
-    const newRepositoryNameId=$('#repository-name-fork-modal-input');
-    const newRepositoryName = newRepositoryNameId.val();
-    const parametersData=getParametersData();
-    //const branchErrorSign = $('#branch-error-sign');
-    // const errorString = $('#branch-error-string')
-    const data = {
-        "originRepositoryName": parametersData.repositoryName,
-        "originRepositoryUserName":parametersData.username,
-        "functionName": "fork",
-        "newRepositoryName": newRepositoryName,
-        "time":getCurrentTime()
+    $.ajax({
+        url: COLLABORATION_URL,
+        data: data,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function () {
 
-    };
-    postForkFunctionsData(data);
-    newRepositoryNameId.val("");
-    hideModal( $('#fork-modal'));
+        }
+    })
 
-    //setInterval(ajaxRepository, refreshRepositoryRate);
     setTimeout(ajaxRepository, refreshRepositoryRate);
-}*/
+}
 
 function getParametersData() {
     let searchParams = new URLSearchParams(window.location.search)
@@ -373,7 +370,7 @@ function appendButtonsOfRepositoryOwner(repository) {
 
         + '<div class="form-inline" >'
         + '<div id="collaboration-wrapper" class="form-group has-feedback">'
-        + '<button onclick="" id="push-branch-button" class="btn btn-default">push branch</button>'
+        + '<button onclick="postPushLocalBranch()" id="push-branch-button" class="btn btn-default">push local branch</button>'
         + '</div>'
         + '</div>'
 

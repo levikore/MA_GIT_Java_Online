@@ -82,6 +82,23 @@ public class AppManager {
         return response;
     }
 
+    public void HandlePushLocalBranch(String i_LocalUserName, String i_LocalRepositoryName) {
+        RepositoryManager localRepository = m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
+        Path remoteRepositoryReference = localRepository.GetRemoteReference();
+
+        try {
+            CollaborationManager.PushLocalBranch(remoteRepositoryReference, localRepository);
+            String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
+            RepositoryManager updatedRemoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
+            RepositoryData remoteRepositoryData = new RepositoryData(updatedRemoteRepository, null);
+            m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, updatedRemoteRepository);//****
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public String HandlePush(String i_LocalUserName, String i_LocalRepositoryName) {
         RepositoryManager localRepository = m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
         Path remoteRepositoryReference = localRepository.GetRemoteReference();
@@ -91,7 +108,7 @@ public class AppManager {
             String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
             //String remoteRepositoryName = remoteRepositoryReference.getFileName().toString();
             //RepositoryManager oldRemoteRepository = m_RepositoriesManager.GetRepositoryByName(remoteUserName, remoteRepositoryName);
-            RepositoryManager updatedRemoteRepository=new RepositoryManager(remoteRepositoryReference,remoteUserName,false, false, null);
+            RepositoryManager updatedRemoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
             RepositoryData remoteRepositoryData = new RepositoryData(updatedRemoteRepository, null);
             m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, updatedRemoteRepository);//****
 
