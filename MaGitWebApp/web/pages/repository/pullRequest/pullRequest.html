@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <script src="../../../common/jquery-2.0.3.min.js"></script>
+    <script src="../../../common/context-path-helper.js"></script>
+    <script src="pullRequest.js"></script>
+    <!--bootstrap-->
+    <link href="../../../common/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../../common/bootstrap/css/bootstrap-grid.min.css">
+    <script src="../../../common/bootstrap/js/bootstrap.min.js"></script>
+
+    <title>Pull Request</title>
+</head>
+<body>
+<div class="row d-flex justify-content-center">
+    <div class="col-4">
+        <div class="form-group">
+            <div id="pull-request-wrapper" class="form-group has-feedback">
+                <div class="row" id="pr-label-row">
+                    <label class="label label-primary" id="pr-label">Pull Request:</label>
+                </div>
+                <div class="row">
+                    <label id="Base-Branch-label" class="control-label">Base Branch</label>
+                    <input type="text" class="form-control" id="Base-input">
+                </div>
+                <div class="row">
+                    <label id="Target-Branch-label" class="control-label">Target Branch</label>
+                    <input type="text" class="form-control" id="Target-input">
+                </div>
+                <div class="row">
+                    <label id="pr-message-label" class="control-label">PR Message</label>
+                    <textarea class="form-control" cols="10" rows="5" id="pr-message-textarea">
+                    </textarea>
+                    <div class="row">
+                        <button onclick="postPullRequest()" id="pull-request-button" class="btn btn-default">Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

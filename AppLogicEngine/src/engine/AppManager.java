@@ -105,6 +105,7 @@ public class AppManager {
 
     public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName){
 
+
     }
 
     public String HandlePush(String i_LocalUserName, String i_LocalRepositoryName) {

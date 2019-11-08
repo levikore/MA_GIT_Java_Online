@@ -8,6 +8,25 @@
 
 }
 
+
+div#pr-label-row {
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+
+
+label#pr-label {
+    font-size: 2.2vh;
+}
+
+input#Target-input {
+    width: 18vh;
+}
+
+input#Base-input {
+    width: 18vh;
+}
+
 #commit-label {
     padding-right: 6.2vh;
 }

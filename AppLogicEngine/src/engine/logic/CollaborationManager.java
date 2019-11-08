@@ -54,17 +54,9 @@ public class CollaborationManager {
         Push(i_RemotePath, i_LocalManager);
     }
 
-    /*private static void fetchRemoteBranch(Branch i_RemoteBranchInLR, RepositoryManager i_LocalRepository, RepositoryManager i_RemoteRepository) throws FileNotFoundException, UnsupportedEncodingException {
-        String remoteBranchNameInRR = Paths.get(i_RemoteBranchInLR.GetBranchName()).toFile().getName();
-        Branch remoteBranchInRR = i_RemoteRepository.FindBranchByName(remoteBranchNameInRR);
-        if (!areCommitsAdjacent(i_RemoteBranchInLR.GetCurrentCommit(), remoteBranchInRR.GetCurrentCommit())) {
-            List<Commit> newerCommits = i_RemoteRepository.GetNewerCommitsInBranch(i_RemoteBranchInLR.GetCurrentCommit(), remoteBranchInRR);
-            newerCommits.get(newerCommits.size() - 1).SetPrevCommitsList(null);
-            List<Commit> clonedCommits = cloneCommits(newerCommits, i_LocalRepository.GetRepositoryPath());
-            linkToLocalCommit(clonedCommits.get(0), i_RemoteBranchInLR.GetCurrentCommit(), i_LocalRepository.GetRepositoryPath());
-            updateRB(i_RemoteBranchInLR, clonedCommits.get(clonedCommits.size() - 1), i_LocalRepository.GetRepositoryPath());
-        }
-    }*/
+   public static void HandlePullRequest(){
+
+   }
 
     public static String Pull(Path i_RemotePath, RepositoryManager i_LocalManager) throws IOException {
         Boolean isPushRequired = false;
