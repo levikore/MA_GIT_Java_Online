@@ -1,12 +1,19 @@
 const refreshRepositoryRate = 2000; //milli seconds
 const REPOSITORY_URL = buildUrlWithContextPath("repository");
 const BRANCH_URL = buildUrlWithContextPath("branch");
-const COLLABORATION_URL=buildUrlWithContextPath("collaboration")
+const COLLABORATION_URL = buildUrlWithContextPath("collaboration")
 let lastIndexSelected = -1;
 let repositoryName;
+let isForkModelOpened = false;
+let isUncommittedModelOpened=false;
+let commitInput="";
+let branchInput="";
+let checkoutInput="";
+let forkInput="";
+
 
 function ajaxRepository() {
-    hideModal( $('#fork-modal'));
+    updateBeckupOfTexts();
     $.ajax({
         url: REPOSITORY_URL,
         data: getParametersData(),
@@ -14,8 +21,52 @@ function ajaxRepository() {
         success: function (repository) {
             sessionStorage.setItem("repository", JSON.stringify(repository));
             setRepositoryData(repository);
+            recoverPrevData();
         }
     })
+}
+
+function updateBeckupOfTexts() {
+    const commitTextId= $('#commit-input');
+    const branchTextId=$('#branch-input');
+    const checkoutTextId=$('#checkout-input');
+    const forkTextId= $('#repository-name-fork-modal-input');
+    if(isRepositoryOfCurrentUser()) {
+        commitInput = commitTextId.val();
+        branchInput = branchTextId.val();
+        checkoutInput = checkoutTextId.val();
+    }
+    else if(isForkModelOpened){
+        forkInput=forkTextId.val();
+    }
+
+}
+
+function recoverPrevData() {
+    const forkModalID = $('#fork-modal');
+    const unCommittedFilesModal = $("#unCommitted-files-list-modal");
+    const commitTextId= $('#commit-input');
+    const branchTextId=$('#branch-input');
+    const checkoutTextId=$('#checkout-input');
+    const forkTextId= $('#repository-name-fork-modal-input');
+
+    if(isRepositoryOfCurrentUser())
+    {
+        commitTextId.val(commitInput);
+        branchTextId.val(branchInput);
+        checkoutTextId.val(checkoutInput);
+        if(isUncommittedModelOpened)
+        {
+            hideModal(unCommittedFilesModal);
+            unCommittedFilesModal.modal('show');
+        }
+    }else{
+        if (isForkModelOpened) {
+            hideModal(forkModalID);
+            forkModalID.modal('show');
+            forkTextId.val(forkInput);
+        }  
+    }
 }
 
 function ajaxPull() {
@@ -24,17 +75,18 @@ function ajaxPull() {
         data: getPullData(),
         dataType: 'json',
         success: function (repository) {
-           // sessionStorage.setItem("repository", JSON.stringify(repository));
-           // setRepositoryData(repository);
+            // sessionStorage.setItem("repository", JSON.stringify(repository));
+            // setRepositoryData(repository);
         }
     })
 
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
-function postPush(){
+function postPush() {
     let parametersData = getParametersData();
-    const data = {"localUsername": parametersData.username,
+    const data = {
+        "localUsername": parametersData.username,
         "localRepositoryName": parametersData.repositoryName,
         "functionName": "push"
     }
@@ -52,9 +104,10 @@ function postPush(){
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
-function postPushLocalBranch(){
+function postPushLocalBranch() {
     let parametersData = getParametersData();
-    const data = {"localUsername": parametersData.username,
+    const data = {
+        "localUsername": parametersData.username,
         "localRepositoryName": parametersData.repositoryName,
         "functionName": "pushLocalBranch"
     }
@@ -72,9 +125,10 @@ function postPushLocalBranch(){
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
 
-function postPullRequest(){
+function postPullRequest() {
     let parametersData = getParametersData();
-    const data = {"localUsername": parametersData.username,
+    const data = {
+        "localUsername": parametersData.username,
         "localRepositoryName": parametersData.repositoryName,
         "functionName": "pullRequest"
     }
@@ -102,7 +156,11 @@ function getParametersData() {
 
 function getPullData() {
     const parmetersData = getParametersData();
-    return {"localUsername": parmetersData.username, "localRepositoryName": parmetersData.repositoryName, "functionName": "pull"};
+    return {
+        "localUsername": parmetersData.username,
+        "localRepositoryName": parmetersData.repositoryName,
+        "functionName": "pull"
+    };
 }
 
 function isBranchExist(branchName) {
@@ -124,11 +182,11 @@ function postBranchFunctionsData(dataToPost) {
 }
 
 function isRemoteBranch(branchName) {
-   let result=false;
-    if(isBranchExist(branchName)) {
+    let result = false;
+    if (isBranchExist(branchName)) {
         const repository = JSON.parse(sessionStorage.getItem("repository"));
         let branch = repository.m_BranchesList.find(branch => branch.m_BranchName === branchName);
-        result=branch.m_IsRemote;
+        result = branch.m_IsRemote;
     }
     return result;
 }
@@ -146,10 +204,9 @@ function postRTB() {
     const errorString = $('#checkout-error-string');
     let functionName;
     if (!isBranchExist(getValueAfterLastSlash(branchVal))) {
-        functionName="branch and checkout";
-    }
-    else{
-        functionName="checkout";
+        functionName = "branch and checkout";
+    } else {
+        functionName = "checkout";
     }
 
     const data = {
@@ -173,7 +230,7 @@ function postCheckout() {
     const checkoutErrorSign = $('#checkout-error-sign');
     const errorString = $('#checkout-error-string')
     if (isBranchExist(branchVal)) {
-        if(!isRemoteBranch(branchVal)) {
+        if (!isRemoteBranch(branchVal)) {
             const data = {
                 "functionName": "checkout",
                 "repositoryName": repositoryName,
@@ -185,14 +242,12 @@ function postCheckout() {
             $('#checkout-input').val("");
             setTimeout(ajaxRepository, refreshRepositoryRate);
             //setInterval(ajaxRepository, refreshRepositoryRate);
-        }
-        else{
+        } else {
             checkoutWrapperId.addClass("has-error");
             appendErrorSign(checkoutWrapperId, "checkout-error-string");
-            if (isElementExist(errorString)&&!isBranchExist(getValueAfterLastSlash(branchVal))) {
+            if (isElementExist(errorString) && !isBranchExist(getValueAfterLastSlash(branchVal))) {
                 checkoutWrapperId.append('<p class="control-label" id="checkout-error-string">This is Remote branch!<span><button onclick="postRTB()" id="create-RTB-button"> Create RTB and Checkout</button></span> </p>');
-            }
-            else if(isBranchExist(getValueAfterLastSlash(branchVal))){
+            } else if (isBranchExist(getValueAfterLastSlash(branchVal))) {
                 checkoutWrapperId.append('<p class="control-label" id="checkout-error-string">This is Remote branch! <span><button onclick="postRTB()" id="create-RTB-button"> Checkout to RTB</button></span> </p>');
             }
         }
@@ -247,7 +302,7 @@ function postBranch() {
             "functionName": "branch",
             "repositoryName": repositoryName,
             "branchName": branchVal,
-            "trackingAfter":""
+            "trackingAfter": ""
         };
         postBranchFunctionsData(data);
         cleanErrorSign(branchWrapperId, branchErrorSign);
@@ -274,8 +329,10 @@ function isUncommitedFilesInRepository(repository) {
 }
 
 function isRepositoryOfCurrentUser() {
-    const repository = JSON.parse(sessionStorage["repository"]);
-    return sessionStorage["userName"] === repository.m_Owner;
+    if(sessionStorage.getItem("repository")!==null) {
+        const repository = JSON.parse(sessionStorage["repository"]);
+        return sessionStorage["userName"] === repository.m_Owner;
+    }
 }
 
 function setRepositoryData(repository) {
@@ -290,17 +347,27 @@ function setRepositoryData(repository) {
         $("#unCommitted-files-list").on(
             'click',
             function () {
-                handleUnCommittedChangesClick( );
+                handleUnCommittedChangesClick();
             }
         );
-    }else {
-
+      const  unCommittedFilesListModal= $('#unCommitted-files-list-modal');
+        unCommittedFilesListModal.on('hidden.bs.modal', function () {
+            hideModal(unCommittedFilesListModal);
+            isUncommittedModelOpened=false;
+        });
+    } else {
+        const forkModalId= $('#fork-modal');
         $("#fork-button").on(
             'click',
             function () {
                 handleForkClick();
             }
         );
+
+        forkModalId.on('hidden.bs.modal', function () {
+            hideModal(forkModalId);
+            isForkModelOpened=false;
+        });
     }
 
     setBranchesList(repository.m_BranchesList);
@@ -310,10 +377,10 @@ function setRepositoryData(repository) {
 
 function handleUnCommittedChangesClick() {
     $('#unCommitted-files-list-modal').modal('show');
+    isUncommittedModelOpened=true;
 }
 
 function hideModal(modalId) {
-   // const unCommittedFilesModal = $("#unCommitted-files-list-modal");
     const body = $('body');
 
     modalId.removeClass("in");
@@ -333,7 +400,7 @@ function appendButtonsOfRepositoryOwner(repository) {
         + '</span>Uncommitted Files <span class="badge badge-dark">'
         + repository.m_UncommittedFilesList.length + '</span>' +
         '  <span class="sr-only">number of changes</span></button>'
-        + '<div class="modal fade" id="unCommitted-files-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
+        + '<div class="modal" id="unCommitted-files-list-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
         + '<div class="modal-dialog" role="document">'
         + '<div class="modal-content">'
         + '<div class="modal-header">'
@@ -422,30 +489,31 @@ function appendButtonsOfRepositoryOwner(repository) {
 
 function handleForkClick() {
     $('#fork-modal').modal('show');
+    isForkModelOpened = true;
 }
 
 
 function appendButtonsOfGuest(repository) {
     const buttonsId = $("#buttons");
     buttonsId.append(
-    '<div class="row">'
+        '<div class="row">'
 
-    + '<button id="fork-button" type="button" class="btn btn-default btn-lg" data-toggle="modal" >'
-    + '<span class="glyphicon" aria-hidden="true">'
-    + '</span>Fork</button>'
-    + '<div class="modal fade" id="fork-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
-    + '<div class="modal-dialog" role="document">'
-    + '<div class="modal-content">'
-    + '<div class="modal-header">'
-    + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-    + '<h4 class="modal-title">Fork'+repository.m_RepositoryName+'</h4>'
-    + '</div>'
-    + '<div id="fork-modal-body"  class="modal-body">'
+        + '<button id="fork-button" type="button" class="btn btn-default btn-lg" data-toggle="modal" >'
+        + '<span class="glyphicon" aria-hidden="true">'
+        + '</span>Fork</button>'
+        + '<div class="modal" id="fork-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">'
+        + '<div class="modal-dialog" role="document">'
+        + '<div class="modal-content">'
+        + '<div class="modal-header">'
+        + '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '<h4 class="modal-title">Fork' + repository.m_RepositoryName + '</h4>'
+        + '</div>'
+        + '<div id="fork-modal-body"  class="modal-body">'
         + '<div class="row">'
 
         + '<div class="form-inline" >'
         + '<div id="repository-name-fork-modal-wrapper" class="form-group has-feedback">'
-        +'<h4 class="text-info">Please select name of the new repository.</h4>'
+        + '<h4 class="text-info">Please select name of the new repository.</h4>'
         + '<label id="repository-name-fork-modal-label" class="control-label">Repository name</label>'
         + '<input type="text" class="form-control" id="repository-name-fork-modal-input">'//to add check for name
         + '<button onclick="postFork()" id="fork-button" class="btn btn-default" >Submit</button>'
@@ -453,54 +521,56 @@ function appendButtonsOfGuest(repository) {
         + '</div>'
 
         + '</div>'
-    + '</div>'
-    + '<div class="modal-footer">'
-    + '</div>'
-    + '</div>'
-    + '</div>'
-    + '</div>'
+        + '</div>'
+        + '<div class="modal-footer">'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
 
-    + '</div>');
-
+        + '</div>');
 }
+
+
 
 function setButtons(repository) {
     const buttonsId = $("#buttons");
     buttonsId.empty();
     if (isRepositoryOfCurrentUser(repository)) {
-      appendButtonsOfRepositoryOwner(repository);
+        appendButtonsOfRepositoryOwner(repository);
     } else {
         appendButtonsOfGuest(repository);
     }
     // $("#buttons").append()
 }
 
-function getCurrentTime(){
+function getCurrentTime() {
     const today = new Date();
-    const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    const dateTime = date+' '+time;
+    const dateTime = date + ' ' + time;
 
     return dateTime;
 }
 
-function postFork(){
-    const newRepositoryNameId=$('#repository-name-fork-modal-input');
+function postFork() {
+    const newRepositoryNameId = $('#repository-name-fork-modal-input');
     const newRepositoryName = newRepositoryNameId.val();
-    const parametersData=getParametersData();
+    const parametersData = getParametersData();
     //const branchErrorSign = $('#branch-error-sign');
     // const errorString = $('#branch-error-string')
     const data = {
         "originRepositoryName": parametersData.repositoryName,
-        "originRepositoryUserName":parametersData.username,
+        "originRepositoryUserName": parametersData.username,
         "functionName": "fork",
         "newRepositoryName": newRepositoryName,
-        "time":getCurrentTime()
+        "time": getCurrentTime()
 
     };
     postForkFunctionsData(data);
     newRepositoryNameId.val("");
-    hideModal( $('#fork-modal'));
+    hideModal($('#fork-modal'));
+    isForkModelOpened = false;
 
     //setInterval(ajaxRepository, refreshRepositoryRate);
     //setTimeout(ajaxRepository, refreshRepositoryRate);
@@ -623,7 +693,7 @@ function setBranchesList(branchesList) {
     branchesListId.empty()
     for (let i = 0; i < branchesList.length; i++) {
         const branchData = branchesList[i];
-        const isActive=branchData.m_IsActiveBranch===true?' Is Active Branch':'';
+        const isActive = branchData.m_IsActiveBranch === true ? ' Is Active Branch' : '';
 
         branchesListId.append(
             $('<a class="list-group-item list-group-item-action align-items-start"> </a>')
@@ -636,13 +706,13 @@ function setBranchesList(branchesList) {
         $('<divclass="w-100 justify-content-between"> </div>').attr('id', "branch-element-wrapper" + i)
             .appendTo($("#branch-element" + i));
 
-            $('<p class="mb-1">Branch Name: ' + branchData.m_BranchName+isActive+
-                '<br>Commit Comment: '+branchData.m_CommitComment+
-                '<br>Commit SHA1: '+branchData.m_CommitSHA1 +
-                '<br>Is Remote: '+branchData.m_IsRemote +
-                '<br>Tracking After: '+branchData.m_TrackingAfter +
-                '</p>'
-            ).appendTo($("#branch-element-wrapper" + i))
+        $('<p class="mb-1">Branch Name: ' + branchData.m_BranchName + isActive +
+            '<br>Commit Comment: ' + branchData.m_CommitComment +
+            '<br>Commit SHA1: ' + branchData.m_CommitSHA1 +
+            '<br>Is Remote: ' + branchData.m_IsRemote +
+            '<br>Tracking After: ' + branchData.m_TrackingAfter +
+            '</p>'
+        ).appendTo($("#branch-element-wrapper" + i))
 
     }
 }
@@ -711,5 +781,6 @@ function parent_disable() {
 
 
 $(function () {
-    setInterval(ajaxRepository, refreshRepositoryRate*4);
+    setInterval(ajaxRepository, refreshRepositoryRate);
+
 });

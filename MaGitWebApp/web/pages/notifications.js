@@ -18,7 +18,16 @@ function ajaxNotifications() {
                 if (i_NotificationsData.m_Version !== lastVersionSeen) {
                     appendUserNotifications(i_NotificationsData.m_Notifications);
                     notificationsDataInSessionStorageObject.m_LastVersionSeen = i_NotificationsData.m_Version;
-                    notificationsDataInSessionStorageObject.m_Notifications=notificationsDataInSessionStorageObject.m_Notifications.concat(i_NotificationsData.m_Notifications)
+                    notificationsDataInSessionStorageObject.m_Notifications=notificationsDataInSessionStorageObject.m_Notifications.concat(i_NotificationsData.m_Notifications);
+
+                    notificationsDataInSessionStorageObject.m_Notifications = notificationsDataInSessionStorageObject.m_Notifications.filter((notification, index) => {
+                        const _notification = JSON.stringify(notification);
+                        return index === notificationsDataInSessionStorageObject.m_Notifications.findIndex(obj => {
+                            return JSON.stringify(obj) === _notification;
+                        });
+                    });
+
+
                     sessionStorage.setItem("notificationsData", JSON.stringify(notificationsDataInSessionStorageObject));
                     lastVersionSeen = i_NotificationsData.m_Version;
                 }
@@ -26,6 +35,10 @@ function ajaxNotifications() {
         }
     });
     setTimeout(ajaxNotifications, refreshNotificationsRate);
+}
+
+function uniq(a) {
+
 }
 
 function appendUserNotifications(i_Notifications) {
