@@ -66,16 +66,6 @@ public class CollaborationServlet extends HttpServlet {
         }
     }
 
-    private void handlePullRequestRequest(HttpServletRequest request, AppManager i_AppManager) {
-        String localUsername = request.getParameter("localUsername");
-        String localRepositoryName = request.getParameter("localRepositoryName");
-        RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
-
-        if (localRepository.GetRemoteReference() != null) {
-            i_AppManager.HandlePullRequest(localUsername, localRepositoryName);
-        }
-    }
-
     private void handlePushLocalBranchRequest(HttpServletRequest request, AppManager i_AppManager) {
         String localUsername = request.getParameter("localUsername");
         String localRepositoryName = request.getParameter("localRepositoryName");
@@ -124,6 +114,22 @@ public class CollaborationServlet extends HttpServlet {
         if (originRepository != null) {
             i_AppManager.HandleClone(originRepositoryUserName, originRepositoryName, i_UserName, newRepositoryName);
             i_AppManager.GetAllUserMap().get(originRepositoryUserName).AppendNewNotification(time, i_UserName + " forked your repository: " + originRepositoryName);
+        }
+    }
+
+    private void handlePullRequestRequest(HttpServletRequest request, AppManager i_AppManager) {
+        String localUsername = request.getParameter("localUsername");
+        String localRepositoryName = request.getParameter("localRepositoryName");
+        String baseBranchName = request.getParameter("baseBranchName");
+        String targetBranchName = request.getParameter("targetBranchName");
+        String message = request.getParameter("message");
+        String time = request.getParameter("time");
+
+        RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
+
+        if (localRepository.GetRemoteReference() != null) {
+            i_AppManager.HandlePullRequest(localUsername, localRepositoryName, baseBranchName, targetBranchName, message, time);
+           // i_AppManager.GetAllUserMap().get(originRepositoryUserName).AppendNewNotification(time, i_UserName + " forked your repository: " + originRepositoryName);
         }
     }
 

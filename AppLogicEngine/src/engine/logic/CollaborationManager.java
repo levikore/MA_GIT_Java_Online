@@ -71,7 +71,7 @@ public class CollaborationManager {
             if (!isPushRequired) {
                 //Branch i_RemoteBranchInLR, RepositoryManager i_LocalRepository, RepositoryManager i_RemoteRepository
                 fetchRemoteBranch(rb, i_LocalManager, remoteManager);
-                i_LocalManager.HandleFFMerge(rb.GetBranchName());
+                i_LocalManager.HandleFFMergeToHead(rb.GetBranchName());
             } else {
                 errorDescription = "You must push the branch, before this action.";
             }

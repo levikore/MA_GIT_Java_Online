@@ -103,7 +103,26 @@ public class AppManager {
 
     }
 
-    public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName){
+    public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time)  {
+        try {
+            RepositoryManager localRepository = m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
+            Path remoteRepositoryReference = localRepository.GetRemoteReference();
+            String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
+            RepositoryManager remoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
+            RepositoryData.PullRequest newPullRequest = new RepositoryData.PullRequest(i_TargetBranchName, i_BaseBranchName, i_Message);
+            UserData remoteUserData = GetUserData(remoteUserName);
+            remoteUserData.AddPullRequest(newPullRequest);
+            remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +
+                    " \nTarget Branch: " + i_TargetBranchName + " Base Branch: " + i_BaseBranchName + "\nMessage: " + i_Message);
+
+            //remoteRepository.HandleFFMerge(i_BaseBranchName, i_TargetBranchName);
+
+            RepositoryData remoteRepositoryData = new RepositoryData(remoteRepository, null);
+            m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, remoteRepository);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }

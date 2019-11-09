@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+
 public class UserData {
     private String m_UserName;
     private List<RepositoryData> m_RepositoriesDataList;
@@ -22,6 +23,7 @@ public class UserData {
     private int m_NotificationsVersion = -1;
     private int m_LastNotificationsVersionSeen = -1;
     private transient String m_UserFolderPath;
+    private List<RepositoryData.PullRequest>  m_PullRequestList;
 
 
     public UserData(List<RepositoryData> i_RepositoriesDataList, String i_UserName) {
@@ -29,9 +31,13 @@ public class UserData {
         m_UserName = i_UserName;
         m_UserFolderPath = Constants.REPOSITORIES_FOLDER_PATH + "\\" + m_UserName;
         m_NotificationsList = new LinkedList<>();
+        m_PullRequestList = new LinkedList<>();
         //recoverAllNotifications();
     }
 
+    public void AddPullRequest(RepositoryData.PullRequest i_PullRequest){
+        m_PullRequestList.add(i_PullRequest);
+    }
 
     public List<Notification> GetAllNotificationsList() {
         return m_NotificationsList;

@@ -256,17 +256,17 @@ public class RepositoryData {
         }
     }
 
-    private class PullRequest{
-        Branch m_TargetBranch;
-        Branch m_BaseBranch;
+    public static class PullRequest{
+        String m_TargetBranchName;
+        String m_BaseBranchName;
         String m_Description;
         Boolean m_IsOpen = true;
         Boolean m_IsRejected = false;
         String m_RejectionDescription ="";
 
-        private PullRequest(Branch i_TargetBranch, Branch i_BaseBranch, String i_Description){
-            m_TargetBranch = i_TargetBranch;
-            m_BaseBranch = i_BaseBranch;
+        public PullRequest(String i_TargetBranchName, String i_BaseBranchName, String i_Description){
+            m_TargetBranchName = i_TargetBranchName;
+            m_BaseBranchName = i_BaseBranchName;
             m_Description = i_Description;
         }
 

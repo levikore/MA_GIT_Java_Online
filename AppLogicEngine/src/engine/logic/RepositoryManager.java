@@ -61,11 +61,22 @@ public class RepositoryManager {
         return retVal;
     }
 
-    public void HandleFFMerge(String i_BranchName) {
+    public void HandleFFMergeToHead(String i_BranchName) {
         Branch branch = FindBranchByName(i_BranchName);
         GetHeadBranch().GetHeadBranch().SetCurrentCommit(branch.GetCurrentCommit());
         GetHeadBranch().UpdateCurrentBranch(branch.GetCurrentCommit());
         HandleCheckout(GetHeadBranch().GetHeadBranch().GetBranchName());
+    }
+
+    public void HandleFFMerge(String i_BaseBranchName, String i_TargetBranchName){
+
+        if(m_HeadBranch.GetHeadBranch().GetBranchName().equals(i_BaseBranchName)){
+            HandleFFMergeToHead(i_TargetBranchName);
+        }else {
+            Branch baseBranch = FindBranchByName(i_BaseBranchName);
+            Branch targetBranch = FindBranchByName(i_TargetBranchName);
+            baseBranch.SetCurrentCommit(targetBranch.GetCurrentCommit());
+        }
     }
 
     public boolean IsFFMerge(String i_BranchName) {

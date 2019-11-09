@@ -10,6 +10,7 @@ let commitInput = "";
 let branchInput = "";
 let checkoutInput = "";
 let forkInput = "";
+let focusedElementId = null;
 //let baseInput = "";
 //let targetInput = "";
 //let prMessage = "";
@@ -34,9 +35,11 @@ function updateBeckupOfTexts() {
     const branchTextId = $('#branch-input');
     const checkoutTextId = $('#checkout-input');
     const forkTextId = $('#repository-name-fork-modal-input');
-   // const baseInputId = $('#Base-input');
+
+    focusedElementId = document.activeElement.id;
+    // const baseInputId = $('#Base-input');
     //const targetInputId = $('#Target-input');
-   // const prMessageId = $('#pr-message-textarea');
+    // const prMessageId = $('#pr-message-textarea');
 
     if (isRepositoryOfCurrentUser()) {
         commitInput = commitTextId.val();
@@ -61,6 +64,7 @@ function recoverPrevData() {
     const checkoutTextId = $('#checkout-input');
     const forkTextId = $('#repository-name-fork-modal-input');
 
+
     // const baseInputId = $('#Base-input');
     // const targetInputId = $('#Target-input');
     // const prMessageId = $('#pr-message-textarea');
@@ -69,6 +73,10 @@ function recoverPrevData() {
         commitTextId.val(commitInput);
         branchTextId.val(branchInput);
         checkoutTextId.val(checkoutInput);
+
+        document.getElementById(focusedElementId).focus();
+        focusedElementId = null;
+
         if (isUncommittedModelOpened) {
             hideModal(unCommittedFilesModal);
             unCommittedFilesModal.modal('show');
@@ -82,8 +90,11 @@ function recoverPrevData() {
     } else {
         if (isForkModelOpened) {
             hideModal(forkModalID);
+
+            //document.getElementById(forkTextId)
             forkModalID.modal('show');
             forkTextId.val(forkInput);
+            $('#repository-name-fork-modal-input').focus();
         }
     }
 }
@@ -143,27 +154,6 @@ function postPushLocalBranch() {
 
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
-
-// function postPullRequest() {
-//     let parametersData = getParametersData();
-//     const data = {
-//         "localUsername": parametersData.username,
-//         "localRepositoryName": parametersData.repositoryName,
-//         "functionName": "pullRequest"
-//     }
-//
-//     $.ajax({
-//         url: COLLABORATION_URL,
-//         data: data,
-//         contentType: "application/json; charset=utf-8",
-//         dataType: "json",
-//         success: function () {
-//
-//         }
-//     })
-//
-//     setTimeout(ajaxRepository, refreshRepositoryRate);
-// }
 
 function getParametersData() {
     let searchParams = new URLSearchParams(window.location.search)
@@ -362,8 +352,8 @@ function isRepositoryTracking() {
 }
 
 function setRepositoryData(repository) {
-    const repoNameLabelId= $("#repository-name-label");
-    const uncommittedFileListId= $("#unCommitted-files-list");
+    const repoNameLabelId = $("#repository-name-label");
+    const uncommittedFileListId = $("#unCommitted-files-list");
     repositoryName = repository.m_RepositoryName;
     setButtons(repository);
     repoNameLabelId.empty();
@@ -832,6 +822,6 @@ function parent_disable() {
 
 
 $(function () {
-
+    ajaxRepository();
     setInterval(ajaxRepository, refreshRepositoryRate);
 });
