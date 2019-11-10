@@ -3,10 +3,11 @@ const COLLABORATION_URL = buildUrlWithContextPath("collaboration");
 const refreshPRListRate = 2000;
 let PRList = null;
 
-
-let TENP = "REJECTED!!!"
+let focusedElementId = null;
+const textAreaContentList = [];
 
 function ajaxPRList() {
+    updateBackupContent();
     $.ajax({
         url: PR_LIST_URL,
         success: function (i_PRList) {
@@ -14,10 +15,43 @@ function ajaxPRList() {
                 PRList = i_PRList;
                 const id = $("#pr-list");
                 setPRList(i_PRList, id);
+                recoverPrevData();
             }
         }
     });
+
+
 }
+
+function recoverPrevData() {
+    if (document.getElementById(focusedElementId) !== null) {
+        document.getElementById(focusedElementId).focus();
+        focusedElementId = null;
+    }
+
+    if (PRList !== null) {
+        for (let i = 0; i < PRList.length; i++) {
+            if (PRList[i].m_IsOpen) {
+                $('#pr-reject-message-textarea' + i).val(textAreaContentList[i]);
+            }
+        }
+    }
+}
+
+function updateBackupContent() {
+    if (document.activeElement !== null) {
+        focusedElementId = document.activeElement.id;
+    }
+
+    if (PRList !== null) {
+        for (let i = 0; i < PRList.length; i++) {
+            if (PRList[i].m_IsOpen) {
+                textAreaContentList[i] = $('#pr-reject-message-textarea' + i).val();
+            }
+        }
+    }
+}
+
 
 function setUserName(userName) {
     $("#userName").append(userName);
@@ -65,15 +99,25 @@ function setPRList(i_PRList, i_PRListId) {
             '<p class="mb-1">Base Branch: ' + baseBranchName + '</p>' +
             '<p class="mb-1">Creation Date: ' + time + '</p>' +
             '<p class="mb-1">Status: ' + status + '</p>' +
-            '<button class="btn btn-success" id="btn-Accept' + i + '\"  onclick="handleAccept(\'' + i + '\')">Accept</button>' +
-            '<button class="btn btn-danger" id="btn-Reject' + i + '\" onclick="handleReject(\'' + i + '\', \'' + TENP + '\')">Reject</button>' +
+            '<div id="open-pr' + i + '\">'+
+            '</div>'+
             '</div>')
             .appendTo($("#pr-element" + i));
+
+        if (i_PRList[i].m_IsOpen) {
+            $(
+                '<button class="btn btn-success" id="btn-Accept' + i + '\"  onclick="handleAccept(\'' + i + '\')">Accept</button>' +
+                '<button class="btn btn-danger" id="btn-Reject' + i + '\" onclick="handleReject(\'' + i + '\')">Reject</button>' +
+                '<label id="pr-reject-message-label" class="control-label">Reject Message</label>' +
+                '<textarea class="form-control" cols="10" rows="5" id="pr-reject-message-textarea' + i + '\">' +
+                '</textarea>').appendTo($("#open-pr" + i));
+        }
     }
 
 }
 
-function handleReject(i, rejectionComment) {
+function handleReject(i) {
+    const rejectMessageInput = $('#pr-reject-message-textarea' + i).val();
     const pullRequest = PRList[i];
     const data = {
         "index": i,
@@ -82,7 +126,7 @@ function handleReject(i, rejectionComment) {
         "askingUserName": pullRequest.m_AskingUserName,
         "targetBranchName": pullRequest.m_TargetBranchName,
         "baseBranchName": pullRequest.m_BaseBranchName,
-        "rejectionComment": rejectionComment,
+        "rejectionComment": rejectMessageInput,
         "functionName": "rejectPullRequest"
     }
 
@@ -104,7 +148,7 @@ function handleAccept(i) {
     post(data);
 }
 
-function post(data){
+function post(data) {
     $.ajax({
         url: COLLABORATION_URL,
         data: data,
