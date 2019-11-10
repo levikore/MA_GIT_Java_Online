@@ -135,6 +135,7 @@ function setButtonsClickFunctions(index) {
             if (currentVal.trim() === originalValOfTextAreaGlobalVar) {
                 doneButton.attr("disabled", true);
                 editButton.attr("disabled", false);
+
                 // removeButton.attr("disabled", false);
                 return; //check to prevent multiple simultaneous triggers
             }
@@ -368,7 +369,7 @@ function handleCreateModalButtonClick(index) {
     const fileObj = {"m_Path": path, "m_Content": "", "m_IsFolder": isFolder};
     repository.m_CurrentWCFilesList.push(fileObj);
     openChangesMap.set(path, getOpenChangeObjToPost("create", path, isFolder));
-    saveButton.attr("disabled", false);
+    saveButton.attr("disabled", true);
     resetModal(index);
     setFilesList();
     hideModal(index);

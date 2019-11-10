@@ -145,6 +145,7 @@ public class AppManager {
             String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
             RepositoryManager remoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
             UserData.PullRequest newPullRequest = new UserData.PullRequest(i_Time, remoteRepository.GetRepositoryName(), i_LocalUserName, i_TargetBranchName, i_BaseBranchName, i_Message);
+            newPullRequest.SetCommitsDeltaList(getCommitDataDeltaList(remoteRepository, i_BaseBranchName, i_TargetBranchName));
             UserData remoteUserData = GetUserData(remoteUserName);
             remoteUserData.AddPullRequest(newPullRequest);
             remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +
@@ -153,8 +154,52 @@ public class AppManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    private List<RepositoryData.CommitData> getCommitDataDeltaList(RepositoryManager i_RepositoryManager, String i_BaseBranchName, String i_TargetBranchName){
+        Branch baseBranch = i_RepositoryManager.FindBranchByName(i_BaseBranchName);
+        Branch targetBranch = i_RepositoryManager.FindBranchByName(i_TargetBranchName);
 
+        List<Commit> commitsDeltaList = i_RepositoryManager.GetNewerCommitsInBranch(baseBranch.GetCurrentCommit(), targetBranch);
+
+        List<RepositoryData.CommitData> commitDataDeltaList = new LinkedList<>();
+
+        for(Commit commit: commitsDeltaList){
+            Commit previousCommit = commit.GetPrevCommitsList().get(0);
+            List<BlobData> addedFiles = new LinkedList<>();
+            List<BlobData> updatedFiles = new LinkedList<>();
+            List<BlobData> deletedFiles = new LinkedList<>();
+            commit.BuildDeltaListsForOneCommit(previousCommit, addedFiles, updatedFiles, deletedFiles);
+            List<RepositoryData.UnCommittedFile> fileChangeList = getFileChangeList(commit, addedFiles, updatedFiles, deletedFiles);
+            RepositoryData.CommitData commitData = new RepositoryData.CommitData(i_RepositoryManager, commit);
+            commitData.SetFilesDeltaList(fileChangeList);
+            commitDataDeltaList.add(commitData);
+        }
+
+        return commitDataDeltaList;
+
+    }
+
+    public List<RepositoryData.UnCommittedFile> getFileChangeList(Commit i_Commit, List<BlobData> i_AddedFiles, List<BlobData> i_UpdatedFiles,  List<BlobData> i_DeletedFiles){
+        List<RepositoryData.UnCommittedFile> changeList =  getSpecificFileChangeList(i_AddedFiles, i_Commit, "create");
+        changeList.addAll(getSpecificFileChangeList(i_UpdatedFiles, i_Commit, "edit"));
+        changeList.addAll(getSpecificFileChangeList(i_DeletedFiles, i_Commit, "delete"));
+        return changeList;
+    }
+
+    public List<RepositoryData.UnCommittedFile> getSpecificFileChangeList(List<BlobData> i_FileList, Commit i_Commit, String i_ChangeType){
+        List<RepositoryData.UnCommittedFile> changelist = new LinkedList<>();
+        for(BlobData blobData: i_FileList){
+            RepositoryData.FileContent fileContent = new RepositoryData.FileContent(blobData.GetPath(),
+                    blobData.GetFileContent(),
+                    blobData.GetIsFolder());
+
+            RepositoryData.UnCommittedFile change = new RepositoryData.UnCommittedFile(fileContent, i_ChangeType);
+            changelist.add(change);
+
+        }
+
+        return changelist;
     }
 
     public String HandlePush(String i_LocalUserName, String i_LocalRepositoryName) {

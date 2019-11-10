@@ -107,29 +107,29 @@ public class  Commit {
         return milliseconds;
     }
 
-    public String GetDeltaString() {
-        String deltaString = "";
+//    public String GetDeltaString() {
+//        String deltaString = "";
+//
+//        if (m_PrevCommitsList != null) {
+//            for (Commit previousCommit : m_PrevCommitsList) {
+//                List<String> addedFiles = new LinkedList<>();
+//                List<String> updatedFiles = new LinkedList<>();
+//                List<String> deletedFiles = new LinkedList<>();
+//                buildDeltaListsForOneCommit(previousCommit, addedFiles, updatedFiles, deletedFiles);
+//                deltaString = deltaString.concat(
+//                        "\n-Previous Commit SHA1: " + previousCommit.GetCurrentCommitSHA1() + "\n" +
+//                                (addedFiles.isEmpty() ? "" : "-added files: \n" + String.join(", \n", addedFiles) + "\n\n" ) +
+//                                (updatedFiles.isEmpty() ? "" : "-updated files: \n" + String.join(", \n", updatedFiles) + "\n\n" ) +
+//                                (deletedFiles.isEmpty() ? "" : "-deleted files: \n" + String.join(", \n", deletedFiles) + "\n" ) +
+//                                "----------------------------------------------------------\n"
+//                );
+//            }
+//        }
+//
+//        return deltaString;
+//    }
 
-        if (m_PrevCommitsList != null) {
-            for (Commit previousCommit : m_PrevCommitsList) {
-                List<String> addedFiles = new LinkedList<>();
-                List<String> updatedFiles = new LinkedList<>();
-                List<String> deletedFiles = new LinkedList<>();
-                buildDeltaListsForOneCommit(previousCommit, addedFiles, updatedFiles, deletedFiles);
-                deltaString = deltaString.concat(
-                        "\n-Previous Commit SHA1: " + previousCommit.GetCurrentCommitSHA1() + "\n" +
-                                (addedFiles.isEmpty() ? "" : "-added files: \n" + String.join(", \n", addedFiles) + "\n\n" ) +
-                                (updatedFiles.isEmpty() ? "" : "-updated files: \n" + String.join(", \n", updatedFiles) + "\n\n" ) +
-                                (deletedFiles.isEmpty() ? "" : "-deleted files: \n" + String.join(", \n", deletedFiles) + "\n" ) +
-                                "----------------------------------------------------------\n"
-                );
-            }
-        }
-
-        return deltaString;
-    }
-
-    private void buildDeltaListsForOneCommit(Commit i_PreviousCommit, List<String> io_AddedFiles, List<String> io_UpdatedFiles, List<String> io_DeletedFiles) {
+    public  void BuildDeltaListsForOneCommit(Commit i_PreviousCommit, List<BlobData> io_AddedFiles, List<BlobData> io_UpdatedFiles, List<BlobData> io_DeletedFiles) {
         List<BlobData> commitContentList = m_RootFolder.GetFilesDataList();
         List<BlobData> previousCommitBlobList = i_PreviousCommit.GetCommitRootFolder().GetFilesDataList();
 
@@ -137,7 +137,7 @@ public class  Commit {
         buildDeletedFilesList(previousCommitBlobList, commitContentList, io_DeletedFiles);
     }
 
-    private void buildUpdatedAndAddedFilesLists(List<BlobData> i_CommitContentList, List<BlobData> i_PreviousCommitBlobList, List<String> io_AddedFiles, List<String> io_UpdatedFiles){
+    private void buildUpdatedAndAddedFilesLists(List<BlobData> i_CommitContentList, List<BlobData> i_PreviousCommitBlobList, List<BlobData> io_AddedFiles, List<BlobData> io_UpdatedFiles){
         boolean isFound;
         for (BlobData blobData : i_CommitContentList) {
             isFound = false;
@@ -145,7 +145,7 @@ public class  Commit {
                 if (blobData.GetPath().equals(fatherBlobData.GetPath())) {
                     isFound = true;
                     if (!blobData.GetFileContent().equals(fatherBlobData.GetFileContent())) {
-                        io_UpdatedFiles.add(blobData.GetPath());
+                        io_UpdatedFiles.add(blobData);
                     }
 
                     break;
@@ -153,12 +153,12 @@ public class  Commit {
             }
 
             if (!isFound) {
-                io_AddedFiles.add(blobData.GetPath());
+                io_AddedFiles.add(blobData);
             }
         }
     }
 
-    private void buildDeletedFilesList(List<BlobData> i_PreviousCommitBlobList, List<BlobData> i_CommitContentList, List<String> io_DeletedFiles){
+    private void buildDeletedFilesList(List<BlobData> i_PreviousCommitBlobList, List<BlobData> i_CommitContentList, List<BlobData> io_DeletedFiles){
         boolean isFound;
         for (BlobData fatherBlobData : i_PreviousCommitBlobList) {
             isFound = false;
@@ -170,7 +170,7 @@ public class  Commit {
             }
 
             if (!isFound) {
-                io_DeletedFiles.add(fatherBlobData.GetPath());
+                io_DeletedFiles.add(fatherBlobData);
             }
         }
     }

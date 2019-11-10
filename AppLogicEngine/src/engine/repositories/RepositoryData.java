@@ -221,36 +221,41 @@ public class RepositoryData {
         }
     }
 
-    private class CommitData {
+    public static class CommitData {
         String m_CommitDescription;
         List<String> m_PointedByList;
         List<String> m_FilesList;
+        List<UnCommittedFile> m_FilesDeltaList=new LinkedList<>();
 
-        private CommitData(RepositoryManager i_RepositoryManager, Commit i_Commit) {
+        public CommitData(RepositoryManager i_RepositoryManager, Commit i_Commit) {
             m_CommitDescription = i_Commit.toString();
             m_PointedByList = i_RepositoryManager.GetPointingBranchesNamestoCommit(i_Commit);
             m_FilesList = new LinkedList<>();
             i_Commit.GetCommitRootFolder().GetFilesDataList().forEach(blobData -> m_FilesList.add(blobData.GetPath()));
         }
+
+        public void SetFilesDeltaList(List<UnCommittedFile> m_FilesDeltaList) {
+            this.m_FilesDeltaList = m_FilesDeltaList;
+        }
     }
 
-    private class FileContent {
+    public static class FileContent {
         private String m_Path;
         private String m_Content;
         private boolean m_IsFolder;
 
-        private FileContent(String i_Path, String i_Content, boolean i_IsFolder) {
+        public FileContent(String i_Path, String i_Content, boolean i_IsFolder) {
             m_Path = i_Path;
             m_Content = i_Content;
             m_IsFolder = i_IsFolder;
         }
     }
 
-    private class UnCommittedFile {
+    public static class UnCommittedFile {
         private FileContent m_fileContent;
         private String m_ChangeType;
 
-        private UnCommittedFile(FileContent i_FileContent, String i_ChangeType) {
+        public UnCommittedFile(FileContent i_FileContent, String i_ChangeType) {
             m_fileContent = i_FileContent;
             m_ChangeType = i_ChangeType;
         }

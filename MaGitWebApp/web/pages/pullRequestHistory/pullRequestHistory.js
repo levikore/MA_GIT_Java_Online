@@ -85,7 +85,7 @@ function setPRList(i_PRList, i_PRListId) {
 
 
         i_PRListId.append(
-            $('<a href="#" class="list-group-item list-group-item-action align-items-start"> </a>')
+            $('<a onclick="handlePRClick(\'' + i + '\')" class="list-group-item list-group-item-action align-items-start"> </a>')
                 .attr({
                     'id': "pr-element" + i//,
                     //   'href': new_url
@@ -114,6 +114,11 @@ function setPRList(i_PRList, i_PRListId) {
         }
     }
 
+}
+
+function handlePRClick(i) {
+sessionStorage.setItem("PRDeltaCommitsList",JSON.stringify(PRList[i].m_CommitsDeltaList))
+    return PopupCenter('prDelta/prDelta.html','PR Delta','800','500')
 }
 
 function handleReject(i) {
@@ -167,6 +172,24 @@ function getCurrentTime() {
     const dateTime = date + ' ' + time;
 
     return dateTime;
+}
+
+function PopupCenter(url, title, w, h) {
+    const dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+    const dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+    const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+    const systemZoom = width / window.screen.availWidth;
+    const left = (width - w) / 2 / systemZoom + dualScreenLeft
+    const top = (height - h) / 2 / systemZoom + dualScreenTop
+    const newWindow = window.open(url, title, 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
+    popupWindow = newWindow;
+    // Puts focus on the newWindow
+    if (window.focus) {
+        newWindow.focus();
+    }
 }
 
 

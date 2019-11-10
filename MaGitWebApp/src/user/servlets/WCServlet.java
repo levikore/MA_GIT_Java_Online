@@ -69,7 +69,7 @@ public class WCServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String userName = SessionUtils.getUsername(request);
         AppManager appManager = ServletUtils.getAppManager(getServletContext(), userName);
         if (userName == null) {

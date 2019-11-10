@@ -2,6 +2,7 @@ package engine.repositories;
 
 import com.google.gson.JsonArray;
 import engine.Constants;
+import engine.logic.Branch;
 import engine.logic.FilesManagement;
 import engine.logic.RepositoryManager;
 import engine.users.ConnectedUsersManager;
@@ -140,7 +141,7 @@ public class UserData {
         private Boolean m_IsOpen = true;
         private Boolean m_IsRejected = false;
         private String m_RejectionDescription ="";
-       //private List<CommitChangeData> m_CommitsDeltaList;
+        private List<RepositoryData.CommitData> m_CommitsDeltaList;
 
         public PullRequest(String i_Time, String i_RepositoryName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName, String i_Description){
             m_Time = i_Time;
@@ -149,7 +150,11 @@ public class UserData {
             m_TargetBranchName = i_TargetBranchName;
             m_BaseBranchName = i_BaseBranchName;
             m_Description = i_Description;
-            //get all commits delta
+            m_CommitsDeltaList=new LinkedList<>();
+        }
+
+        public void SetCommitsDeltaList(List<RepositoryData.CommitData> i_CommitDeltaList){
+            m_CommitsDeltaList = i_CommitDeltaList;
         }
 
         public String GetTime(){
