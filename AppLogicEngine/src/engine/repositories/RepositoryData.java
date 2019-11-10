@@ -227,11 +227,21 @@ public class RepositoryData {
         List<String> m_FilesList;
         List<UnCommittedFile> m_FilesDeltaList=new LinkedList<>();
 
+        String m_CommitSha1;
+        String m_CommitComment;
+        String m_DataCreated;
+        String m_CreatedBy;
+
         public CommitData(RepositoryManager i_RepositoryManager, Commit i_Commit) {
             m_CommitDescription = i_Commit.toString();
             m_PointedByList = i_RepositoryManager.GetPointingBranchesNamestoCommit(i_Commit);
             m_FilesList = new LinkedList<>();
             i_Commit.GetCommitRootFolder().GetFilesDataList().forEach(blobData -> m_FilesList.add(blobData.GetPath()));
+
+            m_CommitSha1 = i_Commit.GetCurrentCommitSHA1();
+            m_CommitComment = i_Commit.GetCommitComment();
+            m_DataCreated = i_Commit.GetCreationDate();
+            m_CreatedBy = i_Commit.GetCreatedBy();
         }
 
         public void SetFilesDeltaList(List<UnCommittedFile> m_FilesDeltaList) {

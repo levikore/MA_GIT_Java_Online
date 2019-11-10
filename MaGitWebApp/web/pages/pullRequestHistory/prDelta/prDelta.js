@@ -10,7 +10,7 @@ function setCommitsDeltaList(commitsDeltaList) {
     for (let i = 0; i < commitsDeltaList.length; i++) {
         let commitFilesList = commitsDeltaList[i].m_FilesDeltaList;
 
-        appendCommitFilesList(i, commitsDeltaList[i].m_CommitDescription);
+        appendCommitFilesList(i, commitsDeltaList[i].m_CommitSha1, commitsDeltaList[i].m_CommitComment, commitsDeltaList[i].m_DataCreated, commitsDeltaList[i].m_CreatedBy);
 
         let prDeltaCommitElementId = $("#pr-delta-commit-element" + i);
         let prDeltaCommitElementContentId = $("#pr-delta-commit-element" + i + "-content" + i);
@@ -45,11 +45,15 @@ function handleCommitElementClick(prDeltaCommitElementId, prDeltaCommitElementCo
 }
 
 
-function appendCommitFilesList(commitIndex, commitKey) {
+function appendCommitFilesList(commitIndex, commitSha1, commitComment, dateCreated, createdBy) {
     $("#delta-commits-list")
         .append(
             $('<a class="list-group-item list-group-item-action" data-toggle="list" role="tab" >'
-                + '<h3 class="mb-8">' + commitKey + '</h3>' + '</a>')
+                + '<h3 class="mb-8">' + commitSha1 + '</h3>' +
+                '<p class="mb-1">Commit Comment: ' + commitComment + '</p>' +
+                '<p class="mb-1">Date Created: ' + dateCreated + '</p>' +
+                '<p class="mb-1">Created By: ' + createdBy + '</p>' +
+                '</a>')
                 .attr({
                     'id': "pr-delta-commit-element" + commitIndex,
                     'href': "#pr-delta-commit-element" + commitIndex + "-content" + commitIndex,
@@ -84,7 +88,8 @@ function setCommitFilesList(commitFilesList, id, commitIndex) {
         $('<div class="w-100 justify-content-between">' +
             '<h3 class="mb-1">' + path + '</h3>' +
             '<p class="mb-1">Status: ' + changeType + '</p>' +
-            '<p class="mb-1">Content: ' + content + '</p>' +
+            '<p class="mb-1">Content: </p>' +
+            '<p class="mb-1"> ' + content + '</p>' +
             '</div>')
             .appendTo($("#commit"+commitIndex + "file-element" + i));
     }
