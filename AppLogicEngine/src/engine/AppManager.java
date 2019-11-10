@@ -103,6 +103,27 @@ public class AppManager {
 
     }
 
+    public void HandleAcceptPullRequest(String i_Index, String i_Time, String i_RepositoryName, String i_UserName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName){
+        RepositoryManager remoteRepository = m_RepositoriesManager.GetRepositoryByName(i_UserName, i_RepositoryName);
+        remoteRepository.HandleFFMerge(i_BaseBranchName, i_TargetBranchName);
+        RepositoryData remoteRepositoryData = new RepositoryData(remoteRepository, null);
+        m_RepositoriesManager.UpdateRepositoryData(i_UserName, remoteRepositoryData, remoteRepository);
+
+        UserData userData = GetUserData(i_UserName);
+        UserData.PullRequest pullRequest = userData.GetPullRequest(Integer.parseInt(i_Index));
+        pullRequest.Accept();
+
+        UserData localUserData = GetUserData(i_AskingUserName);
+        localUserData.AppendNewNotification(i_Time, i_UserName + " accepted your PR.  " +
+                "\nLocal Repository: " + i_RepositoryName+
+                "\nRemote Repository: "+ remoteRepository.GetRepositoryName()+
+                "\nBase Branch: "+i_BaseBranchName+
+                "\nTarget Branch: "+i_TargetBranchName+
+                "\nTime of PR: "+pullRequest.GetTime()+
+                "\n----------------");
+
+    }
+
     public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time)  {
         try {
             RepositoryManager localRepository = m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
@@ -114,11 +135,6 @@ public class AppManager {
             remoteUserData.AddPullRequest(newPullRequest);
             remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +
                     " \nTarget Branch: " + i_TargetBranchName + " Base Branch: " + i_BaseBranchName + "\nMessage: " + i_Message);
-
-            //remoteRepository.HandleFFMerge(i_BaseBranchName, i_TargetBranchName);
-
-            RepositoryData remoteRepositoryData = new RepositoryData(remoteRepository, null);
-            m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, remoteRepository);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -154,25 +170,6 @@ public class AppManager {
         String userName = temp.substring(0, indexOfFirstSlashInTemp);
         return userName;
     }
-
-//    private int findLastWordOccurrence(String textString, String word) {
-//        List<Integer> indexes = new ArrayList<Integer>();
-//        StringBuilder output = new StringBuilder();
-//        String lowerCaseTextString = textString.toLowerCase();
-//        String lowerCaseWord = word.toLowerCase();
-//        int wordLength = 0;
-//
-//        int index = 0;
-//        while(index != -1){
-//            index = lowerCaseTextString.indexOf(lowerCaseWord, index + wordLength);  // Slight improvement
-//            if (index != -1) {
-//                indexes.add(index);
-//            }
-//            wordLength = word.length();
-//        }
-//        return indexes.get(indexes.size() -1);
-//    }
-
 
     public UserData GetUserData(String i_UserName) {
         return m_RepositoriesManager.GetUserData(i_UserName);

@@ -35,6 +35,10 @@ public class UserData {
         //recoverAllNotifications();
     }
 
+    public PullRequest GetPullRequest(int i_Index){
+        return m_PullRequestList.get(i_Index);
+    }
+
     public List<PullRequest> GetPullRequestList(){
         return m_PullRequestList;
     }
@@ -148,10 +152,18 @@ public class UserData {
             //get all commits delta
         }
 
+        public String GetTime(){
+            return m_Time;
+        }
+
         public void Reject(String i_RejectionDescription){
             m_IsRejected = true;
             m_IsOpen = false;
             m_RejectionDescription = i_RejectionDescription;
+        }
+
+        public void Accept(){
+            m_IsOpen = false;
         }
     }
 
