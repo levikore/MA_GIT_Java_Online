@@ -68,11 +68,11 @@ public class RepositoryManager {
         HandleCheckout(GetHeadBranch().GetHeadBranch().GetBranchName());
     }
 
-    public void HandleFFMerge(String i_BaseBranchName, String i_TargetBranchName){
+    public void HandleFFMerge(String i_BaseBranchName, String i_TargetBranchName) {
 
-        if(m_HeadBranch.GetHeadBranch().GetBranchName().equals(i_BaseBranchName)){
+        if (m_HeadBranch.GetHeadBranch().GetBranchName().equals(i_BaseBranchName)) {
             HandleFFMergeToHead(i_TargetBranchName);
-        }else {
+        } else {
             Branch baseBranch = FindBranchByName(i_BaseBranchName);
             Branch targetBranch = FindBranchByName(i_TargetBranchName);
             baseBranch.SetCurrentCommit(targetBranch.GetCurrentCommit());
@@ -870,14 +870,14 @@ public class RepositoryManager {
     }
 
 
-    public Branch GetPreviousRemoteBranch(Branch i_LocalBranch){
+    public Branch GetPreviousRemoteBranch(Branch i_LocalBranch) {
         Commit currentCommit = i_LocalBranch.GetCurrentCommit();
         Branch previousBranch = null;
-        while (currentCommit != null ) {
-            previousBranch = GetDifferentBranchByCommit(currentCommit, i_LocalBranch);
-            if(previousBranch!=null && previousBranch.GetIsRemote()){
+        while (currentCommit != null) {
+            previousBranch = GetRemoteBranchByCommit(currentCommit, i_LocalBranch);
+            if (previousBranch != null) {
                 break;
-            }else {
+            } else {
                 currentCommit = currentCommit.GetPrevCommitsList() == null ? null : currentCommit.GetPrevCommitsList().get(0);
             }
         }
@@ -885,12 +885,14 @@ public class RepositoryManager {
         return previousBranch;
     }
 
-    private Branch GetDifferentBranchByCommit(Commit i_Commit, Branch i_Branch) {
+    private Branch GetRemoteBranchByCommit(Commit i_Commit, Branch i_Branch) {
         Branch result = null;
 
         for (Branch currentBranch : m_AllBranchesList) {
             if (!currentBranch.GetBranchSha1().equals(i_Branch.GetBranchSha1())) {
-                if (currentBranch.GetCurrentCommit().equals(i_Commit) && !currentBranch.GetCurrentCommit().equals(i_Branch.GetCurrentCommit())) {
+                if (currentBranch.GetCurrentCommit().equals(i_Commit) &&
+                        !currentBranch.GetCurrentCommit().equals(i_Branch.GetCurrentCommit()) &&
+                        currentBranch.GetIsRemote()) {
                     result = currentBranch;
                     break;
                 }
@@ -927,18 +929,17 @@ public class RepositoryManager {
     }
 
 
-
     public List<Commit> GetHeadBranchCommitHistory(Branch i_Branch) {
         List<Commit> commitsList = new LinkedList<>();
-        Commit currentCommit =i_Branch.GetCurrentCommit();
+        Commit currentCommit = i_Branch.GetCurrentCommit();
         setHeadBranchCommitHistoryRec(commitsList, currentCommit);
         return commitsList;
     }
 
     private void setHeadBranchCommitHistoryRec(List<Commit> i_CommitsList, Commit i_CurrentCommit) {
         i_CommitsList.add(i_CurrentCommit);
-        if (i_CurrentCommit.GetPrevCommitsList()!= null&&i_CurrentCommit.GetPrevCommitsList().get(0) != null) {
-            setHeadBranchCommitHistoryRec(i_CommitsList,i_CurrentCommit.GetPrevCommitsList().get(0));
+        if (i_CurrentCommit.GetPrevCommitsList() != null && i_CurrentCommit.GetPrevCommitsList().get(0) != null) {
+            setHeadBranchCommitHistoryRec(i_CommitsList, i_CurrentCommit.GetPrevCommitsList().get(0));
         }
     }
 
