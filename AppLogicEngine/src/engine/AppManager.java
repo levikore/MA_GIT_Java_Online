@@ -109,7 +109,7 @@ public class AppManager {
             Path remoteRepositoryReference = localRepository.GetRemoteReference();
             String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
             RepositoryManager remoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
-            RepositoryData.PullRequest newPullRequest = new RepositoryData.PullRequest(i_TargetBranchName, i_BaseBranchName, i_Message);
+            UserData.PullRequest newPullRequest = new UserData.PullRequest(i_Time, remoteRepository.GetRepositoryName(), i_LocalUserName, i_TargetBranchName, i_BaseBranchName, i_Message);
             UserData remoteUserData = GetUserData(remoteUserName);
             remoteUserData.AddPullRequest(newPullRequest);
             remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +

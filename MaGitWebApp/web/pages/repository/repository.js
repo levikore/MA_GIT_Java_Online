@@ -4,7 +4,7 @@ const BRANCH_URL = buildUrlWithContextPath("branch");
 const COLLABORATION_URL = buildUrlWithContextPath("collaboration")
 let lastIndexSelected = -1;
 let repositoryName;
-let isForkModelOpened = false;
+let isForkModalOpened = false;
 let isUncommittedModelOpened = false;
 let commitInput = "";
 let branchInput = "";
@@ -36,7 +36,9 @@ function updateBeckupOfTexts() {
     const checkoutTextId = $('#checkout-input');
     const forkTextId = $('#repository-name-fork-modal-input');
 
-    focusedElementId = document.activeElement.id;
+    if(document.activeElement!==null) {
+        focusedElementId = document.activeElement.id;
+    }
     // const baseInputId = $('#Base-input');
     //const targetInputId = $('#Target-input');
     // const prMessageId = $('#pr-message-textarea');
@@ -50,7 +52,7 @@ function updateBeckupOfTexts() {
         //     targetInput = targetInputId.val();
         //     prMessage = prMessageId.val();
         // }
-    } else if (isForkModelOpened) {
+    } else if (isForkModalOpened) {
         forkInput = forkTextId.val();
     }
 
@@ -74,12 +76,15 @@ function recoverPrevData() {
         branchTextId.val(branchInput);
         checkoutTextId.val(checkoutInput);
 
-        document.getElementById(focusedElementId).focus();
-        focusedElementId = null;
+        if(document.getElementById(focusedElementId)!==null) {
+            document.getElementById(focusedElementId).focus();
+            focusedElementId = null;
+        }
 
         if (isUncommittedModelOpened) {
             hideModal(unCommittedFilesModal);
             unCommittedFilesModal.modal('show');
+            $('#unCommitted-files-list-modal-body').focus();
         }
         // if(isRepositoryTracking())
         // {
@@ -88,7 +93,7 @@ function recoverPrevData() {
         //     prMessageId.val(prMessage);
         // }
     } else {
-        if (isForkModelOpened) {
+        if (isForkModalOpened) {
             hideModal(forkModalID);
 
             //document.getElementById(forkTextId)
@@ -353,23 +358,25 @@ function isRepositoryTracking() {
 
 function setRepositoryData(repository) {
     const repoNameLabelId = $("#repository-name-label");
-    const uncommittedFileListId = $("#unCommitted-files-list");
+   // const uncommittedFileListId = $("#unCommitted-files-list");
     repositoryName = repository.m_RepositoryName;
     setButtons(repository);
     repoNameLabelId.empty();
     repoNameLabelId.append('<h3 class="display-4">' + repository.m_RepositoryName + '</h3>')
 
     if (isRepositoryOfCurrentUser()) {
-        repoNameLabelId.append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">|Working Copy </a>')
-        repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequest/pullRequest.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request </a>')
+        repoNameLabelId.append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">|Working Copy </a>');
+        repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequest/pullRequest.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request </a>');
+        //repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequestHistory/pullRequestHistory.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request History </a>')
 
-        uncommittedFileListId.on(
+        $("#unCommitted-files-list").on(
             'click',
             function () {
                 handleUnCommittedChangesClick();
             }
         );
         const unCommittedFilesListModal = $('#unCommitted-files-list-modal');
+
         unCommittedFilesListModal.on('hidden.bs.modal', function () {
             hideModal(unCommittedFilesListModal);
             isUncommittedModelOpened = false;
@@ -385,7 +392,7 @@ function setRepositoryData(repository) {
 
         forkModalId.on('hidden.bs.modal', function () {
             hideModal(forkModalId);
-            isForkModelOpened = false;
+            isForkModalOpened = false;
         });
     }
 
@@ -492,30 +499,6 @@ function appendButtonsOfRepositoryOwner(repository) {
         + '</div>'
 
         + '</div>'
-
-        // + '<div class="row">'
-        //
-        // + '<div class="form-group" >'
-        // + '<div id="pull-request-wrapper" class="form-group has-feedback">'
-        // + '<div class="row" id="pr-label-row">'
-        // + '<label class="label label-primary" id="pr-label">Pull Request:</label>'
-        // + '</div>'
-        // + '<div class="row">'
-        // + '<label id="Base-Branch-label" class="control-label">Base Branch</label>'
-        // + '<input type="text" class="form-control" id="Base-input">'
-        // + '</div>'
-        // + '<div class="row">'
-        // + '<label id="Target-Branch-label" class="control-label">Target Branch</label>'
-        // + '<input  type="text" class="form-control" id="Target-input">'
-        // + '</div>'
-        // + '<div class="row">'
-        // + '<label id="pr-message-label" class="control-label">PR Message</label>'
-        // + '<textarea  class="form-control" cols="10" rows="5" type="text" id="pr-message-textarea">'
-        // + '</textarea>'
-        // + '<div class="row">'
-        // + '<button onclick="postPullRequest()" id="pull-request-button" class="btn btn-default">Submit</button>'
-        // + '</div>'
-        // + '</div>'
     )
     if (isUncommitedFilesInRepository(repository)) {
         $("#unCommitted-files-list").attr("disabled", false);
@@ -531,7 +514,7 @@ function appendButtonsOfRepositoryOwner(repository) {
 
 function handleForkClick() {
     $('#fork-modal').modal('show');
-    isForkModelOpened = true;
+    isForkModalOpened = true;
 }
 
 
@@ -611,7 +594,7 @@ function postFork() {
     postForkFunctionsData(data);
     newRepositoryNameId.val("");
     hideModal($('#fork-modal'));
-    isForkModelOpened = false;
+    isForkModalOpened = false;
 
     //setInterval(ajaxRepository, refreshRepositoryRate);
     //setTimeout(ajaxRepository, refreshRepositoryRate);

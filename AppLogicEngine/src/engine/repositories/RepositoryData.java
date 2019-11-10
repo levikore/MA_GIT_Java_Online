@@ -247,35 +247,12 @@ public class RepositoryData {
     }
 
     private class UnCommittedFile {
-        FileContent m_fileContent;
-        String m_ChangeType;
+        private FileContent m_fileContent;
+        private String m_ChangeType;
 
         private UnCommittedFile(FileContent i_FileContent, String i_ChangeType) {
             m_fileContent = i_FileContent;
             m_ChangeType = i_ChangeType;
         }
     }
-
-    public static class PullRequest{
-        String m_TargetBranchName;
-        String m_BaseBranchName;
-        String m_Description;
-        Boolean m_IsOpen = true;
-        Boolean m_IsRejected = false;
-        String m_RejectionDescription ="";
-
-        public PullRequest(String i_TargetBranchName, String i_BaseBranchName, String i_Description){
-            m_TargetBranchName = i_TargetBranchName;
-            m_BaseBranchName = i_BaseBranchName;
-            m_Description = i_Description;
-        }
-
-        public void Reject(String i_RejectionDescription){
-            m_IsRejected = true;
-            m_IsOpen = false;
-            m_RejectionDescription = i_RejectionDescription;
-        }
-    }
-
-
 }

@@ -23,7 +23,7 @@ public class UserData {
     private int m_NotificationsVersion = -1;
     private int m_LastNotificationsVersionSeen = -1;
     private transient String m_UserFolderPath;
-    private List<RepositoryData.PullRequest>  m_PullRequestList;
+    private List<PullRequest>  m_PullRequestList;
 
 
     public UserData(List<RepositoryData> i_RepositoriesDataList, String i_UserName) {
@@ -35,7 +35,11 @@ public class UserData {
         //recoverAllNotifications();
     }
 
-    public void AddPullRequest(RepositoryData.PullRequest i_PullRequest){
+    public List<PullRequest> GetPullRequestList(){
+        return m_PullRequestList;
+    }
+
+    public void AddPullRequest(PullRequest i_PullRequest){
         m_PullRequestList.add(i_PullRequest);
     }
 
@@ -121,5 +125,35 @@ public class UserData {
     public String getUserFolderPath() {
         return m_UserFolderPath;
     }
+
+    public static class PullRequest{
+        private String m_Time;
+        private String m_RepositoryName;
+        private String m_AskingUserName;
+        private String m_TargetBranchName;
+        private String m_BaseBranchName;
+        private String m_Description;
+        private Boolean m_IsOpen = true;
+        private Boolean m_IsRejected = false;
+        private String m_RejectionDescription ="";
+       //private List<CommitChangeData> m_CommitsDeltaList;
+
+        public PullRequest(String i_Time, String i_RepositoryName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName, String i_Description){
+            m_Time = i_Time;
+            m_RepositoryName = i_RepositoryName;
+            m_AskingUserName = i_AskingUserName;
+            m_TargetBranchName = i_TargetBranchName;
+            m_BaseBranchName = i_BaseBranchName;
+            m_Description = i_Description;
+            //get all commits delta
+        }
+
+        public void Reject(String i_RejectionDescription){
+            m_IsRejected = true;
+            m_IsOpen = false;
+            m_RejectionDescription = i_RejectionDescription;
+        }
+    }
+
 
 }
