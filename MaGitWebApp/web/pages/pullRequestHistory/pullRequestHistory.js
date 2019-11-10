@@ -84,13 +84,13 @@ function setPRList(i_PRList, i_PRListId) {
         }
 
 
-        i_PRListId.append(
-            $('<a onclick="handlePRClick(\'' + i + '\')" class="list-group-item list-group-item-action align-items-start"> </a>')
-                .attr({
-                    'id': "pr-element" + i//,
-                    //   'href': new_url
-                })
-        );
+        i_PRListId.append($('<div id="pr-wrapper' + i + '\"></div>'));
+
+
+
+            $('<a id="pr-element'+i+'\" onclick="handlePRClick(\'' + i + '\')" class="list-group-item list-group-item-action align-items-start"> </a>')
+                .appendTo($("#pr-wrapper" + i));
+
 
         $('<div class="w-100 justify-content-between">' +
             '<h3 class="mb-1">Repository Name: ' + repositoryName + '</h3>' +
@@ -110,7 +110,7 @@ function setPRList(i_PRList, i_PRListId) {
                 '<button class="btn btn-danger" id="btn-Reject' + i + '\" onclick="handleReject(\'' + i + '\')">Reject</button>' +
                 '<label id="pr-reject-message-label" class="control-label">Reject Message</label>' +
                 '<textarea class="form-control" cols="10" rows="5" id="pr-reject-message-textarea' + i + '\">' +
-                '</textarea>').appendTo($("#open-pr" + i));
+                '</textarea>').appendTo($("#pr-wrapper" + i));
         }
     }
 

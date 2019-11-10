@@ -1,3 +1,5 @@
+let lastIndexSelected = -1;
+
 $(function () {
     const commitsDeltaList = JSON.parse(sessionStorage.getItem("PRDeltaCommitsList"));
     setCommitsDeltaList(commitsDeltaList);
@@ -20,7 +22,7 @@ function setCommitsDeltaList(commitsDeltaList) {
             }
         );
 
-        setUserRepositoriesList(commitFilesList, prDeltaCommitElementContentId, i);
+        setCommitFilesList(commitFilesList, prDeltaCommitElementContentId, i);
 
     }
 }
@@ -29,16 +31,16 @@ function handleCommitElementClick(prDeltaCommitElementId, prDeltaCommitElementCo
     prDeltaCommitElementId.toggleClass('active');
     prDeltaCommitElementContentId.toggleClass('show');
 
-    // if (prDeltaCommitElementId.hasClass("active")) {
-    //     if (lastIndexSelected != -1) {
-    //         $("#user-element" + lastIndexSelected).toggleClass('active')
-    //
-    //         $("#user-element" + lastIndexSelected + "-user-content" + lastIndexSelected).toggleClass('show')
-    //     }
-    //     lastIndexSelected = parseInt(prDeltaCommitElementId.attr('key'));
-    // } else if (!prDeltaCommitElementId.hasClass("active")) {
-    //     lastIndexSelected = -1;
-    // }
+    if (prDeltaCommitElementId.hasClass("active")) {
+        if (lastIndexSelected !== -1) {
+            $("#pr-delta-commit-element" + lastIndexSelected).toggleClass('active')
+
+            $("#pr-delta-commit-element" + lastIndexSelected + "-content" + lastIndexSelected).toggleClass('show')
+        }
+        lastIndexSelected = parseInt(prDeltaCommitElementId.attr('key'));
+    } else if (!prDeltaCommitElementId.hasClass("active")) {
+        lastIndexSelected = -1;
+    }
 
 }
 
@@ -64,12 +66,12 @@ function appendCommitFilesList(commitIndex, commitKey) {
             }));
 }
 
-function setUserRepositoriesList(commitFilesList, id, commitIndex) {
+function setCommitFilesList(commitFilesList, id, commitIndex) {
     for (let i = 0; i < commitFilesList.length; i++) {
         let changeType = commitFilesList[i].m_ChangeType;
         let file = commitFilesList[i].m_fileContent;
         let path = file.m_Path;
-        let content= file.m_Content = "" || file.m_Content == null ? "none" : file.m_Content;
+        let content= file.m_Content = "" || file.m_Content == null ? "Deleted" : file.m_Content;
         let isFolder= file.m_IsFolder;
 
         id.append(
@@ -80,13 +82,10 @@ function setUserRepositoriesList(commitFilesList, id, commitIndex) {
         );
 
         $('<div class="w-100 justify-content-between">' +
-            '<h3 class="mb-1">' + path +" "+changeType+ '</h3>' +
-            '<p class="mb-1">Content: ' + activeBranchName + '</p>' +
-            '<p class="mb-1">Number of Pointing Branches: ' + numberOfBranches + '</p>' +
-            '<p class="mb-1">Last Commit Comment: ' + lastCommitComment + '</p>' +
-            '<p class="mb-1">Last Commit Date: ' + lastCommitDate + '</p>' +
-            '<p class="mb-1">Last Commit Date: ' + content + '</p>' +
+            '<h3 class="mb-1">' + path + '</h3>' +
+            '<p class="mb-1">Status: ' + changeType + '</p>' +
+            '<p class="mb-1">Content: ' + content + '</p>' +
             '</div>')
-            .appendTo($("#" + userName + "repository-element" + i));
+            .appendTo($("#commit"+commitIndex + "file-element" + i));
     }
 }
