@@ -3,6 +3,9 @@ const COLLABORATION_URL = buildUrlWithContextPath("collaboration");
 const refreshPRListRate = 2000;
 let PRList = null;
 
+
+let TENP = "REJECTED!!!"
+
 function ajaxPRList() {
     $.ajax({
         url: PR_LIST_URL,
@@ -63,15 +66,27 @@ function setPRList(i_PRList, i_PRListId) {
             '<p class="mb-1">Creation Date: ' + time + '</p>' +
             '<p class="mb-1">Status: ' + status + '</p>' +
             '<button class="btn btn-success" id="btn-Accept' + i + '\"  onclick="handleAccept(\'' + i + '\')">Accept</button>' +
-            '<button class="btn btn-danger" id="btn-Reject' + i + '\" onclick="handleReject(\'' + i + '\')">Reject</button>' +
+            '<button class="btn btn-danger" id="btn-Reject' + i + '\" onclick="handleReject(\'' + i + '\', \'' + TENP + '\')">Reject</button>' +
             '</div>')
             .appendTo($("#pr-element" + i));
     }
 
 }
 
-function handleReject(i) {
+function handleReject(i, rejectionComment) {
+    const pullRequest = PRList[i];
+    const data = {
+        "index": i,
+        "time": getCurrentTime(),
+        "repositoryName": pullRequest.m_RepositoryName,
+        "askingUserName": pullRequest.m_AskingUserName,
+        "targetBranchName": pullRequest.m_TargetBranchName,
+        "baseBranchName": pullRequest.m_BaseBranchName,
+        "rejectionComment": rejectionComment,
+        "functionName": "rejectPullRequest"
+    }
 
+    post(data);
 }
 
 function handleAccept(i) {

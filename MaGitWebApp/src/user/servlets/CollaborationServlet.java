@@ -60,12 +60,27 @@ public class CollaborationServlet extends HttpServlet {
                 handlePullRequestRequest(request, appManager);
             } else if (functionName.equals("acceptPullRequest")) {
                 handleAcceptPullRequest(request, appManager);
+            }else if(functionName.equals("rejectPullRequest")){
+                handleRejectPullRequest(request, appManager);
             }
         }
 
         if (errorsString != null && !errorsString.equals("")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorsString);
         }
+    }
+
+    private void handleRejectPullRequest(HttpServletRequest request, AppManager i_AppManager){
+        String index = request.getParameter("index");
+        String time = request.getParameter("time");
+        String repositoryName = request.getParameter("repositoryName");
+        String userName = SessionUtils.getUsername(request);
+        String askingUserName = request.getParameter("askingUserName");
+        String targetBranchName = request.getParameter("targetBranchName");
+        String baseBranchName = request.getParameter("baseBranchName");
+        String rejectionComment = request.getParameter("rejectionComment");
+
+        i_AppManager.HandleRejectPullRequest(index, time, repositoryName, userName, askingUserName, targetBranchName, baseBranchName, rejectionComment);
     }
 
     private void handleAcceptPullRequest(HttpServletRequest request, AppManager i_AppManager) {

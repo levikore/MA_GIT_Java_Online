@@ -115,13 +115,27 @@ public class AppManager {
 
         UserData localUserData = GetUserData(i_AskingUserName);
         localUserData.AppendNewNotification(i_Time, i_UserName + " accepted your PR.  " +
-                "\nLocal Repository: " + i_RepositoryName+
                 "\nRemote Repository: "+ remoteRepository.GetRepositoryName()+
                 "\nBase Branch: "+i_BaseBranchName+
                 "\nTarget Branch: "+i_TargetBranchName+
                 "\nTime of PR: "+pullRequest.GetTime()+
                 "\n----------------");
 
+    }
+
+    public void HandleRejectPullRequest(String i_Index, String i_Time, String i_RepositoryName, String i_UserName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName, String i_RejectionComment){
+        UserData userData = GetUserData(i_UserName);
+        UserData.PullRequest pullRequest = userData.GetPullRequest(Integer.parseInt(i_Index));
+        pullRequest.Reject(i_RejectionComment);
+
+        UserData localUserData = GetUserData(i_AskingUserName);
+        localUserData.AppendNewNotification(i_Time, i_UserName + " rejected your PR.  " +
+                "\nRemote Repository: "+ i_RepositoryName+
+                "\nBase Branch: "+i_BaseBranchName+
+                "\nTarget Branch: "+i_TargetBranchName+
+                "\nComment: "+ i_RejectionComment +
+                "\nTime of PR: "+pullRequest.GetTime()+
+                "\n----------------");
     }
 
     public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time)  {
