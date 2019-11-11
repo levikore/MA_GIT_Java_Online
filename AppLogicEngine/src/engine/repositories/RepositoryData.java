@@ -15,12 +15,13 @@ public class RepositoryData {
     private String m_RepositoryPath;
     private String m_ActiveBranchName;
     private int m_NumOfBranches;
-    private String m_LastCommitComment;
-    private String m_LastCommitDate;
+    private String m_LastCommitComment = "";
+    private String m_LastCommitDate = "";
     private List<BranchData> m_BranchesList;
     private List<String> m_BranchesNamesList;
     private List<CommitData> m_HeadBranchCommitsList;
-    private List<FileContent> m_CurrentWCFilesList;
+    private List<FileContent> m_CurrentWCFilesList = new LinkedList<>();
+
     private List<UnCommittedFile> m_UncommittedFilesList;
     private String m_RemoteReference;
     // private RepositoryManager m_RepositoryManager;
@@ -31,19 +32,27 @@ public class RepositoryData {
         m_RepositoryName = i_RepositoryManager.GetRepositoryName();
         m_ActiveBranchName = i_RepositoryManager.GetHeadBranch().GetBranch().GetBranchName();
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
-        m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
-        m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
-        m_RemoteReference = i_RepositoryManager.GetRemoteReference()!= null ? i_RepositoryManager.GetRemoteReference().toString() : "";
+        if (i_RepositoryManager.GetLastCommit() != null) {
+            m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
+            m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
+        }
+
+        m_RemoteReference = i_RepositoryManager.GetRemoteReference() != null ? i_RepositoryManager.GetRemoteReference().toString() : "";
         m_BranchesList = new LinkedList<>();
-        for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
-            m_BranchesList.add(new BranchData(branch, isActiveBranch(branch,i_RepositoryManager.GetHeadBranch()),branch.GetIsModifiable()));
+        if(i_RepositoryManager.GetAllBranchesList()!=null) {
+            for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
+                m_BranchesList.add(new BranchData(branch, isActiveBranch(branch, i_RepositoryManager.GetHeadBranch()), branch.GetIsModifiable()));
+            }
         }
 
         List<Commit> commitStringList = i_RepositoryManager.GetHeadBranchCommitHistory(i_RepositoryManager.GetHeadBranch().GetBranch());
         setCommitsListToString(commitStringList, i_RepositoryManager);
         m_BranchesNamesList = new LinkedList<>();
-        for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
-            m_BranchesNamesList.add(branch.GetBranchName());
+        if(i_RepositoryManager.GetAllBranchesList()!=null) {
+
+            for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
+                m_BranchesNamesList.add(branch.GetBranchName());
+            }
         }
         try {
             List<UnCommittedChange> uncommitedChangesList = i_RepositoryManager.GetListOfUnCommittedFiles(i_RepositoryManager.getRootFolder(), i_RepositoryManager.GetCurrentUserName());
@@ -52,18 +61,22 @@ public class RepositoryData {
             if (i_CurrentWCFilesList != null) {
                 folderList = getWCFoldersListFromJson(i_CurrentWCFilesList);
             }
-            setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList(), uncommitedChangesList, folderList);
+            if (i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit() != null) {
+                setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList(), uncommitedChangesList, folderList);
+            }
+            else{
+                FileContent repFolder=new FileContent(m_RepositoryPath,"",true);
+                m_CurrentWCFilesList.add(repFolder);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean GetBranchDataIsModifiable(String i_BranchName){
+    public boolean GetBranchDataIsModifiable(String i_BranchName) {
         boolean isModifiable = false;
-        for(BranchData branchData: m_BranchesList)
-        {
-            if(branchData.m_BranchName.equals(i_BranchName))
-            {
+        for (BranchData branchData : m_BranchesList) {
+            if (branchData.m_BranchName.equals(i_BranchName)) {
                 isModifiable = branchData.getisIsModifiable();
                 break;
             }
@@ -72,11 +85,9 @@ public class RepositoryData {
         return isModifiable;
     }
 
-    public void SetBranchDataIsModifiable(String i_BranchName, boolean i_IsModifiable){
-        for(BranchData branchData: m_BranchesList)
-        {
-            if(branchData.m_BranchName.equals(i_BranchName))
-            {
+    public void SetBranchDataIsModifiable(String i_BranchName, boolean i_IsModifiable) {
+        for (BranchData branchData : m_BranchesList) {
+            if (branchData.m_BranchName.equals(i_BranchName)) {
                 branchData.setIsModifiable(i_IsModifiable);
                 break;
             }
@@ -133,7 +144,6 @@ public class RepositoryData {
     }
 
     private void setCurrentWCFilesList(List<BlobData> i_BlobDataList, List<UnCommittedChange> i_UncommitedChangesList, List<FileContent> i_FolderList) {
-        m_CurrentWCFilesList = new LinkedList<>();
         FileContent fileContent = null;
         for (BlobData blobData : i_BlobDataList) {
 
@@ -223,8 +233,7 @@ public class RepositoryData {
         m_NumOfBranches = i_NumOfBranches;
     }
 
-    private boolean isActiveBranch(Branch i_Branch, HeadBranch i_HeadBranch)
-    {
+    private boolean isActiveBranch(Branch i_Branch, HeadBranch i_HeadBranch) {
         return i_Branch.equals(i_HeadBranch.GetBranch());
     }
 
@@ -244,15 +253,15 @@ public class RepositoryData {
 
         private BranchData(Branch i_Branch, boolean i_IsActiveBranch, boolean i_IsModifiable) {
             m_BranchName = i_Branch.GetBranchName();
-            m_CommitSHA1 = i_Branch.GetCurrentCommit().GetCurrentCommitSHA1();
-            m_CommitComment = i_Branch.GetCurrentCommit().GetCommitComment();
+            m_CommitSHA1 = i_Branch.GetCurrentCommit()!=null?i_Branch.GetCurrentCommit().GetCurrentCommitSHA1():"none";
+            m_CommitComment = i_Branch.GetCurrentCommit()!=null?i_Branch.GetCurrentCommit().GetCommitComment():"";
             m_IsRemote = i_Branch.GetIsRemote();
-            m_TrackingAfter = i_Branch.GetTrackingAfter()!=null?i_Branch.GetTrackingAfter():"none";
-            m_IsActiveBranch= i_IsActiveBranch;
+            m_TrackingAfter = i_Branch.GetTrackingAfter() != null ? i_Branch.GetTrackingAfter() : "none";
+            m_IsActiveBranch = i_IsActiveBranch;
             m_IsModifiable = i_IsModifiable;
         }
 
-        private void setIsModifiable(boolean i_IsModifiable){
+        private void setIsModifiable(boolean i_IsModifiable) {
             m_IsModifiable = i_IsModifiable;
         }
     }
@@ -261,7 +270,7 @@ public class RepositoryData {
         private String m_CommitDescription;
         private List<String> m_PointedByList;
         private List<String> m_FilesList;
-        private  List<UnCommittedFile> m_FilesDeltaList=new LinkedList<>();
+        private List<UnCommittedFile> m_FilesDeltaList = new LinkedList<>();
 
         private String m_CommitSha1;
         private String m_CommitComment;

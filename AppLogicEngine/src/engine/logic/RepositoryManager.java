@@ -336,15 +336,17 @@ public class RepositoryManager {
     }
 
     public synchronized List<UnCommittedChange> GetListOfUnCommittedFiles(RootFolder i__RootFolder, String i_CurrentUserName) throws IOException {
+        List<UnCommittedChange> unCommittedFilesList = new LinkedList<>();
         RootFolder testRootFolder = createFolderWithZipsOfUnCommittedFiles(i__RootFolder, i_CurrentUserName);
         String testFolderPath = m_MagitPath + "\\" + c_TestFolderName;
-        List<UnCommittedChange> unCommittedFilesList = new LinkedList<>();
 
-        if (!testRootFolder.GetSHA1().equals(m_RootFolder.GetSHA1())) {
-            getAllUncommittedFiles(testRootFolder, unCommittedFilesList);
+        if(m_HeadBranch.GetBranch().GetCurrentCommit()!=null) {
+            if (!testRootFolder.GetSHA1().equals(m_RootFolder.GetSHA1())) {
+                getAllUncommittedFiles(testRootFolder, unCommittedFilesList);
+            }
+
+            FileUtils.deleteDirectory((Paths.get(testFolderPath).toFile()));
         }
-
-        FileUtils.deleteDirectory((Paths.get(testFolderPath).toFile()));
         return unCommittedFilesList;
     }
 
@@ -930,9 +932,12 @@ public class RepositoryManager {
 
 
     public List<Commit> GetHeadBranchCommitHistory(Branch i_Branch) {
+
         List<Commit> commitsList = new LinkedList<>();
-        Commit currentCommit = i_Branch.GetCurrentCommit();
-        setHeadBranchCommitHistoryRec(commitsList, currentCommit);
+        if(i_Branch.GetCurrentCommit()!=null) {
+            Commit currentCommit = i_Branch.GetCurrentCommit();
+            setHeadBranchCommitHistoryRec(commitsList, currentCommit);
+        }
         return commitsList;
     }
 

@@ -42,20 +42,29 @@ public class FileUploadServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         Collection<Part> parts = request.getParts();
         String errorsContent = "";
-        String userName=null;
-        InputStream inputStreamOfXML=null;
+        String userName = null;
+        InputStream inputStreamOfXML = null;
         AppManager appManager = null;
+
         for (Part part : parts) {
             inputStreamOfXML = part.getInputStream();
             userName = SessionUtils.getUsername(request);
-            errorsContent = getErrorsOfXML(inputStreamOfXML);
+            if (!XMLManager.IsEmptyRepository(inputStreamOfXML)) {
+                errorsContent = getErrorsOfXML(inputStreamOfXML);
+            }
         }
 
         if (!errorsContent.isEmpty()) {
             out.println(errorsContent);
         } else {
+
             appManager = ServletUtils.getAppManager(getServletContext(), userName);
-            appManager.CreateRepositoryFromXml(inputStreamOfXML, userName);
+            if (!XMLManager.IsEmptyRepository(inputStreamOfXML)) {
+                appManager.CreateRepositoryFromXml(inputStreamOfXML, userName);
+            } else {
+                appManager.CreateEmptyRepositoryFromXml(inputStreamOfXML, userName);
+            }
+
             out.println("the xml contains 0 errors");
         }
 
@@ -65,6 +74,7 @@ public class FileUploadServlet extends HttpServlet {
         String errorsContent = "";
         List<String> errors = null;
         try {
+
             errors = XMLManager.GetXMLFileErrors(i_InputStreamOfXML);
             for (String error : errors) {
                 errorsContent = errorsContent.concat(error + "\n");

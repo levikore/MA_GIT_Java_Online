@@ -264,6 +264,20 @@ public class AppManager {
         return m_RepositoriesManager.GetRepositoryByName(i_UserName, i_RepositoryName);
     }
 
+    public void CreateEmptyRepositoryFromXml(InputStream i_InputStreamOfXML, String i_UserName) {
+        createUserFolder(i_UserName);
+        String repositoryName = getRepositoryNameFromXml(i_InputStreamOfXML);
+        Path repositoryPath = Paths.get(getUserRepositoriesFolderPath(i_UserName) + "\\" + repositoryName);
+        try {
+
+            RepositoryManager repository = new RepositoryManager(repositoryPath, i_UserName, true, false, null);
+            RepositoryData repositoryData = new RepositoryData(repository, null);
+            m_RepositoriesManager.addRepositoryData(i_UserName, repositoryData, repository);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void CreateRepositoryFromXml(InputStream i_InputStreamOfXML, String i_UserName) {
         try {
             createUserFolder(i_UserName);
@@ -338,6 +352,7 @@ public class AppManager {
             path = i_OpenChangesArray.get(i).getAsJsonObject().get("path").getAsString();
             Path currentPath = Paths.get(path);
             isFolder = i_OpenChangesArray.get(i).getAsJsonObject().get("isFolder").getAsBoolean();
+
             if (action.equals("create")) {
                 if (isFolder) {
                     FilesManagement.CreateFolder(currentPath.getParent(), currentPath.getFileName().toString());

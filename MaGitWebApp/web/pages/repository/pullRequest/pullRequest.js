@@ -1,4 +1,5 @@
 const COLLABORATION_URL = buildUrlWithContextPath("collaboration");
+const repository = JSON.parse(sessionStorage.getItem("repository"));
 
 function postPullRequest() {
     const baseInput = $('#Base-input').val();
@@ -19,14 +20,70 @@ function postPullRequest() {
         "time": getCurrentTime()
     }
 
-    $.ajax({
-        url: COLLABORATION_URL,
-        data: data,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function () {
+    let errors = getInputErrors(baseInput, targetInput);
+
+    if (errors === "") {
+        $.ajax({
+            url: COLLABORATION_URL,
+            data: data,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+
+            }
+        });
+        if ($("#errors").length > 0) {
+            $("#errors").remove();
         }
-    })
+
+        pullRequestWrapper.append('<p id="success">success</p>')
+    } else {
+        if ($("#success").length > 0) {
+            $("#success").remove();
+        }
+
+        if ($("#errors").length > 0) {
+            $("#errors").remove();
+        }
+
+        pullRequestWrapper.append('<p id="errors">' + errors + '</p>')
+    }
+}
+
+function getInputErrors(baseBranchName, targetBranchName) {
+    let errors = "";
+    if (!isBranchExist(baseBranchName)) {
+        errors = errors.concat("base branch does not exist, ");
+    }
+
+    if (!isBranchExist(targetBranchName)) {
+        errors = errors.concat("\ntarget branch does not exist, ");
+    }
+
+    if (isBranchExist(targetBranchName) && !isBranchModifiable(targetBranchName)) {
+        errors = errors.concat("\ntarget branch must be localy created and pushed, ");
+    }
+
+    if (isBranchExist(targetBranchName) && !isBranchRTB(baseBranchName)) {
+        errors = errors.concat("\nbase branch must exist in remote (write only name of branch), ");
+    }
+
+    return errors;
+}
+
+function isBranchExist(branchName) {
+    let branch = repository.m_BranchesNamesList.find(branch => branch === branchName);
+    return branch === branchName;
+}
+
+function isBranchModifiable(branchName) {
+    let branchData = repository.m_BranchesList.find(branch => branch.m_BranchName === branchName);
+    return branchData.m_IsModifiable;
+}
+
+function isBranchRTB(branchName) {
+    let branchData = repository.m_BranchesList.find(branch => branch.m_BranchName === branchName);
+    return branchData.m_TrackingAfter !== "none";
 
 }
 

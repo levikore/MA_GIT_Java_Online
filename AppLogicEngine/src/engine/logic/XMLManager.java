@@ -254,9 +254,18 @@ public class XMLManager {
         return isSameIDInXML;
     }
 
-    public static Boolean IsEmptyRepository(InputStream i_XMLFile) throws IOException, SAXException, ParserConfigurationException {
+    public static Boolean IsEmptyRepository(InputStream i_XMLFile) {
         boolean isEmpty = false;
-        Document xmlDocument = getXMLDocument(i_XMLFile);
+        Document xmlDocument = null;
+        try {
+            xmlDocument = getXMLDocument(i_XMLFile);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
         NodeList branchesNodeList = xmlDocument.getElementsByTagName(s_MagitBranches);
         String headBranchName = xmlDocument.getElementsByTagName("head").item(0).getTextContent();
 
