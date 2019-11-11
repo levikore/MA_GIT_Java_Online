@@ -11,8 +11,8 @@
 
 #notifications-area{
     overflow-y: auto;
-    max-height: 5vh;
-    max-width: 40vw;
+    max-height: 12vh;
+    max-width: 100vw;
     padding-left: 1vw;
     padding-right: 10px;
 }

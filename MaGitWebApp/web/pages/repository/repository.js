@@ -366,7 +366,9 @@ function setRepositoryData(repository) {
 
     if (isRepositoryOfCurrentUser()) {
         repoNameLabelId.append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">|Working Copy </a>');
-        repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequest/pullRequest.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request </a>');
+        if(isTrackingRemoteReference(repository)) {
+            repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequest/pullRequest.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request </a>');
+        }
         //repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequestHistory/pullRequestHistory.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request History </a>')
 
         $("#unCommitted-files-list").on(
@@ -483,7 +485,7 @@ function appendButtonsOfRepositoryOwner(repository) {
 
         + '<div class="form-inline" >'
         + '<div id="collaboration-wrapper" class="form-group has-feedback">'
-        + '<button onclick="postPushLocalBranch()" id="push-branch-button" class="btn btn-default">push local branch</button>'
+        + '<button disabled="true" onclick="postPushLocalBranch()" id="push-branch-button" class="btn btn-default">push local head branch</button>'
         + '</div>'
         + '</div>'
 
@@ -493,8 +495,8 @@ function appendButtonsOfRepositoryOwner(repository) {
 
         + '<div class="form-inline" >'
         + '<div id="collaboration-wrapper" class="form-group has-feedback">'
-        + '<button onclick="postPush()" id="push-button" class="btn btn-default">push</button>'
-        + '<button onclick="ajaxPull()" id="pull-button" class="btn btn-default">pull</button>'
+        + '<button disabled="true" onclick="postPush()" id="push-button" class="btn btn-default">push</button>'
+        + '<button disabled="true" onclick="ajaxPull()" id="pull-button" class="btn btn-default">pull</button>'
         + '</div>'
         + '</div>'
 
@@ -510,7 +512,18 @@ function appendButtonsOfRepositoryOwner(repository) {
         $("#checkout-input").attr("disabled", true);
         setUnCommittedFilesList();
     }
+
+    if(isTrackingRemoteReference(repository)){
+        $("#push-button").attr("disabled", false);
+        $("#pull-button").attr("disabled", false);
+        $("#push-branch-button").attr("disabled", false);
+    }
 }
+
+function isTrackingRemoteReference(repository){
+   return repository.m_RemoteReference.localeCompare("") !== 0;
+}
+
 
 function handleForkClick() {
     $('#fork-modal').modal('show');

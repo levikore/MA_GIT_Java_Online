@@ -138,22 +138,30 @@ public class AppManager {
                 "\n----------------");
     }
 
-    public void HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time)  {
+    public String HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time)  {
+        String errorList = "";
+
         try {
             RepositoryManager localRepository = m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
             Path remoteRepositoryReference = localRepository.GetRemoteReference();
             String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
             RepositoryManager remoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
-            UserData.PullRequest newPullRequest = new UserData.PullRequest(i_Time, remoteRepository.GetRepositoryName(), i_LocalUserName, i_TargetBranchName, i_BaseBranchName, i_Message);
-            newPullRequest.SetCommitsDeltaList(getCommitDataDeltaList(remoteRepository, i_BaseBranchName, i_TargetBranchName));
-            UserData remoteUserData = GetUserData(remoteUserName);
-            remoteUserData.AddPullRequest(newPullRequest);
-            remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +
-                    " \nTarget Branch: " + i_TargetBranchName + " Base Branch: " + i_BaseBranchName + "\nMessage: " + i_Message);
+            if(remoteRepository.FindBranchByName(i_BaseBranchName)!= null &&  remoteRepository.FindBranchByName(i_TargetBranchName)!=null) {
+                UserData.PullRequest newPullRequest = new UserData.PullRequest(i_Time, remoteRepository.GetRepositoryName(), i_LocalUserName, i_TargetBranchName, i_BaseBranchName, i_Message);
+                newPullRequest.SetCommitsDeltaList(getCommitDataDeltaList(remoteRepository, i_BaseBranchName, i_TargetBranchName));
+                UserData remoteUserData = GetUserData(remoteUserName);
+                remoteUserData.AddPullRequest(newPullRequest);
+                remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +
+                        " \nTarget Branch: " + i_TargetBranchName + " Base Branch: " + i_BaseBranchName + "\nMessage: " + i_Message);
+            }else{
+                errorList = "One of the branches doesnt exist in remote repository";
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return errorList;
     }
 
     private List<RepositoryData.CommitData> getCommitDataDeltaList(RepositoryManager i_RepositoryManager, String i_BaseBranchName, String i_TargetBranchName){

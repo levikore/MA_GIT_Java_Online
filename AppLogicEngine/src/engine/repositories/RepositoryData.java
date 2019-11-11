@@ -22,6 +22,7 @@ public class RepositoryData {
     private List<CommitData> m_HeadBranchCommitsList;
     private List<FileContent> m_CurrentWCFilesList;
     private List<UnCommittedFile> m_UncommittedFilesList;
+    private String m_RemoteReference;
     // private RepositoryManager m_RepositoryManager;
 
     public RepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
@@ -32,6 +33,7 @@ public class RepositoryData {
         m_NumOfBranches = i_RepositoryManager.GetAllBranchesList().size();
         m_LastCommitComment = i_RepositoryManager.GetLastCommit().GetCommitComment();
         m_LastCommitDate = i_RepositoryManager.GetLastCommit().GetCreationDate();
+        m_RemoteReference = i_RepositoryManager.GetRemoteReference()!= null ? i_RepositoryManager.GetRemoteReference().toString() : "";
         m_BranchesList = new LinkedList<>();
         for (Branch branch : i_RepositoryManager.GetAllBranchesList()) {
             m_BranchesList.add(new BranchData(branch, isActiveBranch(branch,i_RepositoryManager.GetHeadBranch()),branch.GetIsModifiable()));

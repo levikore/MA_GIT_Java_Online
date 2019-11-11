@@ -57,7 +57,7 @@ public class CollaborationServlet extends HttpServlet {
             } else if (functionName.equals("pushLocalBranch")) {
                 handlePushLocalBranchRequest(request, appManager);
             } else if (functionName.equals("pullRequest")) {
-                handlePullRequestRequest(request, appManager);
+                errorsString= handlePullRequestRequest(request, appManager);
             } else if (functionName.equals("acceptPullRequest")) {
                 handleAcceptPullRequest(request, appManager);
             }else if(functionName.equals("rejectPullRequest")){
@@ -148,20 +148,23 @@ public class CollaborationServlet extends HttpServlet {
         }
     }
 
-    private void handlePullRequestRequest(HttpServletRequest request, AppManager i_AppManager) {
+    private String handlePullRequestRequest(HttpServletRequest request, AppManager i_AppManager) {
         String localUsername = request.getParameter("localUsername");
         String localRepositoryName = request.getParameter("localRepositoryName");
         String baseBranchName = request.getParameter("baseBranchName");
         String targetBranchName = request.getParameter("targetBranchName");
         String message = request.getParameter("message");
         String time = request.getParameter("time");
+        String errors ="";
 
         RepositoryManager localRepository = i_AppManager.GetRepositoryByName(localUsername, localRepositoryName);
 
         if (localRepository.GetRemoteReference() != null) {
-            i_AppManager.HandlePullRequest(localUsername, localRepositoryName, baseBranchName, targetBranchName, message, time);
+            errors = i_AppManager.HandlePullRequest(localUsername, localRepositoryName, baseBranchName, targetBranchName, message, time);
             // i_AppManager.GetAllUserMap().get(originRepositoryUserName).AppendNewNotification(time, i_UserName + " forked your repository: " + originRepositoryName);
         }
+
+        return errors;
     }
 
 
