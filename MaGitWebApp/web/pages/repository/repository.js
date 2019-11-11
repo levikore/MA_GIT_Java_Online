@@ -36,7 +36,7 @@ function updateBeckupOfTexts() {
     const checkoutTextId = $('#checkout-input');
     const forkTextId = $('#repository-name-fork-modal-input');
 
-    if(document.activeElement!==null) {
+    if (document.activeElement !== null) {
         focusedElementId = document.activeElement.id;
     }
     // const baseInputId = $('#Base-input');
@@ -76,7 +76,7 @@ function recoverPrevData() {
         branchTextId.val(branchInput);
         checkoutTextId.val(checkoutInput);
 
-        if(document.getElementById(focusedElementId)!==null) {
+        if (document.getElementById(focusedElementId) !== null) {
             document.getElementById(focusedElementId).focus();
             focusedElementId = null;
         }
@@ -358,7 +358,7 @@ function isRepositoryTracking() {
 
 function setRepositoryData(repository) {
     const repoNameLabelId = $("#repository-name-label");
-   // const uncommittedFileListId = $("#unCommitted-files-list");
+    // const uncommittedFileListId = $("#unCommitted-files-list");
     repositoryName = repository.m_RepositoryName;
     setButtons(repository);
     repoNameLabelId.empty();
@@ -366,7 +366,7 @@ function setRepositoryData(repository) {
 
     if (isRepositoryOfCurrentUser()) {
         repoNameLabelId.append('<a onclick="return PopupCenter(\'workingCopy/workingCopy.html\',\'test\',\'1920\',\'500\')" class="display-4">|Working Copy </a>');
-        if(isTrackingRemoteReference(repository)) {
+        if (isTrackingRemoteReference(repository)) {
             repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequest/pullRequest.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request </a>');
         }
         //repoNameLabelId.append('<a onclick="return PopupCenter(\'pullRequestHistory/pullRequestHistory.html\',\'test\',\'800\',\'500\')" class="display-4">|Pull Request History </a>')
@@ -513,15 +513,43 @@ function appendButtonsOfRepositoryOwner(repository) {
         setUnCommittedFilesList();
     }
 
-    if(isTrackingRemoteReference(repository)){
-        $("#push-button").attr("disabled", false);
-        $("#pull-button").attr("disabled", false);
-        $("#push-branch-button").attr("disabled", false);
+    if (isTrackingRemoteReference(repository)) {
+        if(isHeadBranchTracking(repository)) {
+            $("#pull-button").attr("disabled", false);
+        }
+
+        if (isPushLocalNeeded(repository)) {
+            $("#push-branch-button").attr("disabled", false);
+        }else if(isHeadBranchModifiable(repository)){
+            $("#push-branch-button").attr("disabled", true);
+            $("#push-button").attr("disabled", false);
+
+        }
     }
 }
 
-function isTrackingRemoteReference(repository){
-   return repository.m_RemoteReference.localeCompare("") !== 0;
+function isHeadBranchTracking(repository){
+    const headBranchData = getHeadBranchData(repository);
+    return headBranchData.m_TrackingAfter !== "none";
+}
+
+function isHeadBranchModifiable(repository){
+    const headBranchData = getHeadBranchData(repository);
+    return headBranchData.m_IsModifiable;
+}
+
+function isPushLocalNeeded(repository) {
+    const headBranchData = getHeadBranchData(repository);
+    return !headBranchData.m_IsModifiable && headBranchData.m_TrackingAfter === "none";
+}
+
+function getHeadBranchData(repository) {
+    const branch = repository.m_BranchesList.find(branch => branch.m_IsActiveBranch === true);
+    return branch;
+}
+
+function isTrackingRemoteReference(repository) {
+    return repository.m_RemoteReference.localeCompare("") !== 0;
 }
 
 

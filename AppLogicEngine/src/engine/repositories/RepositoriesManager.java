@@ -70,6 +70,9 @@ public class RepositoriesManager {
     public synchronized void UpdateRepositoryData(String i_Username, RepositoryData i_RepositoryData, RepositoryManager i_RepositoryManager) {
         if (isUserExists(i_Username)) {
             m_UsersDataHashMap.get(i_Username).UpdateSpecificRepositoryData(i_RepositoryManager, null);
+            String headBranchName = i_RepositoryManager.GetHeadBranch().GetBranch().GetBranchName();
+            m_UsersDataHashMap.get(i_Username).GetRepositoryDataByName(i_RepositoryManager.GetRepositoryName()
+            ).SetBranchDataIsModifiable(headBranchName, i_RepositoryData.GetBranchDataIsModifiable(headBranchName));
             int index = 0;
             for (RepositoryManager repositoryManager : m_RepositoriesListHashMap.get(i_Username)) {
                 if (repositoryManager.GetRepositoryName().equals(i_RepositoryManager.GetRepositoryName())) {

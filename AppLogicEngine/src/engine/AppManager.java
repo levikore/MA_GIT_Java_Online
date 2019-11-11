@@ -95,6 +95,7 @@ public class AppManager {
 
             localRepository = new RepositoryManager(localRepository.GetRepositoryPath(), localRepository.GetCurrentUserName(), false, false,  localRepository.GetRemoteReference());
             RepositoryData localRepositoryData = new RepositoryData(localRepository, null);
+            localRepositoryData.SetBranchDataIsModifiable(localRepository.GetHeadBranch().GetHeadBranch().GetBranchName(), true);
             m_RepositoriesManager.UpdateRepositoryData(i_LocalUserName, localRepositoryData, localRepository);
 
         } catch (IOException e) {

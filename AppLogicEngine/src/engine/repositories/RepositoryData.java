@@ -58,6 +58,31 @@ public class RepositoryData {
         }
     }
 
+    public boolean GetBranchDataIsModifiable(String i_BranchName){
+        boolean isModifiable = false;
+        for(BranchData branchData: m_BranchesList)
+        {
+            if(branchData.m_BranchName.equals(i_BranchName))
+            {
+                isModifiable = branchData.getisIsModifiable();
+                break;
+            }
+        }
+
+        return isModifiable;
+    }
+
+    public void SetBranchDataIsModifiable(String i_BranchName, boolean i_IsModifiable){
+        for(BranchData branchData: m_BranchesList)
+        {
+            if(branchData.m_BranchName.equals(i_BranchName))
+            {
+                branchData.setIsModifiable(i_IsModifiable);
+                break;
+            }
+        }
+    }
+
     private List<FileContent> getWCFoldersListFromJson(JsonArray i_CurrentWCFilesList) {
         String content;
         String path;
@@ -204,13 +229,18 @@ public class RepositoryData {
     }
 
     private class BranchData {
-        String m_BranchName;
-        String m_CommitSHA1;
-        String m_TrackingAfter;
-        boolean m_IsRemote;
-        String m_CommitComment;
-       boolean m_IsActiveBranch;
-       boolean m_IsModifiable;
+        private String m_BranchName;
+        private String m_CommitSHA1;
+        private String m_TrackingAfter;
+        private boolean m_IsRemote;
+        private String m_CommitComment;
+        private boolean m_IsActiveBranch;
+
+        private boolean getisIsModifiable() {
+            return m_IsModifiable;
+        }
+
+        private boolean m_IsModifiable;
 
         private BranchData(Branch i_Branch, boolean i_IsActiveBranch, boolean i_IsModifiable) {
             m_BranchName = i_Branch.GetBranchName();
@@ -221,18 +251,22 @@ public class RepositoryData {
             m_IsActiveBranch= i_IsActiveBranch;
             m_IsModifiable = i_IsModifiable;
         }
+
+        private void setIsModifiable(boolean i_IsModifiable){
+            m_IsModifiable = i_IsModifiable;
+        }
     }
 
     public static class CommitData {
-        String m_CommitDescription;
-        List<String> m_PointedByList;
-        List<String> m_FilesList;
-        List<UnCommittedFile> m_FilesDeltaList=new LinkedList<>();
+        private String m_CommitDescription;
+        private List<String> m_PointedByList;
+        private List<String> m_FilesList;
+        private  List<UnCommittedFile> m_FilesDeltaList=new LinkedList<>();
 
-        String m_CommitSha1;
-        String m_CommitComment;
-        String m_DataCreated;
-        String m_CreatedBy;
+        private String m_CommitSha1;
+        private String m_CommitComment;
+        private String m_DataCreated;
+        private String m_CreatedBy;
 
         public CommitData(RepositoryManager i_RepositoryManager, Commit i_Commit) {
             m_CommitDescription = i_Commit.toString();
