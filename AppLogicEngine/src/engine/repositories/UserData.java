@@ -104,7 +104,12 @@ public class UserData {
     public void UpdateSpecificRepositoryData(RepositoryManager i_RepositoryManager, JsonArray i_CurrentWCFilesList) {
         RepositoryData repositoryData = GetRepositoryDataByName(i_RepositoryManager.GetRepositoryName());
         Integer index = m_RepositoriesDataList.indexOf(repositoryData);
-        m_RepositoriesDataList.set(index, new RepositoryData(i_RepositoryManager, i_CurrentWCFilesList));
+       //------------------------------------------------------
+      //i_RepositoryManager.GetHeadBranch().GetBranch().SetIsModifiable(repositoryData.GetBranchDataIsModifiable(repositoryData.getActiveBranchName()));
+       RepositoryData updatedRepositoryData=new RepositoryData(i_RepositoryManager, i_CurrentWCFilesList);
+
+       //----------------------------------
+        m_RepositoriesDataList.set(index, updatedRepositoryData);
     }
 
     public RepositoryData GetRepositoryDataByName(String i_RepositoryDataName) {

@@ -11,6 +11,8 @@ let branchInput = "";
 let checkoutInput = "";
 let forkInput = "";
 let focusedElementId = null;
+let wasCheckoutError = false;
+let checkoutErrorParagraph="";
 //let baseInput = "";
 //let targetInput = "";
 //let prMessage = "";
@@ -65,6 +67,7 @@ function recoverPrevData() {
     const branchTextId = $('#branch-input');
     const checkoutTextId = $('#checkout-input');
     const forkTextId = $('#repository-name-fork-modal-input');
+    const checkoutWrapperId = $('#checkout-wrapper');
 
 
     // const baseInputId = $('#Base-input');
@@ -75,6 +78,12 @@ function recoverPrevData() {
         commitTextId.val(commitInput);
         branchTextId.val(branchInput);
         checkoutTextId.val(checkoutInput);
+
+        if (wasCheckoutError === true) {
+            checkoutWrapperId.addClass("has-error");
+            appendErrorSign(checkoutWrapperId, "checkout-error-string")
+            checkoutWrapperId.append(checkoutErrorParagraph);
+        }
 
         if (document.getElementById(focusedElementId) !== null) {
             document.getElementById(focusedElementId).focus();
@@ -233,6 +242,7 @@ function postRTB() {
     postBranchFunctionsData(data);
     cleanErrorSign(checkoutWrapperId, checkoutErrorSign);
     errorString.remove();
+    wasCheckoutError = false;
     $('#checkout-input').val("");
     setTimeout(ajaxRepository, refreshRepositoryRate);
 }
@@ -253,23 +263,30 @@ function postCheckout() {
             postBranchFunctionsData(data);
             cleanErrorSign(checkoutWrapperId, checkoutErrorSign);
             errorString.remove();
+            wasCheckoutError=false;
+
             $('#checkout-input').val("");
             setTimeout(ajaxRepository, refreshRepositoryRate);
             //setInterval(ajaxRepository, refreshRepositoryRate);
         } else {
+            wasCheckoutError = true;
             checkoutWrapperId.addClass("has-error");
             appendErrorSign(checkoutWrapperId, "checkout-error-string");
             if (isElementExist(errorString) && !isBranchExist(getValueAfterLastSlash(branchVal))) {
-                checkoutWrapperId.append('<p class="control-label" id="checkout-error-string">This is Remote branch!<span><button onclick="postRTB()" id="create-RTB-button"> Create RTB and Checkout</button></span> </p>');
+                checkoutErrorParagraph='<p class="control-label" id="checkout-error-string">This is Remote branch!<span><button onclick="postRTB()" id="create-RTB-button"> Create RTB and Checkout</button></span> </p>';
+                checkoutWrapperId.append(checkoutErrorParagraph);
             } else if (isBranchExist(getValueAfterLastSlash(branchVal))) {
-                checkoutWrapperId.append('<p class="control-label" id="checkout-error-string">This is Remote branch! <span><button onclick="postRTB()" id="create-RTB-button"> Checkout to RTB</button></span> </p>');
+                checkoutErrorParagraph='<p class="control-label" id="checkout-error-string">This is Remote branch! <span><button onclick="postRTB()" id="create-RTB-button"> Checkout to RTB</button></span> </p>';
+                checkoutWrapperId.append(checkoutErrorParagraph);
             }
         }
     } else {
         checkoutWrapperId.addClass("has-error");
         appendErrorSign(checkoutWrapperId, "checkout-error-string");
+        wasCheckoutError = true;
         if (isElementExist(errorString)) {
-            checkoutWrapperId.append('<p class="control-label" id="checkout-error-string">This branch doesnt exist</p>');
+            checkoutErrorParagraph='<p class="control-label" id="checkout-error-string">This branch doesnt exist</p>';
+            checkoutWrapperId.append(checkoutErrorParagraph);
         }
     }
     // location.reload();
@@ -514,13 +531,13 @@ function appendButtonsOfRepositoryOwner(repository) {
     }
 
     if (isTrackingRemoteReference(repository)) {
-        if(isHeadBranchTracking(repository)) {
+        if (isHeadBranchTracking(repository)) {
             $("#pull-button").attr("disabled", false);
         }
 
         if (isPushLocalNeeded(repository)) {
             $("#push-branch-button").attr("disabled", false);
-        }else if(isHeadBranchModifiable(repository)){
+        } else if (isHeadBranchModifiable(repository)) {
             $("#push-branch-button").attr("disabled", true);
             $("#push-button").attr("disabled", false);
 
@@ -528,12 +545,12 @@ function appendButtonsOfRepositoryOwner(repository) {
     }
 }
 
-function isHeadBranchTracking(repository){
+function isHeadBranchTracking(repository) {
     const headBranchData = getHeadBranchData(repository);
     return headBranchData.m_TrackingAfter !== "none";
 }
 
-function isHeadBranchModifiable(repository){
+function isHeadBranchModifiable(repository) {
     const headBranchData = getHeadBranchData(repository);
     return headBranchData.m_IsModifiable;
 }

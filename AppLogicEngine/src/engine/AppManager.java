@@ -84,6 +84,7 @@ public class AppManager {
 
     public void HandlePushLocalBranch(String i_LocalUserName, String i_LocalRepositoryName) {
         RepositoryManager localRepository = m_RepositoriesManager.GetRepositoryByName(i_LocalUserName, i_LocalRepositoryName);
+        List<Branch> branchesList = localRepository.GetAllBranchesList();
         Path remoteRepositoryReference = localRepository.GetRemoteReference();
 
         try {
@@ -93,10 +94,15 @@ public class AppManager {
             RepositoryData remoteRepositoryData = new RepositoryData(updatedRemoteRepository, null);
             m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, updatedRemoteRepository);//****
 
-            localRepository = new RepositoryManager(localRepository.GetRepositoryPath(), localRepository.GetCurrentUserName(), false, false,  localRepository.GetRemoteReference());
-            RepositoryData localRepositoryData = new RepositoryData(localRepository, null);
-            localRepositoryData.SetBranchDataIsModifiable(localRepository.GetHeadBranch().GetHeadBranch().GetBranchName(), true);
-            m_RepositoriesManager.UpdateRepositoryData(i_LocalUserName, localRepositoryData, localRepository);
+            RepositoryManager updatedLocalRepository = new RepositoryManager(localRepository.GetRepositoryPath(), localRepository.GetCurrentUserName(), false, false, localRepository.GetRemoteReference());
+
+            recoverBranchIsModifiable(branchesList, updatedLocalRepository);
+
+            updatedLocalRepository.GetHeadBranch().GetBranch().SetIsModifiable(true);
+
+            RepositoryData localRepositoryData = new RepositoryData(updatedLocalRepository, null);
+            //localRepositoryData.SetBranchDataIsModifiable(localRepository.GetHeadBranch().GetHeadBranch().GetBranchName(), true);
+            m_RepositoriesManager.UpdateRepositoryData(i_LocalUserName, localRepositoryData, updatedLocalRepository);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,7 +110,13 @@ public class AppManager {
 
     }
 
-    public void HandleAcceptPullRequest(String i_Index, String i_Time, String i_RepositoryName, String i_UserName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName){
+    private void recoverBranchIsModifiable(List<Branch> i_BranchesList, RepositoryManager i_UpdatedLocalRepository) {
+        for (int i = 0; i < i_BranchesList.size(); i++) {
+            i_UpdatedLocalRepository.GetAllBranchesList().get(i).SetIsModifiable(i_BranchesList.get(i).GetIsModifiable());
+        }
+    }
+
+    public void HandleAcceptPullRequest(String i_Index, String i_Time, String i_RepositoryName, String i_UserName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName) {
         RepositoryManager remoteRepository = m_RepositoriesManager.GetRepositoryByName(i_UserName, i_RepositoryName);
         remoteRepository.HandleFFMerge(i_BaseBranchName, i_TargetBranchName);
         RepositoryData remoteRepositoryData = new RepositoryData(remoteRepository, null);
@@ -116,30 +128,30 @@ public class AppManager {
 
         UserData localUserData = GetUserData(i_AskingUserName);
         localUserData.AppendNewNotification(i_Time, i_UserName + " accepted your PR.  " +
-                "\nRemote Repository: "+ remoteRepository.GetRepositoryName()+
-                "\nBase Branch: "+i_BaseBranchName+
-                "\nTarget Branch: "+i_TargetBranchName+
-                "\nTime of PR: "+pullRequest.GetTime()+
+                "\nRemote Repository: " + remoteRepository.GetRepositoryName() +
+                "\nBase Branch: " + i_BaseBranchName +
+                "\nTarget Branch: " + i_TargetBranchName +
+                "\nTime of PR: " + pullRequest.GetTime() +
                 "\n----------------");
 
     }
 
-    public void HandleRejectPullRequest(String i_Index, String i_Time, String i_RepositoryName, String i_UserName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName, String i_RejectionComment){
+    public void HandleRejectPullRequest(String i_Index, String i_Time, String i_RepositoryName, String i_UserName, String i_AskingUserName, String i_TargetBranchName, String i_BaseBranchName, String i_RejectionComment) {
         UserData userData = GetUserData(i_UserName);
         UserData.PullRequest pullRequest = userData.GetPullRequest(Integer.parseInt(i_Index));
         pullRequest.Reject(i_RejectionComment);
 
         UserData localUserData = GetUserData(i_AskingUserName);
         localUserData.AppendNewNotification(i_Time, i_UserName + " rejected your PR.  " +
-                "\nRemote Repository: "+ i_RepositoryName+
-                "\nBase Branch: "+i_BaseBranchName+
-                "\nTarget Branch: "+i_TargetBranchName+
-                "\nComment: "+ i_RejectionComment +
-                "\nTime of PR: "+pullRequest.GetTime()+
+                "\nRemote Repository: " + i_RepositoryName +
+                "\nBase Branch: " + i_BaseBranchName +
+                "\nTarget Branch: " + i_TargetBranchName +
+                "\nComment: " + i_RejectionComment +
+                "\nTime of PR: " + pullRequest.GetTime() +
                 "\n----------------");
     }
 
-    public String HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time)  {
+    public String HandlePullRequest(String i_LocalUserName, String i_LocalRepositoryName, String i_BaseBranchName, String i_TargetBranchName, String i_Message, String i_Time) {
         String errorList = "";
 
         try {
@@ -147,14 +159,14 @@ public class AppManager {
             Path remoteRepositoryReference = localRepository.GetRemoteReference();
             String remoteUserName = getUserNameByUrl(remoteRepositoryReference.toString());
             RepositoryManager remoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
-            if(remoteRepository.FindBranchByName(i_BaseBranchName)!= null &&  remoteRepository.FindBranchByName(i_TargetBranchName)!=null) {
+            if (remoteRepository.FindBranchByName(i_BaseBranchName) != null && remoteRepository.FindBranchByName(i_TargetBranchName) != null) {
                 UserData.PullRequest newPullRequest = new UserData.PullRequest(i_Time, remoteRepository.GetRepositoryName(), i_LocalUserName, i_TargetBranchName, i_BaseBranchName, i_Message);
                 newPullRequest.SetCommitsDeltaList(getCommitDataDeltaList(remoteRepository, i_BaseBranchName, i_TargetBranchName));
                 UserData remoteUserData = GetUserData(remoteUserName);
                 remoteUserData.AddPullRequest(newPullRequest);
                 remoteUserData.AppendNewNotification(i_Time, i_LocalUserName + " sent pull request for repository " + remoteRepository.GetRepositoryName() +
                         " \nTarget Branch: " + i_TargetBranchName + " Base Branch: " + i_BaseBranchName + "\nMessage: " + i_Message);
-            }else{
+            } else {
                 errorList = "One of the branches doesnt exist in remote repository";
             }
 
@@ -165,7 +177,7 @@ public class AppManager {
         return errorList;
     }
 
-    private List<RepositoryData.CommitData> getCommitDataDeltaList(RepositoryManager i_RepositoryManager, String i_BaseBranchName, String i_TargetBranchName){
+    private List<RepositoryData.CommitData> getCommitDataDeltaList(RepositoryManager i_RepositoryManager, String i_BaseBranchName, String i_TargetBranchName) {
         Branch baseBranch = i_RepositoryManager.FindBranchByName(i_BaseBranchName);
         Branch targetBranch = i_RepositoryManager.FindBranchByName(i_TargetBranchName);
 
@@ -173,7 +185,7 @@ public class AppManager {
 
         List<RepositoryData.CommitData> commitDataDeltaList = new LinkedList<>();
 
-        for(Commit commit: commitsDeltaList){
+        for (Commit commit : commitsDeltaList) {
             Commit previousCommit = commit.GetPrevCommitsList().get(0);
             List<BlobData> addedFiles = new LinkedList<>();
             List<BlobData> updatedFiles = new LinkedList<>();
@@ -189,16 +201,16 @@ public class AppManager {
 
     }
 
-    public List<RepositoryData.UnCommittedFile> getFileChangeList(Commit i_Commit, List<BlobData> i_AddedFiles, List<BlobData> i_UpdatedFiles,  List<BlobData> i_DeletedFiles){
-        List<RepositoryData.UnCommittedFile> changeList =  getSpecificFileChangeList(i_AddedFiles, i_Commit, "create");
+    public List<RepositoryData.UnCommittedFile> getFileChangeList(Commit i_Commit, List<BlobData> i_AddedFiles, List<BlobData> i_UpdatedFiles, List<BlobData> i_DeletedFiles) {
+        List<RepositoryData.UnCommittedFile> changeList = getSpecificFileChangeList(i_AddedFiles, i_Commit, "create");
         changeList.addAll(getSpecificFileChangeList(i_UpdatedFiles, i_Commit, "edit"));
         changeList.addAll(getSpecificFileChangeList(i_DeletedFiles, i_Commit, "delete"));
         return changeList;
     }
 
-    public List<RepositoryData.UnCommittedFile> getSpecificFileChangeList(List<BlobData> i_FileList, Commit i_Commit, String i_ChangeType){
+    public List<RepositoryData.UnCommittedFile> getSpecificFileChangeList(List<BlobData> i_FileList, Commit i_Commit, String i_ChangeType) {
         List<RepositoryData.UnCommittedFile> changelist = new LinkedList<>();
-        for(BlobData blobData: i_FileList){
+        for (BlobData blobData : i_FileList) {
             RepositoryData.FileContent fileContent = new RepositoryData.FileContent(blobData.GetPath(),
                     blobData.GetFileContent(),
                     blobData.GetIsFolder());
@@ -222,6 +234,7 @@ public class AppManager {
             //RepositoryManager oldRemoteRepository = m_RepositoriesManager.GetRepositoryByName(remoteUserName, remoteRepositoryName);
             RepositoryManager updatedRemoteRepository = new RepositoryManager(remoteRepositoryReference, remoteUserName, false, false, null);
             RepositoryData remoteRepositoryData = new RepositoryData(updatedRemoteRepository, null);
+            //remoteRepositoryData.SetBranchDataIsModifiable(localRepository.GetHeadBranch().GetBranch().GetBranchName(), true);
             m_RepositoriesManager.UpdateRepositoryData(remoteUserName, remoteRepositoryData, updatedRemoteRepository);//****
 
         } catch (IOException e) {
