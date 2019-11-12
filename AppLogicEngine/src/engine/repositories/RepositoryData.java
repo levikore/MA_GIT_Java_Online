@@ -22,7 +22,7 @@ public class RepositoryData {
     private List<CommitData> m_HeadBranchCommitsList;
     private List<FileContent> m_CurrentWCFilesList = new LinkedList<>();
 
-    private List<UnCommittedFile> m_UncommittedFilesList;
+    private List<UnCommittedFile> m_UncommittedFilesList= new LinkedList<>();
     private String m_RemoteReference;
     // private RepositoryManager m_RepositoryManager;
 
@@ -44,9 +44,9 @@ public class RepositoryData {
                 m_BranchesList.add(new BranchData(branch, isActiveBranch(branch, i_RepositoryManager.GetHeadBranch()), branch.GetIsModifiable()));
             }
         }
-
         List<Commit> commitStringList = i_RepositoryManager.GetHeadBranchCommitHistory(i_RepositoryManager.GetHeadBranch().GetBranch());
         setCommitsListToString(commitStringList, i_RepositoryManager);
+
         m_BranchesNamesList = new LinkedList<>();
         if(i_RepositoryManager.GetAllBranchesList()!=null) {
 
@@ -63,10 +63,6 @@ public class RepositoryData {
             }
             if (i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit() != null) {
                 setCurrentWCFilesList(i_RepositoryManager.GetHeadBranch().GetBranch().GetCurrentCommit().GetCommitRootFolder().GetFilesDataList(), uncommitedChangesList, folderList);
-            }
-            else{
-                FileContent repFolder=new FileContent(m_RepositoryPath,"",true);
-                m_CurrentWCFilesList.add(repFolder);
             }
         } catch (IOException e) {
             e.printStackTrace();

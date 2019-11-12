@@ -337,17 +337,30 @@ public class RepositoryManager {
 
     public synchronized List<UnCommittedChange> GetListOfUnCommittedFiles(RootFolder i__RootFolder, String i_CurrentUserName) throws IOException {
         List<UnCommittedChange> unCommittedFilesList = new LinkedList<>();
-        RootFolder testRootFolder = createFolderWithZipsOfUnCommittedFiles(i__RootFolder, i_CurrentUserName);
-        String testFolderPath = m_MagitPath + "\\" + c_TestFolderName;
 
-        if(m_HeadBranch.GetBranch().GetCurrentCommit()!=null) {
+        if (m_HeadBranch.GetBranch().GetCurrentCommit() != null) {
+            RootFolder testRootFolder = createFolderWithZipsOfUnCommittedFiles(i__RootFolder, i_CurrentUserName);
+            String testFolderPath = m_MagitPath + "\\" + c_TestFolderName;
             if (!testRootFolder.GetSHA1().equals(m_RootFolder.GetSHA1())) {
                 getAllUncommittedFiles(testRootFolder, unCommittedFilesList);
             }
-
             FileUtils.deleteDirectory((Paths.get(testFolderPath).toFile()));
+
         }
+
         return unCommittedFilesList;
+    }
+
+    private void addNewBlobsToListRecursively(Folder i_TestFolder, List<UnCommittedChange> io_UnCommittedFilesList) {
+        List<BlobData> testBlobList = i_TestFolder.GetBlobList();
+
+        for (BlobData blob : testBlobList) {
+            UnCommittedChange uncommitedChange = new UnCommittedChange(blob, "added");
+            io_UnCommittedFilesList.add(uncommitedChange);
+            if (blob.GetIsFolder()) {
+                addNewBlobsToListRecursively(blob.GetCurrentFolder(), io_UnCommittedFilesList);
+            }
+        }
     }
 
     private void getAllUncommittedFiles(RootFolder io_TestRootFolder, List<UnCommittedChange> io_UnCommittedFilesList) {
@@ -934,7 +947,7 @@ public class RepositoryManager {
     public List<Commit> GetHeadBranchCommitHistory(Branch i_Branch) {
 
         List<Commit> commitsList = new LinkedList<>();
-        if(i_Branch.GetCurrentCommit()!=null) {
+        if (i_Branch.GetCurrentCommit() != null) {
             Commit currentCommit = i_Branch.GetCurrentCommit();
             setHeadBranchCommitHistoryRec(commitsList, currentCommit);
         }

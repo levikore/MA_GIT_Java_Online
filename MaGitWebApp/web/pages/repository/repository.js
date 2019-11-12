@@ -192,6 +192,12 @@ function isBranchExist(branchName) {
     return branch === branchName;
 }
 
+function isEmptyRepository(repository)
+{
+    const currentCommitSha1=getHeadBranchData(repository).m_CommitSHA1;
+    return currentCommitSha1==="none";
+}
+
 function postBranchFunctionsData(dataToPost) {
     $.ajax({
         url: BRANCH_URL,
@@ -542,6 +548,17 @@ function appendButtonsOfRepositoryOwner(repository) {
             $("#push-button").attr("disabled", false);
 
         }
+    }
+
+    if(isEmptyRepository(repository)){
+        $("#unCommitted-files-list").attr("disabled", true);
+        $("#commit-button").attr("disabled", false);
+        $("#commit-input").attr("disabled", false);
+        $("#branch-button").attr("disabled", true);
+        $("#branch-input").attr("disabled", true);
+        $("#checkout-button").attr("disabled", true);
+        $("#checkout-input").attr("disabled", true);
+
     }
 }
 
