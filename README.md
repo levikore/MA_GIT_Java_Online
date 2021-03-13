@@ -22,12 +22,12 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 #### Future todo list:
 - upload project to an AWS server
 
-## Run Instructions:
+# Instructions:
 1. Copy app.war from "MA_GIT_ONLINE" folder to CATALINA_HOME/webapps , e.g., c:/Tomcat8/webapps.
 2. Start the Tomcat server.
 3. Navigate to http://localhost:8080/app.
 
-### Setup:
+## Setup:
 5. A login screen will apear:
 
 ![image](https://user-images.githubusercontent.com/41550958/111043511-a9232b00-844b-11eb-88a9-d49b5c6a820e.png)
@@ -46,7 +46,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 
 ![image](https://user-images.githubusercontent.com/41550958/111044394-0bcaf580-8451-11eb-9bc9-bdab9a4dc37b.png)
 
-### root folder update, commit:
+## root folder update, commit:
 - On the screen center you can see the branches list. The active branch will be branded as "Active" near its name.
 - To the right you can see the list of the branche's commits.
 - Pressing on a commit will present the files in it's root folder.
@@ -75,7 +75,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
   
   ![image](https://user-images.githubusercontent.com/41550958/111044944-2ce11580-8454-11eb-942d-a5355526fc7e.png)
 
-### Pull:
+## Pull:
 - Pull Request (blocked if there is no remote reference):
 
 ![image](https://user-images.githubusercontent.com/41550958/111045001-6d409380-8454-11eb-8ab6-415aa7c474d7.png)
@@ -84,7 +84,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
   
   ![image](https://user-images.githubusercontent.com/41550958/111047678-c0671600-8455-11eb-852e-03b17c74f2e9.png)
 
-### Fork, Push Request: 
+## Fork, Push Request: 
 9. Pressing "All Users" will present the user list
    - pressing on a user name will present his repository.
    
