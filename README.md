@@ -23,7 +23,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 1. Copy app.war from "MA_GIT_ONLINE" folder to CATALINA_HOME/webapps , e.g., c:/Tomcat8/webapps.
 2. Start the Tomcat server.
 3. Navigate to http://localhost:8080/app.
-4. A login screen will apear:\
+4. A login screen will apear:
 
 ![image](https://user-images.githubusercontent.com/41550958/111043511-a9232b00-844b-11eb-88a9-d49b5c6a820e.png)
 
@@ -57,7 +57,43 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 
 ![image](https://user-images.githubusercontent.com/41550958/111044688-c3acd280-8452-11eb-9352-6c47d42b209d.png)
 
+- uppon pressing on a file name you will see it's content
+- to edint press "Edit" and when you're done press "done!"
+- to remove a file press "Remove"
+- uppon picking a folder, you can press "add new file to current folder" to add a new file to the folder.
+  A new empty file will appear in the file list, you cannot save it until you add content to it.
+- to save the root folder's content press "save" before exiting the control panel.
+- uppon saving the conten, you can commit the changes you have made.
+  the number of uncommited changes will apear on the "Uncommitted Files" button.
+  by pressing it you can see the uncomitted changes:
+  
+  ![image](https://user-images.githubusercontent.com/41550958/111044944-2ce11580-8454-11eb-942d-a5355526fc7e.png)
 
 
+- Pull Request (blocked if there is no remote reference):
+
+![image](https://user-images.githubusercontent.com/41550958/111045001-6d409380-8454-11eb-8ab6-415aa7c474d7.png)
+
+  uppon pressing submit, the remote user will get a message: 
+  
+  ![image](https://user-images.githubusercontent.com/41550958/111047678-c0671600-8455-11eb-852e-03b17c74f2e9.png)
+
+
+9. Pressing "All Users" will present the user list
+   - pressing on a user name will present his repository.
+   
+   ![image](https://user-images.githubusercontent.com/41550958/111048806-0d4aec80-8456-11eb-9bc5-d968000bea8b.png)
+   
+10. Clicking Repository will display the repository information and its contents.
+11. Click Fork for this repository: 
+  
+![image](https://user-images.githubusercontent.com/41550958/111050654-8c402500-8456-11eb-885c-e08558d23018.png)
+
+12. After the Fork, you can see the new repository on the Home page and go to its control page
+In this case all remote reference options will be open
+
+13. A user who has received a PR will click on the PR List in the toolbar and will see his entire PR history: 
+
+![image](https://user-images.githubusercontent.com/41550958/111050684-c4dffe80-8456-11eb-986b-4b45baae427e.png)
 
 
