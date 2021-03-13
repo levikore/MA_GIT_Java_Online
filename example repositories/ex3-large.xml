@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MagitRepository name="rep 1">
+    <location>c:\repo1</location>
+    <MagitBlobs>
+        <MagitBlob id="1">
+            <name>a.txt</name>
+            <last-updater>Moyshe Ufnik</last-updater>
+            <last-update-date>09.06.2019-20:15:11:232</last-update-date>
+            <content>a.txt content</content>
+        </MagitBlob>
+        <MagitBlob id="2">
+            <name>Foo.java</name>
+            <last-updater>Shauly</last-updater>
+            <last-update-date>30.06.2019-21:35:26:954</last-update-date>
+            <content>public class Foo {
+				public static void main(String[] args) {
+					System.out.println("hello world tao tao");
+					System.out.println("Bye ByE");
+				}
+			}</content>
+        </MagitBlob>
+        <MagitBlob id="3">
+            <name>c.txt</name>
+            <last-updater>Ruven</last-updater>
+            <last-update-date>30.06.2019-0:43:22:245</last-update-date>
+            <content>c.txt content</content>
+        </MagitBlob>
+        <MagitBlob id="4">
+            <name>b.txt</name>
+            <last-updater>Ruven</last-updater>
+            <last-update-date>30.06.2019-0:43:22:245</last-update-date>
+            <content>b.txt content</content>
+        </MagitBlob>
+        <MagitBlob id="5">
+            <name>Foo.java</name>
+            <last-updater>Arik and Bentz</last-updater>
+            <last-update-date>09.06.2019-20:25:10:111</last-update-date>
+            <content>public class Foo {
+				public static void main(String[] args) {
+					System.out.println("hello world tao tao");
+				}
+			}</content>
+        </MagitBlob>
+        <MagitBlob id="6">
+            <name>Foo.java</name>
+            <last-updater>Moyshe Ufnik</last-updater>
+            <last-update-date>09.06.2019-20:15:11:232</last-update-date>
+            <content>public class Foo {
+				public static void main(String[] args) {
+					System.out.println("hello world");
+				}
+			}</content>
+        </MagitBlob>
+        <MagitBlob id="7">
+            <name>a.txt</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <content>a.txt content&#xD;
+and another content</content>
+        </MagitBlob>
+        <MagitBlob id="8">
+            <name>b.txt</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <content>some content</content>
+        </MagitBlob>
+        <MagitBlob id="9">
+            <name>letters.txt</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <content>A B C D E F G H &#xD;
+I J K L M N O P &#xD;
+Q R S T U&#xD;
+V W X &#xD;
+Y&#xD;
+Z</content>
+        </MagitBlob>
+        <MagitBlob id="10">
+            <name>numbers.txt</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <content>0 1 2 3 &#xD;
+4 5 6 7&#xD;
+8 9 100</content>
+        </MagitBlob>
+    </MagitBlobs>
+    <MagitFolders>
+        <MagitSingleFolder is-root="true" id="13">
+            <last-updater>Shauly</last-updater>
+            <last-update-date>30.06.2019-21:35:26:954</last-update-date>
+            <items>
+                <item type="blob" id="1"/>
+                <item type="folder" id="1"/>
+                <item type="folder" id="5"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="1">
+            <name>fol1</name>
+            <last-updater>Shauly</last-updater>
+            <last-update-date>30.06.2019-21:35:26:954</last-update-date>
+            <items>
+                <item type="blob" id="2"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="5">
+            <name>fol2</name>
+            <last-updater>Ruven</last-updater>
+            <last-update-date>30.06.2019-0:43:22:245</last-update-date>
+            <items>
+                <item type="folder" id="9"/>
+                <item type="blob" id="4"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="9">
+            <name>fol3</name>
+            <last-updater>Ruven</last-updater>
+            <last-update-date>30.06.2019-0:43:22:245</last-update-date>
+            <items>
+                <item type="blob" id="3"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="true" id="11">
+            <last-updater>Ruven</last-updater>
+            <last-update-date>30.06.2019-0:43:22:245</last-update-date>
+            <items>
+                <item type="blob" id="1"/>
+                <item type="folder" id="5"/>
+                <item type="folder" id="2"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="2">
+            <name>fol1</name>
+            <last-updater>Arik and Bentz</last-updater>
+            <last-update-date>09.06.2019-20:25:10:111</last-update-date>
+            <items>
+                <item type="blob" id="5"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="true" id="3">
+            <last-updater>Arik and Bentz</last-updater>
+            <last-update-date>09.06.2019-20:25:10:111</last-update-date>
+            <items>
+                <item type="blob" id="1"/>
+                <item type="folder" id="2"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="true" id="8">
+            <last-updater>Moyshe Ufnik</last-updater>
+            <last-update-date>09.06.2019-20:15:11:232</last-update-date>
+            <items>
+                <item type="blob" id="1"/>
+                <item type="folder" id="6"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="6">
+            <name>fol1</name>
+            <last-updater>Moyshe Ufnik</last-updater>
+            <last-update-date>09.06.2019-20:15:11:232</last-update-date>
+            <items>
+                <item type="blob" id="6"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="true" id="7">
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <items>
+                <item type="blob" id="7"/>
+                <item type="blob" id="8"/>
+                <item type="folder" id="10"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="10">
+            <name>fol1</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <items>
+                <item type="folder" id="4"/>
+                <item type="folder" id="12"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="4">
+            <name>fol3</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <items>
+                <item type="blob" id="9"/>
+            </items>
+        </MagitSingleFolder>
+        <MagitSingleFolder is-root="false" id="12">
+            <name>fol2</name>
+            <last-updater>Administrator</last-updater>
+            <last-update-date>30.06.2019-21:33:33:733</last-update-date>
+            <items>
+                <item type="blob" id="10"/>
+            </items>
+        </MagitSingleFolder>
+    </MagitFolders>
+    <MagitCommits>
+        <MagitSingleCommit id="5">
+            <root-folder id="13"/>
+            <message>small change</message>
+            <author>Shauly</author>
+            <date-of-creation>30.06.2019-21:35:26:954</date-of-creation>
+            <preceding-commits>
+                <preceding-commit id="3"/>
+            </preceding-commits>
+        </MagitSingleCommit>
+        <MagitSingleCommit id="3">
+            <root-folder id="11"/>
+            <message>creating two more folders</message>
+            <author>Ruven</author>
+            <date-of-creation>30.06.2019-0:43:22:245</date-of-creation>
+            <preceding-commits>
+                <preceding-commit id="2"/>
+            </preceding-commits>
+        </MagitSingleCommit>
+        <MagitSingleCommit id="2">
+            <root-folder id="3"/>
+            <message>changed Foo PSVM to say hello to tao tao</message>
+            <author>Arik and Bentz</author>
+            <date-of-creation>09.06.2019-20:25:10:111</date-of-creation>
+            <preceding-commits>
+                <preceding-commit id="4"/>
+            </preceding-commits>
+        </MagitSingleCommit>
+        <MagitSingleCommit id="4">
+            <root-folder id="8"/>
+            <message>Initial commit performed on this repository</message>
+            <author>Moyshe Ufnik</author>
+            <date-of-creation>09.06.2019-20:15:11:232</date-of-creation>
+            <preceding-commits/>
+        </MagitSingleCommit>
+        <MagitSingleCommit id="1">
+            <root-folder id="7"/>
+            <message>many changes</message>
+            <author>Administrator</author>
+            <date-of-creation>30.06.2019-21:33:33:733</date-of-creation>
+            <preceding-commits>
+                <preceding-commit id="4"/>
+            </preceding-commits>
+        </MagitSingleCommit>
+    </MagitCommits>
+    <MagitBranches>
+        <head>deep</head>
+        <MagitSingleBranch is-remote="false" tracking="false">
+            <name>deep</name>
+            <pointed-commit id="5"/>
+            <tracking-after></tracking-after>
+        </MagitSingleBranch>
+        <MagitSingleBranch is-remote="false" tracking="false">
+            <name>test</name>
+            <pointed-commit id="1"/>
+            <tracking-after></tracking-after>
+        </MagitSingleBranch>
+        <MagitSingleBranch is-remote="false" tracking="false">
+            <name>master</name>
+            <pointed-commit id="3"/>
+            <tracking-after></tracking-after>
+        </MagitSingleBranch>
+    </MagitBranches>
+    <MagitRemoteReference/>
+</MagitRepository>

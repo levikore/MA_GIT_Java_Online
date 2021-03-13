@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by mazuki (darksiderg) -->
+<MagitRepository name="rep 1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MAGit.xsd">
+	<location>c:\repo1</location>
+	<MagitBlobs>
+		<MagitBlob id="1">
+			<name>a.txt</name>
+			<last-updater>Moyshe Ufnik</last-updater>
+			<last-update-date>09.06.2019-20:15:11:232</last-update-date>
+			<content>a.txt content</content>
+		</MagitBlob>
+		<MagitBlob id="2">
+			<name>Foo.java</name>
+			<last-updater>Moyshe Ufnik</last-updater>
+			<last-update-date>09.06.2019-20:15:11:232</last-update-date>
+			<content>
+			public class Foo {
+				public static void main(String[] args) {
+					System.out.println("hello world");
+				}
+			}
+			</content>
+		</MagitBlob>
+		<MagitBlob id="3">
+			<name>Foo.java</name>
+			<last-updater>Arik and Bentz</last-updater>
+			<last-update-date>09.06.2019-20:25:10:111</last-update-date>
+			<content>
+			public class Foo {
+				public static void main(String[] args) {
+					System.out.println("hello world tao tao");
+				}
+			}
+			</content>
+		</MagitBlob>
+	</MagitBlobs>
+	<MagitFolders>
+		<MagitSingleFolder id="1" is-root="true">
+			<last-updater>Moyshe Ufnik</last-updater>
+			<last-update-date>09.06.2019-20:15:11:232</last-update-date>
+			<items>
+				<item type="blob" id="1"/>
+				<item type="folder" id="2"/>
+			</items>
+		</MagitSingleFolder>
+		<MagitSingleFolder id="2">
+			<last-updater>Moyshe Ufnik</last-updater>
+			<last-update-date>09.06.2019-20:15:11:232</last-update-date>
+			<name>fol1</name>
+			<items>
+				<item type="blob" id="2"/>
+			</items>
+		</MagitSingleFolder>
+		<MagitSingleFolder id="3" is-root="true">
+			<last-updater>Arik and Bentz</last-updater>
+			<last-update-date>09.06.2019-20:25:10:111</last-update-date>
+			<items>
+				<item type="blob" id="1"/>
+				<item type="folder" id="4"/>
+			</items>
+		</MagitSingleFolder>
+		<MagitSingleFolder id="4">
+			<last-updater>Arik and Bentz</last-updater>
+			<last-update-date>09.06.2019-20:25:10:111</last-update-date>
+			<name>fol1</name>
+			<items>
+				<item type="blob" id="3"/>
+			</items>
+		</MagitSingleFolder>
+	</MagitFolders>
+	<MagitCommits>
+		<MagitSingleCommit id="1">
+			<root-folder id="1"/>
+			<message>Initial commit performed on this repository</message>
+			<author>Moyshe Ufnik</author>
+			<date-of-creation>09.06.2019-20:15:11:232</date-of-creation>
+		</MagitSingleCommit>
+		<MagitSingleCommit id="2">
+			<root-folder id="3"/>
+			<message>changed Foo PSVM to say hello to tao tao</message>
+			<author>Arik and Bentz</author>
+			<date-of-creation>09.06.2019-20:25:10:111</date-of-creation>
+			<preceding-commits>
+				<preceding-commit id="1"/>
+			</preceding-commits>
+		</MagitSingleCommit>
+	</MagitCommits>
+	<MagitBranches>
+		<head>master</head>
+		<MagitSingleBranch>
+			<name>master</name>
+			<pointed-commit id="2"/>
+		</MagitSingleBranch>
+		<MagitSingleBranch>
+			<name>test</name>
+			<pointed-commit id="1"/>
+		</MagitSingleBranch>
+	</MagitBranches>
+</MagitRepository>
