@@ -23,5 +23,21 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 1. Copy app.war from "MA_GIT_ONLINE" folder to CATALINA_HOME/webapps , e.g., c:/Tomcat8/webapps.
 2. Start the Tomcat server.
 3. Navigate to http://localhost:8080/app.
-4. A login screen will apear:
+4. A login screen will apear:\
+
 ![image](https://user-images.githubusercontent.com/41550958/111043511-a9232b00-844b-11eb-88a9-d49b5c6a820e.png)
+
+5. By pressing the green "New Repository" button, a browse window will open from which you can load a repository from an XML file:\
+
+![image](https://user-images.githubusercontent.com/41550958/111043626-29e22700-844c-11eb-9281-ca014902b977.png)
+
+   you can use the repositories from the example repository folder
+   
+6. Uppon loading the file successfully, your repositories will be presented on the home tab\
+
+![image](https://user-images.githubusercontent.com/41550958/111044331-8d6e5380-8450-11eb-9d70-fe0b14b65387.png)
+
+7. Pressing on the repository will open its control panel:\
+![image](https://user-images.githubusercontent.com/41550958/111044367-cd353b00-8450-11eb-91a8-6b260d1edf00.png)
+
+
