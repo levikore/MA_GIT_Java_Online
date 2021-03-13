@@ -19,11 +19,16 @@ Coded in Java. Runs on Apache Tomcat server.
 ### Client side:
 Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 
-## Run:
+#### Future todo list:
+- upload project to an AWS server
+
+## Run Instructions:
 1. Copy app.war from "MA_GIT_ONLINE" folder to CATALINA_HOME/webapps , e.g., c:/Tomcat8/webapps.
 2. Start the Tomcat server.
 3. Navigate to http://localhost:8080/app.
-4. A login screen will apear:
+
+### Setup:
+5. A login screen will apear:
 
 ![image](https://user-images.githubusercontent.com/41550958/111043511-a9232b00-844b-11eb-88a9-d49b5c6a820e.png)
 
@@ -41,6 +46,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
 
 ![image](https://user-images.githubusercontent.com/41550958/111044394-0bcaf580-8451-11eb-9bc9-bdab9a4dc37b.png)
 
+### root folder update, commit:
 - On the screen center you can see the branches list. The active branch will be branded as "Active" near its name.
 - To the right you can see the list of the branche's commits.
 - Pressing on a commit will present the files in it's root folder.
@@ -69,7 +75,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
   
   ![image](https://user-images.githubusercontent.com/41550958/111044944-2ce11580-8454-11eb-942d-a5355526fc7e.png)
 
-
+### Pull:
 - Pull Request (blocked if there is no remote reference):
 
 ![image](https://user-images.githubusercontent.com/41550958/111045001-6d409380-8454-11eb-8ab6-415aa7c474d7.png)
@@ -78,7 +84,7 @@ Coded in JavaScript, jQuery, html and CSS (with bootstrap).
   
   ![image](https://user-images.githubusercontent.com/41550958/111047678-c0671600-8455-11eb-852e-03b17c74f2e9.png)
 
-
+### Fork, Push Request: 
 9. Pressing "All Users" will present the user list
    - pressing on a user name will present his repository.
    
@@ -100,7 +106,7 @@ In this case all remote reference options will be open
 
 ![image](https://user-images.githubusercontent.com/41550958/111050731-08d30380-8457-11eb-9249-1b36a0056635.png)
 
-15. You can write a comment in "rejection messege: and by clicking on reject it will be sent to the user who sent the PR and will appear in his alerts, otherwise you can click on accept and it will also appear in the alerts.
+15. You can write a comment in "rejection messege" and by clicking on reject it will be sent to the user who sent the PR and will appear in his alerts, otherwise you can click on accept and it will also appear in the alerts.
 
 ![image](https://user-images.githubusercontent.com/41550958/111050781-4df73580-8457-11eb-8f81-7f864177342e.png)
 
