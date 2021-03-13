@@ -96,4 +96,14 @@ In this case all remote reference options will be open
 
 ![image](https://user-images.githubusercontent.com/41550958/111050684-c4dffe80-8456-11eb-986b-4b45baae427e.png)
 
+14. Clicking on the PR body will display its Delta Commits, clicking on each comit in the list will display its list of files, update type and contents. 
+
+![image](https://user-images.githubusercontent.com/41550958/111050731-08d30380-8457-11eb-9249-1b36a0056635.png)
+
+15. You can write a comment in "rejection messege: and by clicking on reject it will be sent to the user who sent the PR and will appear in his alerts, otherwise you can click on accept and it will also appear in the alerts.
+
+![image](https://user-images.githubusercontent.com/41550958/111050781-4df73580-8457-11eb-8f81-7f864177342e.png)
+
+![image](https://user-images.githubusercontent.com/41550958/111050785-551e4380-8457-11eb-8051-d0ca05699729.png)
+
 
